@@ -67,6 +67,15 @@ Vector<T, 2>::Vector(Vector<T, 2> const& _v)
 }
 
 template<class T>
+Vector<T, 2>& Vector<T, 2>::operator=(Vector<T, 2> const& _v)
+{
+	x = _v.x;
+	y = _v.y;
+
+	return *this;
+}
+
+template<class T>
 Vector<T, 3>::Vector()
 	: x(data[0]), y(data[1]), z(data[2])
 {
@@ -88,6 +97,16 @@ Vector<T, 3>::Vector(Vector<T, 3> const& _v)
 	x = _v.x;
 	y = _v.y;
 	z = _v.z;
+}
+
+template<class T>
+Vector<T, 3>& Vector<T, 3>::operator=(Vector<T, 3> const& _v)
+{
+	x = _v.x;
+	y = _v.y;
+	z = _v.z;
+
+	return *this;
 }
 
 template<class T>
@@ -114,6 +133,17 @@ Vector<T, 4>::Vector(Vector<T, 4> const& _v)
 	y = _v.y;
 	z = _v.z;
 	w = _v.w;
+}
+
+template<class T>
+Vector<T, 4>& Vector<T, 4>::operator=(Vector<T, 4> const& _v)
+{
+	x = _v.x;
+	y = _v.y;
+	z = _v.z;
+	w = _v.w;
+
+	return *this;
 }
 
 END_2_NAMESPACES

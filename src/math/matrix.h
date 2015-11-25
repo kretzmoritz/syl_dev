@@ -48,7 +48,7 @@ public:
 	virtual ~MatrixSpecialized() = default;
 };
 
-// Template specialization
+// Partial template specialization
 
 template<class T, size_t rows, size_t columns>
 class MatrixSpecialized<T, rows, columns, true>
@@ -74,7 +74,7 @@ protected:
 	T const& get(size_t _row, size_t _column) const;
 };
 
-///////////////////////////
+///////////////////////////////////
 
 END_NAMESPACE
 
@@ -103,6 +103,10 @@ BEGIN_NAMESPACE(Impl)
 template<class T>
 using UnaryMatrixReturnValue 
 	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElementType, T::Rows, T::Columns, T::RowMajor>, T>::value, T>::type;
+
+template<class T>
+using UnaryMatrixReturnReference 
+	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElementType, T::Rows, T::Columns, T::RowMajor>, T>::value, T&>::type;
 
 template<class T, class U>
 using BinaryMatrixReturnValue 
@@ -140,6 +144,15 @@ Impl::BinaryMatrixReturnReference<T, U> operator-=(T& _lhs, U const& _rhs);
 
 template<class T>
 Impl::UnaryMatrixReturnValue<T> operator-(T _m);
+
+template<class T>
+Impl::UnaryMatrixReturnValue<T> operator*(T _lhs, typename T::ElementType _rhs);
+
+template<class T>
+Impl::UnaryMatrixReturnValue<T> operator*(typename T::ElementType _lhs, T _rhs);
+
+template<class T>
+Impl::UnaryMatrixReturnReference<T> operator*=(T& _lhs, typename T::ElementType _rhs);
 
 END_2_NAMESPACES
 

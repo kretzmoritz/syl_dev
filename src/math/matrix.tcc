@@ -147,4 +147,36 @@ Impl::UnaryMatrixReturnValue<T> operator-(T _m)
 	return _m;
 }
 
+template<class T>
+Impl::UnaryMatrixReturnValue<T> operator*(T _lhs, typename T::ElementType _rhs)
+{
+	_lhs *= _rhs;
+
+	return _lhs;
+}
+
+template<class T>
+Impl::UnaryMatrixReturnValue<T> operator*(typename T::ElementType _lhs, T _rhs)
+{
+	_rhs *= _lhs;
+
+	return _rhs;
+}
+
+template<class T>
+Impl::UnaryMatrixReturnReference<T> operator*=(T& _lhs, typename T::ElementType _rhs)
+{
+	typedef Matrix<T::ElementType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
+
+	for (size_t i = 0; i < T::Rows; ++i)
+	{
+		for (size_t j = 0; j < T::Columns; ++j)
+		{
+			static_cast<MatrixTypeT&>(_lhs)(i, j) *= _rhs;
+		}
+	}
+
+	return _lhs;
+}
+
 END_2_NAMESPACES

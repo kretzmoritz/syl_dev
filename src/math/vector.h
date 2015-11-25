@@ -59,6 +59,8 @@ public:
 	Vector(Vector<T, 2> const& _v);
 	virtual ~Vector() = default;
 
+	Vector<T, 2>& operator=(Vector<T, 2> const& _v);
+
 	T& x;
 	T& y;
 };
@@ -72,6 +74,8 @@ public:
 	Vector(T _x, T _y, T _z);
 	Vector(Vector<T, 3> const& _v);
 	virtual ~Vector() = default;
+
+	Vector<T, 3>& operator=(Vector<T, 3> const& _v);
 
 	T& x;
 	T& y;
@@ -87,6 +91,8 @@ public:
 	Vector(T _x, T _y, T _z, T _w);
 	Vector(Vector<T, 4> const& _v);
 	virtual ~Vector() = default;
+
+	Vector<T, 4>& operator=(Vector<T, 4> const& _v);
 
 	T& x;
 	T& y;

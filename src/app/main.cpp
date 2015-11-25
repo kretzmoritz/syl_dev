@@ -30,6 +30,10 @@ int main()
 	Vec += Vec;
 	Vec += Vec2;
 
+	float a = 2.0f;
+	Vec = Vec * a;
+	Vec *= a;
+
 	std::cout << (-Vec).y << std::endl;
 
 	return 0;
