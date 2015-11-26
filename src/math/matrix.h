@@ -105,8 +105,7 @@ using UnaryMatrixReturnValue
 	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElementType, T::Rows, T::Columns, T::RowMajor>, T>::value, T>::type;
 
 template<class T>
-using UnaryMatrixReturnReference 
-	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElementType, T::Rows, T::Columns, T::RowMajor>, T>::value, T&>::type;
+using UnaryMatrixReturnReference = UnaryMatrixReturnValue<T>&;
 
 template<class T, class U>
 using BinaryMatrixReturnValue 
@@ -114,9 +113,7 @@ using BinaryMatrixReturnValue
 		&& std::is_base_of<Matrix<typename U::ElementType, U::Rows, U::Columns, U::RowMajor>, U>::value && T::Rows == U::Rows && T::Columns == U::Columns, T>::type;
 
 template<class T, class U>
-using BinaryMatrixReturnReference 
-	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElementType, T::Rows, T::Columns, T::RowMajor>, T>::value 
-		&& std::is_base_of<Matrix<typename U::ElementType, U::Rows, U::Columns, U::RowMajor>, U>::value && T::Rows == U::Rows && T::Columns == U::Columns, T&>::type;
+using BinaryMatrixReturnReference = BinaryMatrixReturnValue<T, U>&;
 
 END_NAMESPACE
 
