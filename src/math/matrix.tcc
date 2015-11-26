@@ -82,7 +82,7 @@ bool operator!=(Matrix<T, rows, columns, lhs_row_major> const& _lhs, Matrix<T, r
 }
 
 template<class T, class U>
-Impl::BinaryMatrixReturnValue<T, U> operator+(T _lhs, U const& _rhs)
+Impl::BinaryMatrixReturnType<T, U> operator+(T _lhs, U const& _rhs)
 {
 	_lhs += _rhs;
 
@@ -90,7 +90,7 @@ Impl::BinaryMatrixReturnValue<T, U> operator+(T _lhs, U const& _rhs)
 }
 
 template<class T, class U>
-Impl::BinaryMatrixReturnReference<T, U> operator+=(T& _lhs, U const& _rhs)
+Impl::BinaryMatrixReturnType<T, U>& operator+=(T& _lhs, U const& _rhs)
 {
 	typedef Matrix<T::ElementType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
 	typedef Matrix<U::ElementType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
@@ -107,7 +107,7 @@ Impl::BinaryMatrixReturnReference<T, U> operator+=(T& _lhs, U const& _rhs)
 }
 
 template<class T, class U>
-Impl::BinaryMatrixReturnValue<T, U> operator-(T _lhs, U const& _rhs)
+Impl::BinaryMatrixReturnType<T, U> operator-(T _lhs, U const& _rhs)
 {
 	_lhs -= _rhs;
 
@@ -115,7 +115,7 @@ Impl::BinaryMatrixReturnValue<T, U> operator-(T _lhs, U const& _rhs)
 }
 
 template<class T, class U>
-Impl::BinaryMatrixReturnReference<T, U> operator-=(T& _lhs, U const& _rhs)
+Impl::BinaryMatrixReturnType<T, U>& operator-=(T& _lhs, U const& _rhs)
 {
 	typedef Matrix<T::ElementType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
 	typedef Matrix<U::ElementType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
@@ -132,7 +132,7 @@ Impl::BinaryMatrixReturnReference<T, U> operator-=(T& _lhs, U const& _rhs)
 }
 
 template<class T>
-Impl::UnaryMatrixReturnValue<T> operator-(T _m)
+Impl::UnaryMatrixReturnType<T> operator-(T _m)
 {
 	typedef Matrix<T::ElementType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
 
@@ -148,7 +148,7 @@ Impl::UnaryMatrixReturnValue<T> operator-(T _m)
 }
 
 template<class T>
-Impl::UnaryMatrixReturnValue<T> operator*(T _lhs, typename T::ElementType _rhs)
+Impl::UnaryMatrixReturnType<T> operator*(T _lhs, typename T::ElementType _rhs)
 {
 	_lhs *= _rhs;
 
@@ -156,7 +156,7 @@ Impl::UnaryMatrixReturnValue<T> operator*(T _lhs, typename T::ElementType _rhs)
 }
 
 template<class T>
-Impl::UnaryMatrixReturnValue<T> operator*(typename T::ElementType _lhs, T _rhs)
+Impl::UnaryMatrixReturnType<T> operator*(typename T::ElementType _lhs, T _rhs)
 {
 	_rhs *= _lhs;
 
@@ -164,7 +164,7 @@ Impl::UnaryMatrixReturnValue<T> operator*(typename T::ElementType _lhs, T _rhs)
 }
 
 template<class T>
-Impl::UnaryMatrixReturnReference<T> operator*=(T& _lhs, typename T::ElementType _rhs)
+Impl::UnaryMatrixReturnType<T>& operator*=(T& _lhs, typename T::ElementType _rhs)
 {
 	typedef Matrix<T::ElementType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
 

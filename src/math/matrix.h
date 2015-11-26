@@ -101,19 +101,13 @@ typedef Matrix<float, 4, 4, true> Mat4x4f;
 BEGIN_NAMESPACE(Impl)
 
 template<class T>
-using UnaryMatrixReturnValue 
+using UnaryMatrixReturnType 
 	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElementType, T::Rows, T::Columns, T::RowMajor>, T>::value, T>::type;
 
-template<class T>
-using UnaryMatrixReturnReference = UnaryMatrixReturnValue<T>&;
-
 template<class T, class U>
-using BinaryMatrixReturnValue 
+using BinaryMatrixReturnType 
 	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElementType, T::Rows, T::Columns, T::RowMajor>, T>::value 
 		&& std::is_base_of<Matrix<typename U::ElementType, U::Rows, U::Columns, U::RowMajor>, U>::value && T::Rows == U::Rows && T::Columns == U::Columns, T>::type;
-
-template<class T, class U>
-using BinaryMatrixReturnReference = BinaryMatrixReturnValue<T, U>&;
 
 END_NAMESPACE
 
@@ -128,28 +122,28 @@ bool operator!=(
 	Matrix<T, rows, columns, rhs_row_major> const& _rhs);
 
 template<class T, class U>
-Impl::BinaryMatrixReturnValue<T, U> operator+(T _lhs, U const& _rhs);
+Impl::BinaryMatrixReturnType<T, U> operator+(T _lhs, U const& _rhs);
 
 template<class T, class U>
-Impl::BinaryMatrixReturnReference<T, U> operator+=(T& _lhs, U const& _rhs);
+Impl::BinaryMatrixReturnType<T, U>& operator+=(T& _lhs, U const& _rhs);
 
 template<class T, class U>
-Impl::BinaryMatrixReturnValue<T, U> operator-(T _lhs, U const& _rhs);
+Impl::BinaryMatrixReturnType<T, U> operator-(T _lhs, U const& _rhs);
 
 template<class T, class U>
-Impl::BinaryMatrixReturnReference<T, U> operator-=(T& _lhs, U const& _rhs);
+Impl::BinaryMatrixReturnType<T, U>& operator-=(T& _lhs, U const& _rhs);
 
 template<class T>
-Impl::UnaryMatrixReturnValue<T> operator-(T _m);
+Impl::UnaryMatrixReturnType<T> operator-(T _m);
 
 template<class T>
-Impl::UnaryMatrixReturnValue<T> operator*(T _lhs, typename T::ElementType _rhs);
+Impl::UnaryMatrixReturnType<T> operator*(T _lhs, typename T::ElementType _rhs);
 
 template<class T>
-Impl::UnaryMatrixReturnValue<T> operator*(typename T::ElementType _lhs, T _rhs);
+Impl::UnaryMatrixReturnType<T> operator*(typename T::ElementType _lhs, T _rhs);
 
 template<class T>
-Impl::UnaryMatrixReturnReference<T> operator*=(T& _lhs, typename T::ElementType _rhs);
+Impl::UnaryMatrixReturnType<T>& operator*=(T& _lhs, typename T::ElementType _rhs);
 
 END_2_NAMESPACES
 
