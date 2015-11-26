@@ -20,6 +20,9 @@
 
 BEGIN_2_NAMESPACES(SylDev, Math)
 
+template<class T, size_t n>
+class Vector;
+
 BEGIN_NAMESPACE(Impl)
 
 template<class T, size_t n>
@@ -31,6 +34,8 @@ public:
 
 	T& operator()(size_t _n);
 	T const& operator()(size_t _n) const;
+
+	template<class U> using MyType = Vector<U, n>;
 };
 
 END_NAMESPACE

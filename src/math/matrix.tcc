@@ -82,11 +82,23 @@ bool operator!=(Matrix<T, rows, columns, lhs_row_major> const& _lhs, Matrix<T, r
 }
 
 template<class T, class U>
-Impl::BinaryMatrixReturnType<T, U> operator+(T _lhs, U const& _rhs)
+Impl::AddMatrixReturnType<T, U> operator+(T const& _lhs, U const& _rhs)
 {
-	_lhs += _rhs;
+	typedef Matrix<T::ElementType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
+	typedef Matrix<U::ElementType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
+	typedef Matrix<decltype(std::declval<typename T::ElementType>() + std::declval<typename U::ElementType>()), T::Rows, T::Columns, T::RowMajor> MatrixTypeAdd;
 
-	return _lhs;
+	Impl::AddMatrixReturnType<T, U> result;
+
+	for (size_t i = 0; i < T::Rows; ++i)
+	{
+		for (size_t j = 0; j < T::Columns; ++j)
+		{
+			static_cast<MatrixTypeAdd&>(result)(i, j) = static_cast<MatrixTypeT const&>(_lhs)(i, j) + static_cast<MatrixTypeU const&>(_rhs)(i, j);
+		}
+	}
+
+	return result;
 }
 
 template<class T, class U>
@@ -107,11 +119,23 @@ Impl::BinaryMatrixReturnType<T, U>& operator+=(T& _lhs, U const& _rhs)
 }
 
 template<class T, class U>
-Impl::BinaryMatrixReturnType<T, U> operator-(T _lhs, U const& _rhs)
+Impl::SubtractMatrixReturnType<T, U> operator-(T const& _lhs, U const& _rhs)
 {
-	_lhs -= _rhs;
+	typedef Matrix<T::ElementType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
+	typedef Matrix<U::ElementType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
+	typedef Matrix<decltype(std::declval<typename T::ElementType>() - std::declval<typename U::ElementType>()), T::Rows, T::Columns, T::RowMajor> MatrixTypeSubtract;
 
-	return _lhs;
+	Impl::SubtractMatrixReturnType<T, U> result;
+
+	for (size_t i = 0; i < T::Rows; ++i)
+	{
+		for (size_t j = 0; j < T::Columns; ++j)
+		{
+			static_cast<MatrixTypeSubtract&>(result)(i, j) = static_cast<MatrixTypeT const&>(_lhs)(i, j) - static_cast<MatrixTypeU const&>(_rhs)(i, j);
+		}
+	}
+
+	return result;
 }
 
 template<class T, class U>

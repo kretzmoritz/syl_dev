@@ -88,6 +88,7 @@ public:
 	T& operator()(size_t _row, size_t _column);
 	T const& operator()(size_t _row, size_t _column) const;
 
+	template<class U> using MyType = Matrix<U, rows, columns, row_major>;
 	typedef T ElementType;
 	static size_t const Rows = rows;
 	static size_t const Columns = columns;
@@ -109,6 +110,18 @@ using BinaryMatrixReturnType
 	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElementType, T::Rows, T::Columns, T::RowMajor>, T>::value 
 		&& std::is_base_of<Matrix<typename U::ElementType, U::Rows, U::Columns, U::RowMajor>, U>::value && T::Rows == U::Rows && T::Columns == U::Columns, T>::type;
 
+template<class T, class U>
+using AddMatrixReturnType 
+	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElementType, T::Rows, T::Columns, T::RowMajor>, T>::value 
+		&& std::is_base_of<Matrix<typename U::ElementType, U::Rows, U::Columns, U::RowMajor>, U>::value && T::Rows == U::Rows && T::Columns == U::Columns, 
+		typename T::template MyType<decltype(std::declval<typename T::ElementType>() + std::declval<typename U::ElementType>())>>::type;
+
+template<class T, class U>
+using SubtractMatrixReturnType 
+	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElementType, T::Rows, T::Columns, T::RowMajor>, T>::value 
+		&& std::is_base_of<Matrix<typename U::ElementType, U::Rows, U::Columns, U::RowMajor>, U>::value && T::Rows == U::Rows && T::Columns == U::Columns, 
+		typename T::template MyType<decltype(std::declval<typename T::ElementType>() - std::declval<typename U::ElementType>())>>::type;
+
 END_NAMESPACE
 
 template<class T, size_t rows, size_t columns, bool lhs_row_major, bool rhs_row_major>
@@ -122,13 +135,13 @@ bool operator!=(
 	Matrix<T, rows, columns, rhs_row_major> const& _rhs);
 
 template<class T, class U>
-Impl::BinaryMatrixReturnType<T, U> operator+(T _lhs, U const& _rhs);
+Impl::AddMatrixReturnType<T, U> operator+(T const& _lhs, U const& _rhs);
 
 template<class T, class U>
 Impl::BinaryMatrixReturnType<T, U>& operator+=(T& _lhs, U const& _rhs);
 
 template<class T, class U>
-Impl::BinaryMatrixReturnType<T, U> operator-(T _lhs, U const& _rhs);
+Impl::SubtractMatrixReturnType<T, U> operator-(T const& _lhs, U const& _rhs);
 
 template<class T, class U>
 Impl::BinaryMatrixReturnType<T, U>& operator-=(T& _lhs, U const& _rhs);
