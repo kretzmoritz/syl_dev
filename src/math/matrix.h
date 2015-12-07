@@ -108,12 +108,12 @@ using UnaryMatrixReturnType
 template<class T, class U>
 using BinaryMatrixReturnType 
 	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElementType, T::Rows, T::Columns, T::RowMajor>, T>::value 
-		&& std::is_base_of<Matrix<typename U::ElementType, U::Rows, U::Columns, U::RowMajor>, U>::value && T::Rows == U::Rows && T::Columns == U::Columns, T>::type;
+		&& std::is_base_of<Matrix<typename U::ElementType, T::Rows, T::Columns, U::RowMajor>, U>::value, T>::type;
 
 template<class Op, class T, class U>
 using OpMatrixReturnType 
 	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElementType, T::Rows, T::Columns, T::RowMajor>, T>::value 
-		&& std::is_base_of<Matrix<typename U::ElementType, U::Rows, U::Columns, U::RowMajor>, U>::value && T::Rows == U::Rows && T::Columns == U::Columns, 
+		&& std::is_base_of<Matrix<typename U::ElementType, T::Rows, T::Columns, U::RowMajor>, U>::value, 
 		typename T::template MyType<decltype(Op()(std::declval<typename T::ElementType>(), std::declval<typename U::ElementType>()))>>::type;
 
 END_NAMESPACE

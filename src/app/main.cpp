@@ -6,6 +6,16 @@
 #include "../math/matrix.h"
 #include "../math/vector.h"
 
+class Foo
+{
+};
+
+class FooOp
+{
+public:
+	FooOp operator+(float _rhs) const { return FooOp(); }
+};
+
 int main()
 {
 	SylDev::Framework::WindowDesc desc;
@@ -35,7 +45,7 @@ int main()
 	SylDev::Math::Matrix<int, 1, 3, false> Matrix4;
 
 	auto mat = Matrix4 + Vec;
-	auto vec = Vec + Matrix4;
+	//auto vec = Vec + Matrix4;
 
 	float a = 2.0f;
 	Vec = Vec * a;
