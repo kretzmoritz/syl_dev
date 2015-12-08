@@ -44,6 +44,7 @@ int main()
 
 	SylDev::Math::Matrix<int, 1, 3, false> Matrix4;
 
+	Vec += Matrix4;
 	auto mat = Matrix4 + Vec;
 	//auto vec = Vec + Matrix4;
 

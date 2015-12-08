@@ -89,7 +89,7 @@ public:
 	T const& operator()(size_t _row, size_t _column) const;
 
 	template<class U> using MyType = Matrix<U, rows, columns, row_major>;
-	typedef T ElementType;
+	typedef T ElemType;
 	static size_t const Rows = rows;
 	static size_t const Columns = columns;
 	static bool const RowMajor = row_major;
@@ -101,20 +101,20 @@ typedef Matrix<float, 4, 4, true> Mat4x4f;
 
 BEGIN_NAMESPACE(Impl)
 
-template<class T>
-using UnaryMatrixReturnType 
-	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElementType, T::Rows, T::Columns, T::RowMajor>, T>::value, T>::type;
-
 template<class T, class U>
-using BinaryMatrixReturnType 
-	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElementType, T::Rows, T::Columns, T::RowMajor>, T>::value 
-		&& std::is_base_of<Matrix<typename U::ElementType, T::Rows, T::Columns, U::RowMajor>, U>::value, T>::type;
+using ReturnTCheckU = typename std::conditional<true, T, U>::type;
 
 template<class Op, class T, class U>
-using OpMatrixReturnType 
-	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElementType, T::Rows, T::Columns, T::RowMajor>, T>::value 
-		&& std::is_base_of<Matrix<typename U::ElementType, T::Rows, T::Columns, U::RowMajor>, U>::value, 
-		typename T::template MyType<decltype(Op()(std::declval<typename T::ElementType>(), std::declval<typename U::ElementType>()))>>::type;
+using ElemOpReturnType = decltype(Op()(std::declval<typename T::ElemType>(), std::declval<typename U::ElemType>()));
+
+template<class T>
+using UnaryMatrixReturnType 
+	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElemType, T::Rows, T::Columns, T::RowMajor>, T>::value, T>::type;
+
+template<class T, class U, class V>
+using BinaryMatrixReturnType 
+	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElemType, T::Rows, T::Columns, T::RowMajor>, T>::value 
+		&& std::is_base_of<Matrix<typename U::ElemType, T::Rows, T::Columns, U::RowMajor>, U>::value, V>::type;
 
 END_NAMESPACE
 
@@ -129,28 +129,28 @@ bool operator!=(
 	Matrix<T, rows, columns, rhs_row_major> const& _rhs);
 
 template<class T, class U>
-Impl::OpMatrixReturnType<std::plus<>, T, U> operator+(T const& _lhs, U const& _rhs);
+Impl::BinaryMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpReturnType<std::plus<>, T, U>>> operator+(T const& _lhs, U const& _rhs);
 
 template<class T, class U>
-Impl::BinaryMatrixReturnType<T, U>& operator+=(T& _lhs, U const& _rhs);
+Impl::BinaryMatrixReturnType<T, U, Impl::ReturnTCheckU<T, Impl::ElemOpReturnType<std::plus<>, T, U>>>& operator+=(T& _lhs, U const& _rhs);
 
 template<class T, class U>
-Impl::OpMatrixReturnType<std::minus<>, T, U> operator-(T const& _lhs, U const& _rhs);
+Impl::BinaryMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpReturnType<std::minus<>, T, U>>> operator-(T const& _lhs, U const& _rhs);
 
 template<class T, class U>
-Impl::BinaryMatrixReturnType<T, U>& operator-=(T& _lhs, U const& _rhs);
+Impl::BinaryMatrixReturnType<T, U, Impl::ReturnTCheckU<T, Impl::ElemOpReturnType<std::minus<>, T, U>>>& operator-=(T& _lhs, U const& _rhs);
 
 template<class T>
 Impl::UnaryMatrixReturnType<T> operator-(T _m);
 
 template<class T>
-Impl::UnaryMatrixReturnType<T> operator*(T _lhs, typename T::ElementType _rhs);
+Impl::UnaryMatrixReturnType<T> operator*(T _lhs, typename T::ElemType _rhs);
 
 template<class T>
-Impl::UnaryMatrixReturnType<T> operator*(typename T::ElementType _lhs, T _rhs);
+Impl::UnaryMatrixReturnType<T> operator*(typename T::ElemType _lhs, T _rhs);
 
 template<class T>
-Impl::UnaryMatrixReturnType<T>& operator*=(T& _lhs, typename T::ElementType _rhs);
+Impl::UnaryMatrixReturnType<T>& operator*=(T& _lhs, typename T::ElemType _rhs);
 
 END_2_NAMESPACES
 

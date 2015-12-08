@@ -82,13 +82,13 @@ bool operator!=(Matrix<T, rows, columns, lhs_row_major> const& _lhs, Matrix<T, r
 }
 
 template<class T, class U>
-Impl::OpMatrixReturnType<std::plus<>, T, U> operator+(T const& _lhs, U const& _rhs)
+Impl::BinaryMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpReturnType<std::plus<>, T, U>>> operator+(T const& _lhs, U const& _rhs)
 {
-	typedef Matrix<T::ElementType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
-	typedef Matrix<U::ElementType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
-	typedef Matrix<decltype(std::declval<typename T::ElementType>() + std::declval<typename U::ElementType>()), T::Rows, T::Columns, T::RowMajor> MatrixTypeAdd;
+	typedef Matrix<T::ElemType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
+	typedef Matrix<U::ElemType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
+	typedef Matrix<Impl::ElemOpReturnType<std::plus<>, T, U>, T::Rows, T::Columns, T::RowMajor> MatrixTypeAdd;
 
-	Impl::OpMatrixReturnType<std::plus<>, T, U> result;
+	T::template MyType<Impl::ElemOpReturnType<std::plus<>, T, U>> result;
 
 	for (size_t i = 0; i < T::Rows; ++i)
 	{
@@ -102,16 +102,16 @@ Impl::OpMatrixReturnType<std::plus<>, T, U> operator+(T const& _lhs, U const& _r
 }
 
 template<class T, class U>
-Impl::BinaryMatrixReturnType<T, U>& operator+=(T& _lhs, U const& _rhs)
+Impl::BinaryMatrixReturnType<T, U, Impl::ReturnTCheckU<T, Impl::ElemOpReturnType<std::plus<>, T, U>>>& operator+=(T& _lhs, U const& _rhs)
 {
-	typedef Matrix<T::ElementType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
-	typedef Matrix<U::ElementType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
+	typedef Matrix<T::ElemType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
+	typedef Matrix<U::ElemType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
 
 	for (size_t i = 0; i < T::Rows; ++i)
 	{
 		for (size_t j = 0; j < T::Columns; ++j)
 		{
-			static_cast<MatrixTypeT&>(_lhs)(i, j) += static_cast<MatrixTypeU const&>(_rhs)(i, j);
+			static_cast<MatrixTypeT&>(_lhs)(i, j) = static_cast<MatrixTypeT const&>(_lhs)(i, j) + static_cast<MatrixTypeU const&>(_rhs)(i, j);
 		}
 	}
 
@@ -119,13 +119,13 @@ Impl::BinaryMatrixReturnType<T, U>& operator+=(T& _lhs, U const& _rhs)
 }
 
 template<class T, class U>
-Impl::OpMatrixReturnType<std::minus<>, T, U> operator-(T const& _lhs, U const& _rhs)
+Impl::BinaryMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpReturnType<std::minus<>, T, U>>> operator-(T const& _lhs, U const& _rhs)
 {
-	typedef Matrix<T::ElementType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
-	typedef Matrix<U::ElementType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
-	typedef Matrix<decltype(std::declval<typename T::ElementType>() - std::declval<typename U::ElementType>()), T::Rows, T::Columns, T::RowMajor> MatrixTypeSubtract;
+	typedef Matrix<T::ElemType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
+	typedef Matrix<U::ElemType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
+	typedef Matrix<Impl::ElemOpReturnType<std::minus<>, T, U>, T::Rows, T::Columns, T::RowMajor> MatrixTypeSubtract;
 
-	Impl::OpMatrixReturnType<std::minus<>, T, U> result;
+	T::template MyType<Impl::ElemOpReturnType<std::minus<>, T, U>> result;
 
 	for (size_t i = 0; i < T::Rows; ++i)
 	{
@@ -139,16 +139,16 @@ Impl::OpMatrixReturnType<std::minus<>, T, U> operator-(T const& _lhs, U const& _
 }
 
 template<class T, class U>
-Impl::BinaryMatrixReturnType<T, U>& operator-=(T& _lhs, U const& _rhs)
+Impl::BinaryMatrixReturnType<T, U, Impl::ReturnTCheckU<T, Impl::ElemOpReturnType<std::minus<>, T, U>>>& operator-=(T& _lhs, U const& _rhs)
 {
-	typedef Matrix<T::ElementType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
-	typedef Matrix<U::ElementType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
+	typedef Matrix<T::ElemType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
+	typedef Matrix<U::ElemType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
 
 	for (size_t i = 0; i < T::Rows; ++i)
 	{
 		for (size_t j = 0; j < T::Columns; ++j)
 		{
-			static_cast<MatrixTypeT&>(_lhs)(i, j) -= static_cast<MatrixTypeU const&>(_rhs)(i, j);
+			static_cast<MatrixTypeT&>(_lhs)(i, j) = static_cast<MatrixTypeT const&>(_lhs)(i, j) - static_cast<MatrixTypeU const&>(_rhs)(i, j);
 		}
 	}
 
@@ -158,7 +158,7 @@ Impl::BinaryMatrixReturnType<T, U>& operator-=(T& _lhs, U const& _rhs)
 template<class T>
 Impl::UnaryMatrixReturnType<T> operator-(T _m)
 {
-	typedef Matrix<T::ElementType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
+	typedef Matrix<T::ElemType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
 
 	for (size_t i = 0; i < T::Rows; ++i)
 	{
@@ -172,7 +172,7 @@ Impl::UnaryMatrixReturnType<T> operator-(T _m)
 }
 
 template<class T>
-Impl::UnaryMatrixReturnType<T> operator*(T _lhs, typename T::ElementType _rhs)
+Impl::UnaryMatrixReturnType<T> operator*(T _lhs, typename T::ElemType _rhs)
 {
 	_lhs *= _rhs;
 
@@ -180,7 +180,7 @@ Impl::UnaryMatrixReturnType<T> operator*(T _lhs, typename T::ElementType _rhs)
 }
 
 template<class T>
-Impl::UnaryMatrixReturnType<T> operator*(typename T::ElementType _lhs, T _rhs)
+Impl::UnaryMatrixReturnType<T> operator*(typename T::ElemType _lhs, T _rhs)
 {
 	_rhs *= _lhs;
 
@@ -188,9 +188,9 @@ Impl::UnaryMatrixReturnType<T> operator*(typename T::ElementType _lhs, T _rhs)
 }
 
 template<class T>
-Impl::UnaryMatrixReturnType<T>& operator*=(T& _lhs, typename T::ElementType _rhs)
+Impl::UnaryMatrixReturnType<T>& operator*=(T& _lhs, typename T::ElemType _rhs)
 {
-	typedef Matrix<T::ElementType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
+	typedef Matrix<T::ElemType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
 
 	for (size_t i = 0; i < T::Rows; ++i)
 	{
