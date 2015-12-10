@@ -86,7 +86,7 @@ Impl::BinaryMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpRetur
 {
 	typedef Matrix<T::ElemType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
 	typedef Matrix<U::ElemType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
-	typedef Matrix<Impl::ElemOpReturnType<std::plus<>, T, U>, T::Rows, T::Columns, T::RowMajor> MatrixTypeAdd;
+	typedef Matrix<Impl::ElemOpReturnType<std::plus<>, T, U>, T::Rows, T::Columns, T::RowMajor> MatrixTypePlus;
 
 	T::template MyType<Impl::ElemOpReturnType<std::plus<>, T, U>> result;
 
@@ -94,7 +94,7 @@ Impl::BinaryMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpRetur
 	{
 		for (size_t j = 0; j < T::Columns; ++j)
 		{
-			static_cast<MatrixTypeAdd&>(result)(i, j) = static_cast<MatrixTypeT const&>(_lhs)(i, j) + static_cast<MatrixTypeU const&>(_rhs)(i, j);
+			static_cast<MatrixTypePlus&>(result)(i, j) = static_cast<MatrixTypeT const&>(_lhs)(i, j) + static_cast<MatrixTypeU const&>(_rhs)(i, j);
 		}
 	}
 
@@ -123,7 +123,7 @@ Impl::BinaryMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpRetur
 {
 	typedef Matrix<T::ElemType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
 	typedef Matrix<U::ElemType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
-	typedef Matrix<Impl::ElemOpReturnType<std::minus<>, T, U>, T::Rows, T::Columns, T::RowMajor> MatrixTypeSubtract;
+	typedef Matrix<Impl::ElemOpReturnType<std::minus<>, T, U>, T::Rows, T::Columns, T::RowMajor> MatrixTypeMinus;
 
 	T::template MyType<Impl::ElemOpReturnType<std::minus<>, T, U>> result;
 
@@ -131,7 +131,7 @@ Impl::BinaryMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpRetur
 	{
 		for (size_t j = 0; j < T::Columns; ++j)
 		{
-			static_cast<MatrixTypeSubtract&>(result)(i, j) = static_cast<MatrixTypeT const&>(_lhs)(i, j) - static_cast<MatrixTypeU const&>(_rhs)(i, j);
+			static_cast<MatrixTypeMinus&>(result)(i, j) = static_cast<MatrixTypeT const&>(_lhs)(i, j) - static_cast<MatrixTypeU const&>(_rhs)(i, j);
 		}
 	}
 
@@ -196,7 +196,7 @@ Impl::UnaryMatrixReturnType<T>& operator*=(T& _lhs, typename T::ElemType _rhs)
 	{
 		for (size_t j = 0; j < T::Columns; ++j)
 		{
-			static_cast<MatrixTypeT&>(_lhs)(i, j) *= _rhs;
+			static_cast<MatrixTypeT&>(_lhs)(i, j) = static_cast<MatrixTypeT const&>(_lhs)(i, j) * _rhs;
 		}
 	}
 
