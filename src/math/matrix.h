@@ -101,11 +101,11 @@ typedef Matrix<float, 4, 4, true> Mat4x4f;
 
 BEGIN_NAMESPACE(Impl)
 
-template<class T, class U>
-using ReturnTCheckU = typename std::conditional<true, T, U>::type;
-
 template<class Op, class T, class U>
 using ElemOpReturnType = decltype(Op()(std::declval<typename T::ElemType>(), std::declval<typename U::ElemType>()));
+
+template<class Op, class T, class U>
+using CheckElemOpReturnT = typename std::conditional<true, T, ElemOpReturnType<Op, T, U>>::type;
 
 template<class T>
 using UnaryMatrixReturnType 
@@ -132,13 +132,13 @@ template<class T, class U>
 Impl::BinaryMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpReturnType<std::plus<>, T, U>>> operator+(T const& _lhs, U const& _rhs);
 
 template<class T, class U>
-Impl::BinaryMatrixReturnType<T, U, Impl::ReturnTCheckU<T, Impl::ElemOpReturnType<std::plus<>, T, U>>>& operator+=(T& _lhs, U const& _rhs);
+Impl::BinaryMatrixReturnType<T, U, Impl::CheckElemOpReturnT<std::plus<>, T, U>>& operator+=(T& _lhs, U const& _rhs);
 
 template<class T, class U>
 Impl::BinaryMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpReturnType<std::minus<>, T, U>>> operator-(T const& _lhs, U const& _rhs);
 
 template<class T, class U>
-Impl::BinaryMatrixReturnType<T, U, Impl::ReturnTCheckU<T, Impl::ElemOpReturnType<std::minus<>, T, U>>>& operator-=(T& _lhs, U const& _rhs);
+Impl::BinaryMatrixReturnType<T, U, Impl::CheckElemOpReturnT<std::minus<>, T, U>>& operator-=(T& _lhs, U const& _rhs);
 
 template<class T>
 Impl::UnaryMatrixReturnType<T> operator-(T _m);

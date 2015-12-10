@@ -102,7 +102,7 @@ Impl::BinaryMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpRetur
 }
 
 template<class T, class U>
-Impl::BinaryMatrixReturnType<T, U, Impl::ReturnTCheckU<T, Impl::ElemOpReturnType<std::plus<>, T, U>>>& operator+=(T& _lhs, U const& _rhs)
+Impl::BinaryMatrixReturnType<T, U, Impl::CheckElemOpReturnT<std::plus<>, T, U>>& operator+=(T& _lhs, U const& _rhs)
 {
 	typedef Matrix<T::ElemType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
 	typedef Matrix<U::ElemType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
@@ -139,7 +139,7 @@ Impl::BinaryMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpRetur
 }
 
 template<class T, class U>
-Impl::BinaryMatrixReturnType<T, U, Impl::ReturnTCheckU<T, Impl::ElemOpReturnType<std::minus<>, T, U>>>& operator-=(T& _lhs, U const& _rhs)
+Impl::BinaryMatrixReturnType<T, U, Impl::CheckElemOpReturnT<std::minus<>, T, U>>& operator-=(T& _lhs, U const& _rhs)
 {
 	typedef Matrix<T::ElemType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
 	typedef Matrix<U::ElemType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
