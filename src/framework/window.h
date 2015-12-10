@@ -33,9 +33,6 @@ BEGIN_NAMESPACE(Impl)
 class WindowBase
 {
 protected:
-	WindowBase() = default;
-	WindowBase(WindowBase const&) = default;
-
 	static std::mutex Mutex;
 	static unsigned int Id;
 	static std::map<std::string, std::pair<unsigned int, WindowClassDesc>> WndClasses;
