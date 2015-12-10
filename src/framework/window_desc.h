@@ -21,10 +21,12 @@
 
 BEGIN_2_NAMESPACES(SylDev, Framework)
 
-class WindowDesc
+class WindowClassDesc
 {
 public:
-	WindowDesc();
+	WindowClassDesc();
+
+	bool operator==(WindowClassDesc const& _rhs);
 
 	UINT style;
 	HINSTANCE hInstance;
@@ -32,6 +34,12 @@ public:
 	HCURSOR hCursor;
 	HBRUSH hbrBackground;
 	HICON hIconSm;
+};
+
+class WindowDesc
+{
+public:
+	WindowDesc();
 
 	DWORD dwExStyle;
 	LPCTSTR lpWindowName;

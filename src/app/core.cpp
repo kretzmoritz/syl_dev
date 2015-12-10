@@ -1,7 +1,5 @@
 #include "core.h"
 
-#include <iostream>
-
 using namespace SylDev::App;
 
 void Core::Init(HWND _hWnd, LPSTR _lpCmdLine)
@@ -10,8 +8,6 @@ void Core::Init(HWND _hWnd, LPSTR _lpCmdLine)
 
 	m_LButtonPressed = false;
 	m_RButtonPressed = false;
-
-	std::cout << _lpCmdLine << std::endl;
 
 	HMENU hMenu = CreateMenu();
 
@@ -24,10 +20,17 @@ void Core::Init(HWND _hWnd, LPSTR _lpCmdLine)
 
 void Core::Update()
 {
+	HWND hWnd = GetForegroundWindow();
+
+	if (hWnd != m_hWnd)
+	{
+		return;
+	}
+
 	m_LButtonPressed = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
 	m_RButtonPressed = (GetAsyncKeyState(VK_RBUTTON) & 0x8000) != 0;
 
-	if(m_LButtonPressed || m_RButtonPressed)
+	if (m_LButtonPressed || m_RButtonPressed)
 	{
 		RedrawWindow(m_hWnd, nullptr, nullptr, RDW_INVALIDATE);
 	}
@@ -35,12 +38,12 @@ void Core::Update()
 
 void Core::Paint(HDC hdc)
 {
-	if(m_RButtonPressed)
+	if (m_RButtonPressed)
 	{
 		RECT rect;
-		GetWindowRect(m_hWnd, &rect);
+		GetClientRect(m_hWnd, &rect);
 
-		HBRUSH brush = CreateSolidBrush(RGB(0, 0, 0));
+		HBRUSH brush = CreateSolidBrush(BLACK_BRUSH);
 		FillRect(hdc, &rect, brush);
 
 		DeleteObject(brush);
@@ -48,7 +51,7 @@ void Core::Paint(HDC hdc)
 		return;
 	}
 
-	if(m_LButtonPressed)
+	if (m_LButtonPressed)
 	{
 		POINT point;
 		GetCursorPos(&point);

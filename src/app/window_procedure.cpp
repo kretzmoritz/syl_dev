@@ -18,11 +18,10 @@ LRESULT CALLBACK WindowProcedure::operator()(HWND _hWnd, UINT _msg, WPARAM _wPar
 		break;
 	case WM_COMMAND:
 		{
-			switch(LOWORD(_wParam))
+			switch (LOWORD(_wParam))
 			{ 
 			case ID_FILE_EXIT:
-				m_Core.Release();
-				PostQuitMessage(0);
+				DestroyWindow(_hWnd);
 				break;
 			}
 		}

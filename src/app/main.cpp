@@ -1,8 +1,8 @@
 #include <iostream>
 
 #include "../framework/window_desc.h"
-#include "window_procedure.h"
 #include "../framework/window.h"
+#include "window_procedure.h"
 #include "../math/matrix.h"
 #include "../math/vector.h"
 
@@ -18,10 +18,13 @@ public:
 
 int main()
 {
-	SylDev::Framework::WindowDesc desc;
-	desc.lpWindowName = "My Window";
+	SylDev::Framework::WindowClassDesc classDesc;
+	SylDev::Framework::WindowDesc wndDesc;
 
-	SylDev::Framework::Window<SylDev::App::WindowProcedure> Window(desc, "Hello World.");
+	SylDev::Framework::Window<SylDev::App::WindowProcedure> Window(classDesc, wndDesc);
+
+	wndDesc.lpWindowName = "SylWindow2";
+	SylDev::Framework::Window<SylDev::App::WindowProcedure> Window2(classDesc, wndDesc);
 
 	SylDev::Math::Matrix<int, 3, 3, true> Matrix;
 	Matrix(0, 1) = 1;

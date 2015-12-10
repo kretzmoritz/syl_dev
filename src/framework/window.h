@@ -17,12 +17,15 @@
 
 #include <Windows.h>
 #include <thread>
+#include <mutex>
+#include <map>
+#include <string>
 
 #include "../common/namespace.h"
+#include "window_desc.h"
 
 BEGIN_2_NAMESPACES(SylDev, Framework)
 
-class WindowDesc;
 class WindowProcedure;
 
 BEGIN_NAMESPACE(Impl)
@@ -33,7 +36,9 @@ protected:
 	WindowBase() = default;
 	WindowBase(WindowBase const&) = default;
 
-	static unsigned int m_id;
+	static std::mutex Mutex;
+	static unsigned int Id;
+	static std::map<std::string, std::pair<unsigned int, WindowClassDesc>> WndClasses;
 };
 
 END_NAMESPACE
@@ -43,16 +48,22 @@ class Window
 	: public Impl::WindowBase
 {
 public:
-	Window(WindowDesc const& _desc, LPSTR _lpCmdLine);
+	Window(WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine = "");
 	~Window();
 
 private:
 	static LRESULT CALLBACK StaticWndProc(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam);
 	WindowProcedure* WndProc;
 
-	void Create(WindowDesc const& _desc, LPSTR _lpCmdLine);
+	bool CreateClass(WindowClassDesc _classDesc);
+	void ReleaseClass();
+
+	void Create(WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine);
+	void Release();
+
 	void MessageLoop();
 
+	std::string m_className;
 	HWND m_hWnd;
 	std::thread m_thread;
 };
