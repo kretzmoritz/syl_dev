@@ -43,10 +43,8 @@ void Core::Paint(HDC hdc)
 		RECT rect;
 		GetClientRect(m_hWnd, &rect);
 
-		HBRUSH brush = CreateSolidBrush(BLACK_BRUSH);
+		HBRUSH brush = reinterpret_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
 		FillRect(hdc, &rect, brush);
-
-		DeleteObject(brush);
 
 		return;
 	}
