@@ -114,7 +114,7 @@ using UnaryMatrixReturnType
 template<class T, class U, class V>
 using BinaryMatrixReturnType 
 	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElemType, T::Rows, T::Columns, T::RowMajor>, T>::value 
-		                   && std::is_base_of<Matrix<typename U::ElemType, T::Rows, T::Columns, U::RowMajor>, U>::value, V>::type;
+		&& std::is_base_of<Matrix<typename U::ElemType, T::Rows, T::Columns, U::RowMajor>, U>::value, V>::type;
 
 template<class T, class U>
 using MultiplyWithElementReturnType 
@@ -124,7 +124,7 @@ using MultiplyWithElementReturnType
 template<class T, class U, class V>
 using MultiplyWithMatrixReturnType 
 	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElemType, T::Rows, T::Columns, T::RowMajor>, T>::value 
-		                   && std::is_base_of<Matrix<typename U::ElemType, T::Columns, U::Columns, U::RowMajor>, U>::value, V>::type;
+		&& std::is_base_of<Matrix<typename U::ElemType, T::Columns, U::Columns, U::RowMajor>, U>::value, V>::type;
 
 END_NAMESPACE
 
