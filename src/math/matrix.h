@@ -88,8 +88,7 @@ public:
 	T& operator()(size_t _row, size_t _column);
 	T const& operator()(size_t _row, size_t _column) const;
 
-	template<class U> using MyType = Matrix<U, rows, columns, row_major>;
-	template<class U, size_t other_columns> using MultiplyType = Matrix<U, rows, other_columns, row_major>;
+	template<class U, size_t other_columns = columns> using MyType = Matrix<U, rows, other_columns, row_major>;
 	typedef T ElemType;
 	static size_t const Rows = rows;
 	static size_t const Columns = columns;
@@ -164,7 +163,7 @@ template<class T, class U>
 Impl::MultiplyWithElementReturnType<T, U>& operator*=(T& _lhs, U _rhs);
 
 template<class T, class U>
-Impl::MultiplyWithMatrixReturnType<T, U, typename T::template MultiplyType<Impl::ElemOpReturnType<std::multiplies<>, T, U>, U::Columns>> operator*(T const& _lhs, U const& _rhs);
+Impl::MultiplyWithMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpReturnType<std::multiplies<>, T, U>, U::Columns>> operator*(T const& _lhs, U const& _rhs);
 
 template<class T, class U>
 Impl::BinaryMatrixReturnType<T, U, Impl::CheckElemOpReturnT<std::multiplies<>, T, U>>& operator*=(T& _lhs, U const& _rhs);
