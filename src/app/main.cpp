@@ -18,13 +18,14 @@ public:
 
 int main()
 {
+	SylDev::Framework::WindowCreationResult result;
 	SylDev::Framework::WindowClassDesc classDesc;
 	SylDev::Framework::WindowDesc wndDesc;
 
-	SylDev::Framework::Window<SylDev::App::WindowProcedure> Window(classDesc, wndDesc);
+	SylDev::Framework::Window<SylDev::App::WindowProcedure> Window(result, classDesc, wndDesc);
 
 	wndDesc.lpWindowName = "SylWindow2";
-	SylDev::Framework::Window<SylDev::App::WindowProcedure> Window2(classDesc, wndDesc);
+	SylDev::Framework::Window<SylDev::App::WindowProcedure> Window2(result, classDesc, wndDesc);
 
 	SylDev::Math::Matrix<int, 3, 3, true> Matrix;
 	Matrix(0, 1) = 1;

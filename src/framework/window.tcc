@@ -13,9 +13,20 @@ std::map<std::string, std::pair<unsigned int, WindowClassDesc>> WindowBase::WndC
 END_NAMESPACE
 
 template<class T>
-Window<T>::Window(WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine)
-	: WndProc(new T()), m_thread(&Window::Create, this, _classDesc, _wndDesc, _lpCmdLine)
+Window<T>::Window(WindowCreationResult& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine)
+	: WndProc(new T())
 {
+	std::unique_lock<std::mutex> lock(m_conditionMutex);
+
+	WindowCreationResult result = WindowCreationResult::Unknown;
+	m_thread = std::move(std::thread(&Window::Create, this, std::ref(result), _classDesc, _wndDesc, _lpCmdLine));
+
+	do
+	{
+		m_creationFinished.wait(lock);
+	} while (result == WindowCreationResult::Unknown);
+
+	_result = result;
 }
 
 template<class T>
@@ -59,103 +70,92 @@ LRESULT CALLBACK Window<T>::StaticWndProc(HWND _hWnd, UINT _msg, WPARAM _wParam,
 template<class T>
 bool Window<T>::CreateClass(WindowClassDesc _classDesc)
 {
-	bool result = true;
+	std::lock_guard<std::mutex> lock(Mutex);
 
-	Mutex.lock();
+	std::string className;
 
-	do
+	for (auto it = WndClasses.begin(); it != WndClasses.end(); ++it)
 	{
-		std::string className;
+		WindowClassDesc classDesc = it->second.second;
 
-		for (auto it = WndClasses.begin(); it != WndClasses.end(); ++it)
+		if (_classDesc == classDesc)
 		{
-			WindowClassDesc classDesc = it->second.second;
+			unsigned int& count = it->second.first;
+			++count;
 
-			if (_classDesc == classDesc)
-			{
-				unsigned int& count = it->second.first;
-				++count;
+			className = it->first;
 
-				className = it->first;
+			break;
+		}
+	}
 
-				break;
-			}
+	if (className.empty())
+	{
+		className = "SylWindowClass" + std::to_string(Id);
+
+		WNDCLASSEX wc;
+		wc.cbSize = sizeof(WNDCLASSEX);
+		wc.style = _classDesc.style;
+		wc.lpfnWndProc = StaticWndProc;
+		wc.cbClsExtra = 0;
+		wc.cbWndExtra = 0;
+		wc.hInstance = _classDesc.hInstance;
+		wc.hIcon = _classDesc.hIcon;
+		wc.hCursor = _classDesc.hCursor;
+		wc.hbrBackground = _classDesc.hbrBackground;
+		wc.lpszMenuName = nullptr;
+		wc.lpszClassName = className.c_str();
+		wc.hIconSm = _classDesc.hIconSm;
+
+		if (!RegisterClassEx(&wc))
+		{
+			return false;
 		}
 
-		if (className.empty())
-		{
-			className = "SylWindowClass" + std::to_string(Id);
+		WndClasses.emplace(className, std::make_pair(1, _classDesc));
 
-			WNDCLASSEX wc;
-			wc.cbSize = sizeof(WNDCLASSEX);
-			wc.style = _classDesc.style;
-			wc.lpfnWndProc = StaticWndProc;
-			wc.cbClsExtra = 0;
-			wc.cbWndExtra = 0;
-			wc.hInstance = _classDesc.hInstance;
-			wc.hIcon = _classDesc.hIcon;
-			wc.hCursor = _classDesc.hCursor;
-			wc.hbrBackground = _classDesc.hbrBackground;
-			wc.lpszMenuName = nullptr;
-			wc.lpszClassName = className.c_str();
-			wc.hIconSm = _classDesc.hIconSm;
+		++Id;
+	}
 
-			if (!RegisterClassEx(&wc))
-			{
-				result = false;
-				break;
-			}
+	m_className = className;
 
-			WndClasses.emplace(className, std::make_pair(1, _classDesc));
-
-			++Id;
-		}
-
-		m_className = className;
-	} while (false);
-
-	Mutex.unlock();
-
-	return result;
+	return true;
 }
 
 template<class T>
 void Window<T>::ReleaseClass()
 {
-	Mutex.lock();
+	std::lock_guard<std::mutex> lock(Mutex);
 
-	do
+	auto it = WndClasses.find(m_className);
+
+	if (it == WndClasses.end())
 	{
-		auto it = WndClasses.find(m_className);
+		return;
+	}
 
-		if (it == WndClasses.end())
-		{
-			break;
-		}
+	unsigned int& count = it->second.first;
+	--count;
 
-		unsigned int& count = it->second.first;
-		--count;
+	if (count == 0)
+	{
+		HINSTANCE hInstance = it->second.second.hInstance;
 
-		if (count == 0)
-		{
-			HINSTANCE hInstance = it->second.second.hInstance;
+		UnregisterClass(m_className.c_str(), hInstance);
+		WndClasses.erase(it);
+	}
 
-			UnregisterClass(m_className.c_str(), hInstance);
-			WndClasses.erase(it);
-		}
-
-		m_className.clear();
-	} while (false);
-
-	Mutex.unlock();
+	m_className.clear();
 }
 
 template<class T>
-void Window<T>::Create(WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine)
+void Window<T>::Create(WindowCreationResult& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine)
 {
 	if (!CreateClass(_classDesc))
 	{
 		Release();
+		SignalCreationFinished(_result, WindowCreationResult::Failed_CreateWindowClass);
+
 		return;
 	}
 
@@ -167,11 +167,15 @@ void Window<T>::Create(WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _l
 	if (!m_hWnd)
 	{
 		Release();
+		SignalCreationFinished(_result, WindowCreationResult::Failed_CreateWindow);
+
 		return;
 	}
 
 	ShowWindow(m_hWnd, _wndDesc.nCmdShow);
 	UpdateWindow(m_hWnd);
+
+	SignalCreationFinished(_result, WindowCreationResult::Succeeded);
 
 	SendMessage(m_hWnd, SWM_INIT, reinterpret_cast<LONG_PTR>(_lpCmdLine), 0);
 
@@ -186,6 +190,14 @@ void Window<T>::Release()
 	WndProc = nullptr;
 
 	ReleaseClass();
+}
+
+template<class T>
+void Window<T>::SignalCreationFinished(WindowCreationResult& _result, WindowCreationResult _value)
+{
+	std::unique_lock<std::mutex> lock(m_conditionMutex);
+	_result = _value;
+	m_creationFinished.notify_all();
 }
 
 template<class T>
