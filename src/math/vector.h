@@ -36,6 +36,7 @@ public:
 	T const& operator()(size_t _n) const;
 
 	template<class U> using MyType = Vector<U, n>;
+	template<class U, size_t other_n> using MultiplyType = Vector<U, other_n>;
 };
 
 END_NAMESPACE

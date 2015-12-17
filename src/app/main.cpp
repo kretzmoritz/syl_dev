@@ -14,6 +14,7 @@ class FooOp
 {
 public:
 	FooOp operator+(float _rhs) const { return FooOp(); }
+	float operator*(float _rhs) const { return 1.0; }
 };
 
 int main()
@@ -57,6 +58,13 @@ int main()
 	Vec *= a;
 
 	std::cout << (-Vec).y << std::endl;
+
+	SylDev::Math::Matrix<SylDev::Math::Matrix<float, 4, 3, true>, 3, 4, false> Mult1;
+	SylDev::Math::Matrix<SylDev::Math::Matrix<int, 3, 4, false>, 4, 3, true> Mult2;
+
+	auto MultResult = Mult1 * Mult2;
+
+	auto sss = Vec * 1.0f;
 
 	return 0;
 }
