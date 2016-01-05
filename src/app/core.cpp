@@ -13,7 +13,7 @@ void Core::Init(HWND _hWnd, LPSTR _lpCmdLine)
 
 	HMENU hSubMenu = CreatePopupMenu();
 	AppendMenu(hMenu, MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(hSubMenu), "&File");
-	AppendMenu(hSubMenu, MF_STRING, ID_FILE_EXIT, "&Exit");
+	AppendMenu(hSubMenu, MF_STRING, static_cast<UINT_PTR>(MenuIds::File_Exit), "&Exit");
 
 	SetMenu(m_hWnd, hMenu);
 }

@@ -18,19 +18,21 @@ LRESULT CALLBACK WindowProcedure::operator()(HWND _hWnd, UINT _msg, WPARAM _wPar
 		break;
 	case WM_COMMAND:
 		{
-			switch (LOWORD(_wParam))
-			{ 
-			case ID_FILE_EXIT:
+			switch (static_cast<MenuIds>(LOWORD(_wParam)))
+			{
+			case MenuIds::File_Exit:
 				DestroyWindow(_hWnd);
 				break;
 			}
 		}
 		break;
 	case WM_PAINT:
-		PAINTSTRUCT ps;
-		BeginPaint(_hWnd, &ps);
-		m_Core.Paint(ps.hdc);
-		EndPaint(_hWnd, &ps);
+		{
+			PAINTSTRUCT ps;
+			BeginPaint(_hWnd, &ps);
+			m_Core.Paint(ps.hdc);
+			EndPaint(_hWnd, &ps);
+		}
 		break;
 	default:
 		return DefWindowProc(_hWnd, _msg, _wParam, _lParam);

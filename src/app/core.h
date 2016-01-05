@@ -21,9 +21,9 @@
 
 BEGIN_2_NAMESPACES(SylDev, App)
 
-enum MenuIds
+enum class MenuIds
 {
-	ID_FILE_EXIT,
+	File_Exit = 0,
 };
 
 class Core
