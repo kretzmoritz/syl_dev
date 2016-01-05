@@ -31,7 +31,7 @@ class Core
 public:
 	void Init(HWND _hWnd, LPSTR _lpCmdLine);
 	void Update();
-	void Paint(HDC hdc);
+	void Paint(HDC _hdc);
 	void Release();
 
 private:

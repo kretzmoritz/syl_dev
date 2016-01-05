@@ -27,8 +27,8 @@ void Core::Update()
 		return;
 	}
 
-	m_LButtonPressed = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
-	m_RButtonPressed = (GetAsyncKeyState(VK_RBUTTON) & 0x8000) != 0;
+	m_LButtonPressed = (GetKeyState(VK_LBUTTON) & 0x8000) != 0;
+	m_RButtonPressed = (GetKeyState(VK_RBUTTON) & 0x8000) != 0;
 
 	if (m_LButtonPressed || m_RButtonPressed)
 	{
@@ -36,7 +36,7 @@ void Core::Update()
 	}
 }
 
-void Core::Paint(HDC hdc)
+void Core::Paint(HDC _hdc)
 {
 	if (m_RButtonPressed)
 	{
@@ -44,7 +44,7 @@ void Core::Paint(HDC hdc)
 		GetClientRect(m_hWnd, &rect);
 
 		HBRUSH brush = reinterpret_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
-		FillRect(hdc, &rect, brush);
+		FillRect(_hdc, &rect, brush);
 
 		return;
 	}
@@ -56,8 +56,9 @@ void Core::Paint(HDC hdc)
 		ScreenToClient(m_hWnd, &point);
 
 		HBRUSH brush = CreateSolidBrush(RGB(255, 0, 0));
-		SelectObject(hdc, brush);
-		Ellipse(hdc, point.x - 25, point.y - 25, point.x + 25, point.y + 25);
+		SelectObject(_hdc, brush);
+		SelectObject(_hdc, GetStockObject(NULL_PEN));
+		Ellipse(_hdc, point.x - 25, point.y - 25, point.x + 25, point.y + 25);
 
 		DeleteObject(brush);
 	}
