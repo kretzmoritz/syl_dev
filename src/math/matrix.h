@@ -163,6 +163,12 @@ template<class T, class U>
 Impl::MultiplyWithElementReturnType<T, U>& operator*=(T& _lhs, U _rhs);
 
 template<class T, class U>
+Impl::MultiplyWithElementReturnType<T, U> operator/(T _lhs, U _rhs);
+
+template<class T, class U>
+Impl::MultiplyWithElementReturnType<T, U>& operator/=(T& _lhs, U _rhs);
+
+template<class T, class U>
 Impl::MultiplyWithMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpReturnType<std::multiplies<>, T, U>, U::Columns>> operator*(T const& _lhs, U const& _rhs);
 
 template<class T, class U>

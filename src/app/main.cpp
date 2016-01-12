@@ -57,6 +57,9 @@ int main()
 	Vec = Vec * a;
 	Vec *= a;
 
+	Vec = Vec / 2.0f;
+	Vec /= 2.0f;
+
 	std::cout << (-Vec).y << std::endl;
 
 	SylDev::Math::Matrix<SylDev::Math::Matrix<float, 4, 3, true>, 3, 4, false> Mult1;

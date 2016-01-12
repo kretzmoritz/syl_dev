@@ -204,6 +204,30 @@ Impl::MultiplyWithElementReturnType<T, U>& operator*=(T& _lhs, U _rhs)
 }
 
 template<class T, class U>
+Impl::MultiplyWithElementReturnType<T, U> operator/(T _lhs, U _rhs)
+{
+	_lhs /= _rhs;
+
+	return _lhs;
+}
+
+template<class T, class U>
+Impl::MultiplyWithElementReturnType<T, U>& operator/=(T& _lhs, U _rhs)
+{
+	typedef Matrix<T::ElemType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
+
+	for (size_t i = 0; i < T::Rows; ++i)
+	{
+		for (size_t j = 0; j < T::Columns; ++j)
+		{
+			static_cast<MatrixTypeT&>(_lhs)(i, j) = static_cast<MatrixTypeT const&>(_lhs)(i, j) / _rhs;
+		}
+	}
+
+	return _lhs;
+}
+
+template<class T, class U>
 Impl::MultiplyWithMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpReturnType<std::multiplies<>, T, U>, U::Columns>> operator*(T const& _lhs, U const& _rhs)
 {
 	typedef Matrix<T::ElemType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
