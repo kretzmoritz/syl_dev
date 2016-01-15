@@ -42,10 +42,7 @@ protected:
 
 template<class T, size_t rows, size_t columns, bool row_major>
 class MatrixSpecialized
-	: public MatrixBase<T, rows, columns>
 {
-public:
-	virtual ~MatrixSpecialized() = default;
 };
 
 // Partial template specialization
@@ -78,15 +75,23 @@ protected:
 
 END_NAMESPACE
 
-template<class T, size_t rows, size_t columns, bool row_major>
+template<class T, size_t rows, size_t columns, bool row_major = true>
 class Matrix
 	: public Impl::MatrixSpecialized<T, rows, columns, row_major>
 {
 public:
+	Matrix() = default;
+	Matrix(Matrix<T, rows, columns, true> const& _m);
+	Matrix(Matrix<T, rows, columns, false> const& _m);
 	virtual ~Matrix() = default;
+
+	Matrix<T, rows, columns, row_major>& operator=(Matrix<T, rows, columns, true> const& _m);
+	Matrix<T, rows, columns, row_major>& operator=(Matrix<T, rows, columns, false> const& _m);
 
 	T& operator()(size_t _row, size_t _column);
 	T const& operator()(size_t _row, size_t _column) const;
+
+	Matrix<T, columns, rows, row_major> transposed() const;
 
 	template<class U, size_t other_columns = columns> using MyType = Matrix<U, rows, other_columns, row_major>;
 	typedef T ElemType;
@@ -95,9 +100,9 @@ public:
 	static bool const RowMajor = row_major;
 };
 
-typedef Matrix<float, 2, 2, true> Mat2x2f;
-typedef Matrix<float, 3, 3, true> Mat3x3f;
-typedef Matrix<float, 4, 4, true> Mat4x4f;
+typedef Matrix<float, 2, 2> Mat2x2f;
+typedef Matrix<float, 3, 3> Mat3x3f;
+typedef Matrix<float, 4, 4> Mat4x4f;
 
 BEGIN_NAMESPACE(Impl)
 

@@ -27,7 +27,7 @@ BEGIN_NAMESPACE(Impl)
 
 template<class T, size_t n>
 class VectorBase
-	: public Matrix<T, 1, n, true>
+	: public Matrix<T, 1, n>
 {
 public:
 	virtual ~VectorBase() = default;
@@ -45,12 +45,12 @@ class Vector
 	: public Impl::VectorBase<T, n>
 {
 public:
-	template<class... Ts> Vector();
-	template<class... Ts> Vector(Ts... _values);
+	Vector() = default;
+	template<class... Ts> Vector(T _value, Ts... _rest);
 	virtual ~Vector() = default;
 
 private:
-	template<class... Ts> void SetVariadic(size_t _n, T _value, Ts... _values);
+	template<class... Ts> void SetVariadic(size_t _n, T _value, Ts... _rest);
 	void SetVariadic(size_t _n, T _value);
 };
 

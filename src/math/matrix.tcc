@@ -47,6 +47,46 @@ T const& MatrixSpecialized<T, rows, columns, false>::get(size_t _row, size_t _co
 END_NAMESPACE
 
 template<class T, size_t rows, size_t columns, bool row_major>
+Matrix<T, rows, columns, row_major>::Matrix(Matrix<T, rows, columns, true> const& _m)
+{
+	*this = _m;
+}
+
+template<class T, size_t rows, size_t columns, bool row_major>
+Matrix<T, rows, columns, row_major>::Matrix(Matrix<T, rows, columns, false> const& _m)
+{
+	*this = _m;
+}
+
+template<class T, size_t rows, size_t columns, bool row_major>
+Matrix<T, rows, columns, row_major>& Matrix<T, rows, columns, row_major>::operator=(Matrix<T, rows, columns, true> const& _m)
+{
+	for (size_t i = 0; i < rows; ++i)
+	{
+		for (size_t j = 0; j < columns; ++j)
+		{
+			(*this)(i, j) = _m(i, j);
+		}
+	}
+
+	return *this;
+}
+
+template<class T, size_t rows, size_t columns, bool row_major>
+Matrix<T, rows, columns, row_major>& Matrix<T, rows, columns, row_major>::operator=(Matrix<T, rows, columns, false> const& _m)
+{
+	for (size_t i = 0; i < rows; ++i)
+	{
+		for (size_t j = 0; j < columns; ++j)
+		{
+			(*this)(i, j) = _m(i, j);
+		}
+	}
+
+	return *this;
+}
+
+template<class T, size_t rows, size_t columns, bool row_major>
 T& Matrix<T, rows, columns, row_major>::operator()(size_t _row, size_t _column)
 {
 	return get(_row, _column);
@@ -56,6 +96,22 @@ template<class T, size_t rows, size_t columns, bool row_major>
 T const& Matrix<T, rows, columns, row_major>::operator()(size_t _row, size_t _column) const
 {
 	return get(_row, _column);
+}
+
+template<class T, size_t rows, size_t columns, bool row_major>
+Matrix<T, columns, rows, row_major> Matrix<T, rows, columns, row_major>::transposed() const
+{
+	Matrix<T, columns, rows, row_major> result;
+
+	for (size_t i = 0; i < columns; ++i)
+	{
+		for (size_t j = 0; j < rows; ++j)
+		{
+			result(i, j) = (*this)(j, i);
+		}
+	}
+
+	return result;
 }
 
 template<class T, size_t rows, size_t columns, bool lhs_row_major, bool rhs_row_major>

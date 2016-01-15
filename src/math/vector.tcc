@@ -19,23 +19,18 @@ T const& VectorBase<T, n>::operator()(size_t _n) const
 END_NAMESPACE
 
 template<class T, size_t n>
-template<class... Ts> Vector<T, n>::Vector()
+template<class... Ts> Vector<T, n>::Vector(T _value, Ts... _rest)
 {
+	static_assert(sizeof...(Ts) == n - 1, "Wrong number of parameters.");
+
+	SetVariadic(0, _value, _rest...);
 }
 
 template<class T, size_t n>
-template<class... Ts> Vector<T, n>::Vector(Ts... _values)
-{
-	static_assert(sizeof...(Ts) == n, "Wrong number of parameters.");
-
-	SetVariadic(0, _values...);
-}
-
-template<class T, size_t n>
-template<class... Ts> void Vector<T, n>::SetVariadic(size_t _n, T _value, Ts... _values)
+template<class... Ts> void Vector<T, n>::SetVariadic(size_t _n, T _value, Ts... _rest)
 {
 	(*this)(_n) = _value;
-	SetVariadic(_n + 1, _values...);
+	SetVariadic(_n + 1, _rest...);
 }
 
 template<class T, size_t n>
@@ -62,8 +57,7 @@ template<class T>
 Vector<T, 2>::Vector(Vector<T, 2> const& _v)
 	: x(data[0]), y(data[1])
 {
-	x = _v.x;
-	y = _v.y;
+	*this = _v;
 }
 
 template<class T>
@@ -94,9 +88,7 @@ template<class T>
 Vector<T, 3>::Vector(Vector<T, 3> const& _v)
 	: x(data[0]), y(data[1]), z(data[2])
 {
-	x = _v.x;
-	y = _v.y;
-	z = _v.z;
+	*this = _v;
 }
 
 template<class T>
@@ -129,10 +121,7 @@ template<class T>
 Vector<T, 4>::Vector(Vector<T, 4> const& _v)
 	: x(data[0]), y(data[1]), z(data[2]), w(data[3])
 {
-	x = _v.x;
-	y = _v.y;
-	z = _v.z;
-	w = _v.w;
+	*this = _v;
 }
 
 template<class T>
