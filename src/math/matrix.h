@@ -91,6 +91,11 @@ public:
 	T& operator()(size_t _row, size_t _column);
 	T const& operator()(size_t _row, size_t _column) const;
 
+	Matrix<T, 1, columns, row_major> get_row(size_t _idx) const;
+	void set_row(size_t _idx, Matrix<T, 1, columns, row_major> const& _row);
+	Matrix<T, rows, 1, row_major> get_column(size_t _idx) const;
+	void set_column(size_t _idx, Matrix<T, rows, 1, row_major> const& _column);
+
 	Matrix<T, columns, rows, row_major> transposed() const;
 
 	template<class U, size_t other_columns = columns> using MyType = Matrix<U, rows, other_columns, row_major>;
@@ -178,6 +183,32 @@ Impl::MultiplyWithMatrixReturnType<T, U, typename T::template MyType<Impl::ElemO
 
 template<class T, class U>
 Impl::BinaryMatrixReturnType<T, U, Impl::CheckElemOpReturnT<std::multiplies<>, T, U>>& operator*=(T& _lhs, U const& _rhs);
+
+BEGIN_NAMESPACE(MatHelper)
+
+BEGIN_NAMESPACE(Impl)
+
+template<class T, size_t n, bool row_major>
+Matrix<T, n, 1, row_major> solve_for_x(Matrix<T, n, n, row_major> const& _l, Matrix<T, n, n, row_major> const& _u, Matrix<T, n, 1, row_major> const& _b);
+
+END_NAMESPACE
+
+template<class T, size_t rows, size_t columns, bool row_major>
+Matrix<T, rows, columns, row_major>& make_zero(Matrix<T, rows, columns, row_major>& _m);
+
+template<class T, size_t n, bool row_major>
+Matrix<T, n, n, row_major>& make_identity(Matrix<T, n, n, row_major>& _m);
+
+template<class T, size_t n, bool row_major>
+bool decompose(Matrix<T, n, n, row_major> const& _m, Matrix<T, n, n, row_major>& _l, Matrix<T, n, n, row_major>& _u);
+
+template<class T, size_t n, bool row_major>
+T determinant(Matrix<T, n, n, row_major> const& _m);
+
+template<class T, size_t n, bool row_major>
+bool inverse(Matrix<T, n, n, row_major> const& _m, Matrix<T, n, n, row_major>& _inv);
+
+END_NAMESPACE
 
 END_2_NAMESPACES
 

@@ -29,13 +29,32 @@ int main()
 	SylDev::Framework::Window<SylDev::App::WindowProcedure> Window2(result, classDesc, wndDesc);
 
 	SylDev::Math::Matrix<int, 3, 3, true> Matrix;
+	Matrix(0, 0) = 1;
 	Matrix(0, 1) = 1;
+	Matrix(0, 2) = 1;
+	Matrix(1, 0) = 1;
+	Matrix(1, 1) = 1;
+	Matrix(1, 2) = 1;
+	Matrix(2, 0) = 1;
+	Matrix(2, 1) = 1;
+	Matrix(2, 2) = 1;
 
-	SylDev::Math::Matrix<float, 3, 3, false> Matrix2;
+	SylDev::Math::Matrix<float, 2, 2, true> Matrix2;
+	Matrix2(0, 0) = 2;
 	Matrix2(0, 1) = 1;
+	Matrix2(1, 0) = -1;
+	Matrix2(1, 1) = 3;
+	SylDev::Math::Matrix<float, 2, 2, true> Matrix2inv;
 
-	auto Matrix3 = Matrix + Matrix2;
+	auto val = SylDev::Math::MatHelper::inverse(Matrix2, Matrix2inv);
+	auto testident = Matrix2 * Matrix2inv;
+
+	//auto Matrix3 = Matrix + Matrix2;
 	//Matrix += Matrix2;
+
+	SylDev::Math::MatHelper::make_identity(Matrix2);
+
+	SylDev::Math::Matrix<std::string, 3, 3, false> MatrixString;
 
 	//std::cout << Matrix3(0, 1) << std::endl;
 
