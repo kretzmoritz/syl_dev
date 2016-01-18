@@ -9,7 +9,7 @@
 // |___/\_, |_|   |___/\___| \_/   
 //      |__/                       
 //
-// 2015 Moritz Kretz
+// 2016 Moritz Kretz
 ///////////////////////////////////////
 
 #ifndef SYLDEV_MATH_VECTOR
@@ -34,6 +34,9 @@ public:
 
 	T& operator()(size_t _n);
 	T const& operator()(size_t _n) const;
+
+	T length() const;
+	T length_sqr() const;
 
 	template<class U, size_t other_n = n> using MyType = Vector<U, other_n>;
 };
@@ -108,6 +111,19 @@ public:
 typedef Vector<float, 2> Vec2f;
 typedef Vector<float, 3> Vec3f;
 typedef Vector<float, 4> Vec4f;
+
+BEGIN_NAMESPACE(VecHelper)
+
+template<class T, size_t n>
+Vector<T, n>& normalize(Vector<T, n>& _v);
+
+template<class T, size_t n>
+T dot(Vector<T, n> const& _v1, Vector<T, n> const& _v2);
+
+template<class T>
+Vector<T, 3> cross(Vector<T, 3> const& _v1, Vector<T, 3> const& _v2);
+
+END_NAMESPACE
 
 END_2_NAMESPACES
 

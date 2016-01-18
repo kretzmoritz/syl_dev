@@ -9,7 +9,7 @@
 // |___/\_, |_|   |___/\___| \_/   
 //      |__/                       
 //
-// 2015 Moritz Kretz
+// 2016 Moritz Kretz
 ///////////////////////////////////////
 
 #ifndef SYLDEV_MATH_MATRIX
@@ -126,6 +126,11 @@ using BinaryMatrixReturnType
 	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElemType, T::Rows, T::Columns, T::RowMajor>, T>::value 
 		&& std::is_base_of<Matrix<typename U::ElemType, T::Rows, T::Columns, U::RowMajor>, U>::value, V>::type;
 
+template<class T, class U, class V>
+using SquareMatrixReturnType 
+	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElemType, T::Rows, T::Rows, T::RowMajor>, T>::value 
+		&& std::is_base_of<Matrix<typename U::ElemType, T::Rows, T::Rows, U::RowMajor>, U>::value, V>::type;
+
 template<class T, class U>
 using MultiplyWithElementReturnType 
 	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElemType, T::Rows, T::Columns, T::RowMajor>, T>::value 
@@ -182,7 +187,7 @@ template<class T, class U>
 Impl::MultiplyWithMatrixReturnType<T, U, typename T::template MyType<Impl::ElemOpReturnType<std::multiplies<>, T, U>, U::Columns>> operator*(T const& _lhs, U const& _rhs);
 
 template<class T, class U>
-Impl::BinaryMatrixReturnType<T, U, Impl::CheckElemOpReturnT<std::multiplies<>, T, U>>& operator*=(T& _lhs, U const& _rhs);
+Impl::SquareMatrixReturnType<T, U, Impl::CheckElemOpReturnT<std::multiplies<>, T, U>>& operator*=(T& _lhs, U const& _rhs);
 
 BEGIN_NAMESPACE(MatHelper)
 

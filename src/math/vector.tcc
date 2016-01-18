@@ -16,6 +16,25 @@ T const& VectorBase<T, n>::operator()(size_t _n) const
 	return get(0, _n);
 }
 
+template<class T, size_t n>
+T VectorBase<T, n>::length() const
+{
+	return sqrtf(length_sqr());
+}
+
+template<class T, size_t n>
+T VectorBase<T, n>::length_sqr() const
+{
+	T result(0);
+
+	for (size_t i = 0; i < n; ++i)
+	{
+		result = result + pow((*this)(i), 2);
+	}
+
+	return result;
+}
+
 END_NAMESPACE
 
 template<class T, size_t n>
@@ -134,5 +153,33 @@ Vector<T, 4>& Vector<T, 4>::operator=(Vector<T, 4> const& _v)
 
 	return *this;
 }
+
+BEGIN_NAMESPACE(VecHelper)
+
+template<class T, size_t n>
+Vector<T, n>& normalize(Vector<T, n>& _v)
+{
+	_v = _v / _v.length();
+
+	return _v;
+}
+
+template<class T, size_t n>
+T dot(Vector<T, n> const& _v1, Vector<T, n> const& _v2)
+{
+	Vector<T, 1> temp = _v1 * _v2.transposed();
+
+	return temp(0);
+}
+
+template<class T>
+Vector<T, 3> cross(Vector<T, 3> const& _v1, Vector<T, 3> const& _v2)
+{
+	return Vector<T, 3>(_v1.y * _v2.z - _v1.z * _v2.y, 
+						_v1.z * _v2.x - _v1.x * _v2.z, 
+						_v1.x * _v2.y - _v1.y * _v2.x);
+}
+
+END_NAMESPACE
 
 END_2_NAMESPACES

@@ -352,7 +352,7 @@ Impl::MultiplyWithMatrixReturnType<T, U, typename T::template MyType<Impl::ElemO
 }
 
 template<class T, class U>
-Impl::BinaryMatrixReturnType<T, U, Impl::CheckElemOpReturnT<std::multiplies<>, T, U>>& operator*=(T& _lhs, U const& _rhs)
+Impl::SquareMatrixReturnType<T, U, Impl::CheckElemOpReturnT<std::multiplies<>, T, U>>& operator*=(T& _lhs, U const& _rhs)
 {
 	typedef Matrix<T::ElemType, T::Rows, T::Columns, T::RowMajor> MatrixTypeT;
 	typedef Matrix<U::ElemType, U::Rows, U::Columns, U::RowMajor> MatrixTypeU;
