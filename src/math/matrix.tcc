@@ -112,7 +112,7 @@ Matrix<T, 1, columns, row_major> Matrix<T, rows, columns, row_major>::get_row(si
 }
 
 template<class T, size_t rows, size_t columns, bool row_major>
-void Matrix<T, rows, columns, row_major>::set_row(size_t _idx, Matrix<T, 1, columns, row_major> const& _row)
+template<bool either_major> void Matrix<T, rows, columns, row_major>::set_row(size_t _idx, Matrix<T, 1, columns, either_major> const& _row)
 {
 	for (size_t i = 0; i < columns; ++i)
 	{
@@ -134,7 +134,7 @@ Matrix<T, rows, 1, row_major> Matrix<T, rows, columns, row_major>::get_column(si
 }
 
 template<class T, size_t rows, size_t columns, bool row_major>
-void Matrix<T, rows, columns, row_major>::set_column(size_t _idx, Matrix<T, rows, 1, row_major> const& _column)
+template<bool either_major> void Matrix<T, rows, columns, row_major>::set_column(size_t _idx, Matrix<T, rows, 1, either_major> const& _column)
 {
 	for (size_t i = 0; i < rows; ++i)
 	{

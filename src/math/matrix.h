@@ -92,9 +92,9 @@ public:
 	T const& operator()(size_t _row, size_t _column) const;
 
 	Matrix<T, 1, columns, row_major> get_row(size_t _idx) const;
-	void set_row(size_t _idx, Matrix<T, 1, columns, row_major> const& _row);
+	template<bool either_major> void set_row(size_t _idx, Matrix<T, 1, columns, either_major> const& _row);
 	Matrix<T, rows, 1, row_major> get_column(size_t _idx) const;
-	void set_column(size_t _idx, Matrix<T, rows, 1, row_major> const& _column);
+	template<bool either_major> void set_column(size_t _idx, Matrix<T, rows, 1, either_major> const& _column);
 
 	Matrix<T, columns, rows, row_major> transposed() const;
 
