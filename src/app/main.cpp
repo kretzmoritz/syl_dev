@@ -6,6 +6,11 @@
 #include "../math/matrix.h"
 #include "../math/vector.h"
 
+// ToDo:
+// Unit testing
+// Input system
+// Quaternions
+
 class Foo
 {
 };
