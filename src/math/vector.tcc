@@ -183,8 +183,8 @@ template<class T>
 Vector<T, 3> cross(Vector<T, 3> const& _v1, Vector<T, 3> const& _v2)
 {
 	return Vector<T, 3>(_v1.y * _v2.z - _v1.z * _v2.y, 
-						_v1.z * _v2.x - _v1.x * _v2.z, 
-						_v1.x * _v2.y - _v1.y * _v2.x);
+	                    _v1.z * _v2.x - _v1.x * _v2.z, 
+	                    _v1.x * _v2.y - _v1.y * _v2.x);
 }
 
 END_NAMESPACE
