@@ -19,7 +19,7 @@ T const& VectorBase<T, n>::operator()(size_t _n) const
 template<class T, size_t n>
 T VectorBase<T, n>::length() const
 {
-	return sqrtf(length_sqr());
+	return std::sqrt(length_sqr());
 }
 
 template<class T, size_t n>
@@ -29,7 +29,7 @@ T VectorBase<T, n>::length_sqr() const
 
 	for (size_t i = 0; i < n; ++i)
 	{
-		result = result + pow((*this)(i), 2);
+		result = result + std::pow((*this)(i), 2);
 	}
 
 	return result;
@@ -159,7 +159,14 @@ BEGIN_NAMESPACE(VecHelper)
 template<class T, size_t n>
 Vector<T, n>& normalize(Vector<T, n>& _v)
 {
-	_v = _v / _v.length();
+	T length = _v.length();
+	
+	if (length == T(0))
+	{
+		return;
+	}
+
+	_v = _v / length;
 
 	return _v;
 }
