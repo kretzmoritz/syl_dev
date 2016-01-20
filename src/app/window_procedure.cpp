@@ -6,10 +6,10 @@ LRESULT CALLBACK WindowProcedure::operator()(HWND _hWnd, UINT _msg, WPARAM _wPar
 {
 	switch (_msg)
 	{
-	case SWM_INIT:
+	case SYLDEV_WM_INIT:
 		m_Core.Init(_hWnd, reinterpret_cast<LPSTR>(_wParam));
 		break;
-	case SWM_UPDATE:
+	case SYLDEV_WM_UPDATE:
 		m_Core.Update();
 		break;
 	case WM_DESTROY:

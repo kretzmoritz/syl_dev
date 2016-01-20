@@ -21,9 +21,6 @@
 
 BEGIN_2_NAMESPACES(SylDev, Framework)
 
-#define SWM_INIT (WM_USER + 0)
-#define SWM_UPDATE (WM_USER + 1)
-
 class WindowProcedure
 {
 public:
@@ -33,5 +30,8 @@ public:
 };
 
 END_2_NAMESPACES
+
+#define SYLDEV_WM_INIT (WM_USER + 0)
+#define SYLDEV_WM_UPDATE (WM_USER + 1)
 
 #endif

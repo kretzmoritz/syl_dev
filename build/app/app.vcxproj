@@ -133,6 +133,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\common\common.vcxproj">
+      <Project>{b48e0cde-da09-4d69-8db7-70f18a321d77}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\framework\framework.vcxproj">
       <Project>{d95be8b9-d657-4e90-a778-19f5fa3765f6}</Project>
     </ProjectReference>

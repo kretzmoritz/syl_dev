@@ -1,15 +1,18 @@
 #include <iostream>
 
+#include "../common/unit_testing.h"
 #include "../framework/window_desc.h"
 #include "../framework/window.h"
 #include "window_procedure.h"
 #include "../math/matrix.h"
 #include "../math/vector.h"
 
-// ToDo:
-// Unit testing
-// Input system
-// Quaternions
+// In progress:
+// - Unit testing
+
+// To do:
+// - Input system
+// - Quaternions
 
 class Foo
 {
@@ -22,8 +25,23 @@ public:
 	float operator*(float _rhs) const { return 1.0; }
 };
 
+SYLDEV_TESTSUITE(mysuite)
+{
+	SYLDEV_UNITTEST(myfirsttest)
+	{
+		int a = 0;
+		_result = SylDev::Common::TestResult::Unknown;
+	}
+
+	SYLDEV_UNITTEST(mysecondtest)
+	{
+	}
+}
+
 int main()
 {
+	auto testresult = SylDev::Common::TestEnvironment::GetInstance().Run();
+
 	SylDev::Framework::WindowCreationResult result;
 	SylDev::Framework::WindowClassDesc classDesc;
 	SylDev::Framework::WindowDesc wndDesc;

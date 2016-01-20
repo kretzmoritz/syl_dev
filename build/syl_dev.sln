@@ -8,6 +8,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "framework", "framework\framework.vcxproj", "{D95BE8B9-D657-4E90-A778-19F5FA3765F6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "app", "app\app.vcxproj", "{C9205299-C3C9-40B5-A6A8-117EFE7F0D46}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B48E0CDE-DA09-4D69-8DB7-70F18A321D77} = {B48E0CDE-DA09-4D69-8DB7-70F18A321D77}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "math", "math\math.vcxproj", "{986263A8-3DF4-4F08-AC5E-6680724BC3BD}"
 EndProject

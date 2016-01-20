@@ -177,7 +177,7 @@ void Window<T>::Create(WindowCreationResult& _result, WindowClassDesc _classDesc
 
 	SignalCreationFinished(_result, WindowCreationResult::Succeeded);
 
-	SendMessage(m_hWnd, SWM_INIT, reinterpret_cast<LONG_PTR>(_lpCmdLine), 0);
+	SendMessage(m_hWnd, SYLDEV_WM_INIT, reinterpret_cast<LONG_PTR>(_lpCmdLine), 0);
 
 	MessageLoop();
 	Release();
@@ -224,7 +224,7 @@ void Window<T>::MessageLoop()
 			break;
 		}
 
-		SendMessage(m_hWnd, SWM_UPDATE, 0, 0);
+		SendMessage(m_hWnd, SYLDEV_WM_UPDATE, 0, 0);
 	}
 }
 

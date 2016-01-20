@@ -134,6 +134,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\common\namespace.h" />
+    <ClInclude Include="..\..\src\common\unit_testing.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\common\unit_testing.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
