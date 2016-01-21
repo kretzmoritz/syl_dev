@@ -25,8 +25,38 @@ public:
 	float operator*(float _rhs) const { return 1.0; }
 };
 
+SYLDEV_TESTSUITE(mysuite2)
+{
+	SYLDEV_UNITTEST(myfirsttest)
+	{
+		int a = 0;
+		//_result = SylDev::Common::TestResult::Unknown;
+	}
+
+	SYLDEV_UNITTEST(mysecondtest)
+	{
+	}
+}
+
 SYLDEV_TESTSUITE(mysuite)
 {
+	SYLDEV_TESTSUITE_DEPEND(mysuite2)
+
+	SYLDEV_TESTSUITE_INIT
+	{
+		int a = 0;
+	}
+
+	SYLDEV_TESTSUITE_FIXTURE_ENTER
+	{
+		int a = 0;
+	}
+
+	SYLDEV_TESTSUITE_FIXTURE_LEAVE
+	{
+		int a = 0;
+	}
+
 	SYLDEV_UNITTEST(myfirsttest)
 	{
 		int a = 0;
@@ -35,6 +65,11 @@ SYLDEV_TESTSUITE(mysuite)
 
 	SYLDEV_UNITTEST(mysecondtest)
 	{
+	}
+
+	SYLDEV_TESTSUITE_CLOSE
+	{
+		int a = 0;
 	}
 }
 
