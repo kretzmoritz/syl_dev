@@ -26,11 +26,66 @@ BEGIN_2_NAMESPACES(SylDev, Common)
 
 class TestEnvironment;
 
-enum class TestResult
+class TestInfo
 {
-	Unknown = 0,
-	Failed = -1,
-	Succeeded = 1,
+public:
+	TestInfo(std::string _file, int _line);
+
+	std::string m_file;
+	int m_line;
+};
+
+class AssertResult
+{
+public:
+	AssertResult(TestInfo const& _info, std::string _message, bool _result);
+
+	TestInfo m_info;
+	std::string m_message;
+	bool m_result;
+};
+
+class TestResult
+{
+public:
+	TestResult(std::string _name);
+
+	void AddResult(AssertResult const& _assertResult);
+	bool GetTotalResult() const;
+
+private:
+	std::string m_name;
+	std::vector<AssertResult> m_assertResults;
+	bool m_totalResult;
+};
+
+class TestContext
+{
+public:
+	TestContext(TestResult& _testResult);
+
+	void AddResult(TestInfo const& _info, std::string _message, bool _succeeded);
+
+private:
+	TestResult& m_testResult;
+};
+
+class SuiteResult
+{
+	friend class TestEnvironment;
+
+public:
+	SuiteResult(std::string _name);
+
+	void AddResult(TestResult const& _testResult);
+	bool GetTotalResult() const;
+
+private:
+	void SetTotalResult(bool _totalResult);
+
+	std::string m_name;
+	std::vector<TestResult> m_testResults;
+	bool m_totalResult;
 };
 
 BEGIN_NAMESPACE(Impl)
@@ -40,21 +95,21 @@ class TestSuite;
 class UnitTest
 {
 public:
-	UnitTest(TestSuite& _suite, std::function<void(TestResult&)> _func);
+	UnitTest(TestSuite& _suite, std::string _name, std::function<void(TestContext&)> _func);
 
-	TestResult Run();
+	std::string GetName() const;
+
+	void Run(TestResult& _testResult);
 
 private:
-	std::function<void(TestResult&)> m_func;
+	std::string m_name;
+	std::function<void(TestContext&)> m_func;
 };
 
 class TestSuite
 {
 public:
 	TestSuite(TestEnvironment& _environment, std::string _name);
-
-	std::string GetDependency(size_t _idx) const;
-	size_t GetDependencyCount() const;
 
 	void RegisterDependency(std::string _dependency);
 	void RegisterUnitTest(UnitTest* _test);
@@ -64,9 +119,15 @@ public:
 	void AssignFixtureEnter(std::function<void()> _func);
 	void AssignFixtureLeave(std::function<void()> _func);
 
-	TestResult Run();
+	std::string GetName() const;
+
+	std::string GetDependency(size_t _idx) const;
+	size_t GetDependencyCount() const;
+
+	void Run(SuiteResult& _suiteResult);
 
 private:
+	std::string m_name;
 	std::vector<std::string> m_dependencies;
 	std::vector<UnitTest*> m_tests;
 
@@ -115,7 +176,7 @@ class TestEnvironment
 public:
 	static TestEnvironment& GetInstance();
 
-	TestResult Run();
+	bool Run();
 
 private:
 	void RegisterTestSuite(std::string _name, Impl::TestSuite* _suite);
@@ -123,7 +184,7 @@ private:
 	bool SolveDependencies(std::vector<Impl::TestSuite*>& _sorted);
 	bool TopologicalSortDependencies(
 		std::vector<Impl::TestSuite*>& _sorted, std::vector<std::vector<size_t>> const& _dependencies);
-	bool Visit(
+	bool TopologicalVisit(
 		std::vector<Impl::TestSuite*>& _sorted, std::vector<std::vector<size_t>> const& _dependencies, 
 		size_t _idx, std::vector<bool>& _tempmarked, std::vector<bool>& _marked);
 
@@ -131,7 +192,7 @@ private:
 
 	std::unordered_map<std::string, size_t> m_names;
 	std::vector<Impl::TestSuite*> m_suites;
-	std::vector<TestResult> m_results;
+	std::vector<SuiteResult> m_suiteResults;
 };
 
 END_2_NAMESPACES
@@ -146,9 +207,9 @@ namespace name \
 static SylDev::Common::Impl::RegisterDependency Dependency_##name(Suite, #name); \
 
 #define SYLDEV_UNITTEST(name) \
-void Func_##name(SylDev::Common::TestResult& _result); \
-static SylDev::Common::Impl::UnitTest Test_##name(Suite, Func_##name); \
-void Func_##name(SylDev::Common::TestResult& _result) \
+void Func_##name(SylDev::Common::TestContext& _ctx); \
+static SylDev::Common::Impl::UnitTest Test_##name(Suite, #name, Func_##name); \
+void Func_##name(SylDev::Common::TestContext& _ctx) \
 
 #define SYLDEV_TESTSUITE_INIT \
 void Func_Init(); \
@@ -169,5 +230,17 @@ void Func_FixtureEnter() \
 void Func_FixtureLeave(); \
 static SylDev::Common::Impl::AssignSuiteFixtureLeave Assign_FixtureLeave(Suite, Func_FixtureLeave); \
 void Func_FixtureLeave() \
+
+#define SYLDEV_UNITTEST_ASSERT(cond) \
+do \
+{ \
+	_ctx.AddResult(SylDev::Common::TestInfo(__FILE__, __LINE__), #cond, (cond)); \
+} while (false) \
+
+#define SYLDEV_UNITTEST_ASSERT_EX(cond, msg) \
+do \
+{ \
+	_ctx.AddResult(SylDev::Common::TestInfo(__FILE__, __LINE__), msg, (cond)); \
+} while (false) \
 
 #endif

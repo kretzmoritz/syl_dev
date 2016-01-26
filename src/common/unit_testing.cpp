@@ -5,33 +5,92 @@ using namespace Impl;
 
 TestEnvironment* TestEnvironment::Instance = nullptr;
 
-UnitTest::UnitTest(TestSuite& _suite, std::function<void(TestResult&)> _func)
-	: m_func(std::move(_func))
+TestInfo::TestInfo(std::string _file, int _line)
+	: m_file(_file), m_line(_line)
+{
+}
+
+AssertResult::AssertResult(TestInfo const& _info, std::string _message, bool _result)
+	: m_info(_info), m_message(_message), m_result(_result)
+{
+}
+
+TestResult::TestResult(std::string _name)
+	: m_name(_name), m_totalResult(true)
+{
+}
+
+void TestResult::AddResult(AssertResult const& _assertResult)
+{
+	m_assertResults.push_back(_assertResult);
+
+	if (!_assertResult.m_result)
+	{
+		m_totalResult = false;
+	}
+}
+
+bool TestResult::GetTotalResult() const
+{
+	return m_totalResult;
+}
+
+TestContext::TestContext(TestResult& _testResult)
+	: m_testResult(_testResult)
+{
+}
+
+void TestContext::AddResult(TestInfo const& _info, std::string _message, bool _succeeded)
+{
+	m_testResult.AddResult(AssertResult(_info, _message, _succeeded));
+}
+
+SuiteResult::SuiteResult(std::string _name)
+	: m_name(_name), m_totalResult(true)
+{
+}
+
+void SuiteResult::AddResult(TestResult const& _testResult)
+{
+	m_testResults.push_back(_testResult);
+
+	if (!_testResult.GetTotalResult())
+	{
+		m_totalResult = false;
+	}
+}
+
+bool SuiteResult::GetTotalResult() const
+{
+	return m_totalResult;
+}
+
+void SuiteResult::SetTotalResult(bool _totalResult)
+{
+	m_totalResult = _totalResult;
+}
+
+UnitTest::UnitTest(TestSuite& _suite, std::string _name, std::function<void(TestContext&)> _func)
+	: m_name(_name), m_func(std::move(_func))
 {
 	_suite.RegisterUnitTest(this);
 }
 
-TestResult UnitTest::Run()
+std::string UnitTest::GetName() const
 {
-	TestResult result = TestResult::Succeeded;
-	m_func(result);
+	return m_name;
+}
 
-	return result;
+void UnitTest::Run(TestResult& _testResult)
+{
+	TestContext ctx(_testResult);
+	m_func(ctx);
 }
 
 TestSuite::TestSuite(TestEnvironment& _environment, std::string _name)
+	: m_name(_name)
 {
 	_environment.RegisterTestSuite(_name, this);
-}
-
-std::string TestSuite::GetDependency(size_t _idx) const
-{
-	return m_dependencies[_idx];
-}
-
-size_t TestSuite::GetDependencyCount() const
-{
-	return m_dependencies.size();
 }
 
 void TestSuite::RegisterDependency(std::string _dependency)
@@ -64,10 +123,23 @@ void TestSuite::AssignFixtureLeave(std::function<void()> _func)
 	m_fixtureLeave = std::move(_func);
 }
 
-TestResult TestSuite::Run()
+std::string TestSuite::GetName() const
 {
-	TestResult totalResult = TestResult::Succeeded;
+	return m_name;
+}
 
+std::string TestSuite::GetDependency(size_t _idx) const
+{
+	return m_dependencies[_idx];
+}
+
+size_t TestSuite::GetDependencyCount() const
+{
+	return m_dependencies.size();
+}
+
+void TestSuite::Run(SuiteResult& _suiteResult)
+{
 	if (m_init)
 	{
 		m_init();
@@ -75,26 +147,21 @@ TestResult TestSuite::Run()
 
 	for (auto it = m_tests.begin(); it != m_tests.end(); ++it)
 	{
+		UnitTest* test = *it;
+
 		if (m_fixtureEnter)
 		{
 			m_fixtureEnter();
 		}
 
-		TestResult result = (*it)->Run();
+		TestResult testResult(test->GetName());
+		test->Run(testResult);
+
+		_suiteResult.AddResult(testResult);
 
 		if (m_fixtureLeave)
 		{
 			m_fixtureLeave();
-		}
-
-		if (totalResult == TestResult::Failed)
-		{
-			continue;
-		}
-
-		if (result == TestResult::Failed || result == TestResult::Unknown)
-		{
-			totalResult = result;
 		}
 	}
 
@@ -102,8 +169,6 @@ TestResult TestSuite::Run()
 	{
 		m_close();
 	}
-
-	return totalResult;
 }
 
 RegisterDependency::RegisterDependency(TestSuite& _suite, std::string _dependency)
@@ -141,56 +206,60 @@ TestEnvironment& TestEnvironment::GetInstance()
 	return *Instance;
 }
 
-TestResult TestEnvironment::Run()
+bool TestEnvironment::Run()
 {
-	TestResult totalResult = TestResult::Succeeded;
+	bool totalResult = true;
 
-	std::vector<TestSuite*> suites;
-	bool succeeded = SolveDependencies(suites);
+	std::vector<TestSuite*> sorted_suites;
+	bool succeeded = SolveDependencies(sorted_suites);
 
-	if(!succeeded)
+	if (!succeeded)
 	{
-		// To do: resolve error
+		// Resolve error
 
-		return TestResult::Failed;
+		return false;
 	}
 
-	for (size_t i = 0; i < suites.size(); ++i)
+	for (size_t i = 0; i < sorted_suites.size(); ++i)
 	{
 		bool DependencyError = false;
 
-		for (size_t j = 0; j < suites[i]->GetDependencyCount(); ++j)
+		for (size_t j = 0; j < sorted_suites[i]->GetDependencyCount(); ++j)
 		{
-			auto it = m_names.find(suites[i]->GetDependency(j));
+			auto it = m_names.find(sorted_suites[i]->GetDependency(j));
 
 			if (it != m_names.end())
 			{
-				if (m_results[it->second] != TestResult::Succeeded)
+				size_t idx = it->second;
+
+				if (!m_suiteResults[idx].GetTotalResult())
 				{
-					// To do: test we depend on has failed
+					// Dependant test has failed error
 
 					DependencyError = true;
 				}
 			}
 		}
 
-		if (DependencyError)
-		{
-			m_results[i] = TestResult::Failed;
-		}
-		else
-		{
-			m_results[i] = suites[i]->Run();
-		}
+		auto it = m_names.find(sorted_suites[i]->GetName());
 
-		if (totalResult == TestResult::Failed)
+		if (it != m_names.end())
 		{
-			continue;
-		}
+			size_t idx = it->second;
 
-		if (m_results[i] == TestResult::Failed || m_results[i] == TestResult::Unknown)
-		{
-			totalResult = m_results[i];
+			if (DependencyError)
+			{
+				m_suiteResults[idx].SetTotalResult(false);
+			}
+			else
+			{
+				sorted_suites[i]->Run(m_suiteResults[idx]);
+			}
+
+			if (!m_suiteResults[idx].GetTotalResult())
+			{
+				totalResult = false;
+			}
 		}
 	}
 
@@ -201,7 +270,7 @@ void TestEnvironment::RegisterTestSuite(std::string _name, TestSuite* _suite)
 {
 	m_names.emplace(_name, m_suites.size());
 	m_suites.push_back(_suite);
-	m_results.push_back(TestResult::Unknown);
+	m_suiteResults.push_back(SuiteResult(_name));
 }
 
 bool TestEnvironment::SolveDependencies(std::vector<TestSuite*>& _sorted)
@@ -218,11 +287,12 @@ bool TestEnvironment::SolveDependencies(std::vector<TestSuite*>& _sorted)
 
 			if (it != m_names.end())
 			{
-				dependencyMapping.push_back(it->second);
+				size_t idx = it->second;
+				dependencyMapping.push_back(idx);
 			}
 			else
 			{
-				// To do: dependency unknown error
+				// Dependency unknown error
 			}
 		}
 
@@ -249,7 +319,7 @@ bool TestEnvironment::TopologicalSortDependencies(
 			continue;
 		}
 
-		bool succeeded = Visit(_sorted, _dependencies, i, tempmarked, marked);
+		bool succeeded = TopologicalVisit(_sorted, _dependencies, i, tempmarked, marked);
 
 		if (!succeeded)
 		{
@@ -262,7 +332,7 @@ bool TestEnvironment::TopologicalSortDependencies(
 	return true;
 }
 
-bool TestEnvironment::Visit(
+bool TestEnvironment::TopologicalVisit(
 	std::vector<TestSuite*>& _sorted, std::vector<std::vector<size_t>> const& _dependencies, 
 	size_t _idx, std::vector<bool>& _tempmarked, std::vector<bool>& _marked)
 {
@@ -277,7 +347,7 @@ bool TestEnvironment::Visit(
 
 		for (size_t i = 0; i < _dependencies[_idx].size(); ++i)
 		{
-			Visit(_sorted, _dependencies, _dependencies[_idx][i], _tempmarked, _marked);
+			TopologicalVisit(_sorted, _dependencies, _dependencies[_idx][i], _tempmarked, _marked);
 		}
 
 		_marked[_idx] = true;

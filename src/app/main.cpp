@@ -60,7 +60,7 @@ SYLDEV_TESTSUITE(mysuite)
 	SYLDEV_UNITTEST(myfirsttest)
 	{
 		int a = 0;
-		_result = SylDev::Common::TestResult::Unknown;
+		SYLDEV_UNITTEST_ASSERT(1 + 2 == 3);
 	}
 
 	SYLDEV_UNITTEST(mysecondtest)
