@@ -65,11 +65,6 @@ bool SuiteResult::GetTotalResult() const
 	return m_totalResult;
 }
 
-void SuiteResult::SetTotalResult(bool _totalResult)
-{
-	m_totalResult = _totalResult;
-}
-
 UnitTest::UnitTest(TestSuite& _suite, std::string _name, std::function<void(TestContext&)> _func)
 	: m_name(_name), m_func(std::move(_func))
 {
@@ -87,15 +82,20 @@ void UnitTest::Run(TestResult& _testResult)
 	m_func(ctx);
 }
 
+TestDependency::TestDependency(TestInfo const& _info, std::string _name)
+	: m_info(_info), m_name(_name)
+{
+}
+
 TestSuite::TestSuite(TestEnvironment& _environment, std::string _name)
 	: m_name(_name)
 {
 	_environment.RegisterTestSuite(_name, this);
 }
 
-void TestSuite::RegisterDependency(std::string _dependency)
+void TestSuite::RegisterDependency(TestInfo const& _info, std::string _dependency)
 {
-	m_dependencies.push_back(_dependency);
+	m_dependencies.push_back(TestDependency(_info, _dependency));
 }
 
 void TestSuite::RegisterUnitTest(UnitTest* _test)
@@ -128,7 +128,7 @@ std::string TestSuite::GetName() const
 	return m_name;
 }
 
-std::string TestSuite::GetDependency(size_t _idx) const
+TestDependency TestSuite::GetDependency(size_t _idx) const
 {
 	return m_dependencies[_idx];
 }
@@ -145,9 +145,9 @@ void TestSuite::Run(SuiteResult& _suiteResult)
 		m_init();
 	}
 
-	for (auto it = m_tests.begin(); it != m_tests.end(); ++it)
+	for (auto ii = m_tests.begin(); ii != m_tests.end(); ++ii)
 	{
-		UnitTest* test = *it;
+		UnitTest* test = *ii;
 
 		if (m_fixtureEnter)
 		{
@@ -171,9 +171,9 @@ void TestSuite::Run(SuiteResult& _suiteResult)
 	}
 }
 
-RegisterDependency::RegisterDependency(TestSuite& _suite, std::string _dependency)
+RegisterDependency::RegisterDependency(TestSuite& _suite, TestInfo const& _info, std::string _dependency)
 {
-	_suite.RegisterDependency(_dependency);
+	_suite.RegisterDependency(_info, _dependency);
 }
 
 AssignSuiteInit::AssignSuiteInit(TestSuite& _suite, std::function<void()> _func)
@@ -215,45 +215,53 @@ bool TestEnvironment::Run()
 
 	if (!succeeded)
 	{
-		// Resolve error
-
 		return false;
 	}
 
-	for (size_t i = 0; i < sorted_suites.size(); ++i)
+	for (auto ii = sorted_suites.begin(); ii != sorted_suites.end(); ++ii)
 	{
-		bool DependencyError = false;
+		TestSuite* suite = *ii;
 
-		for (size_t j = 0; j < sorted_suites[i]->GetDependencyCount(); ++j)
+		std::vector<TestDependency> failedDependencies;
+
+		for (size_t i = 0; i < suite->GetDependencyCount(); ++i)
 		{
-			auto it = m_names.find(sorted_suites[i]->GetDependency(j));
+			auto jj = m_names.find(suite->GetDependency(i).m_name);
 
-			if (it != m_names.end())
+			if (jj != m_names.end())
 			{
-				size_t idx = it->second;
+				size_t idx = jj->second;
 
 				if (!m_suiteResults[idx].GetTotalResult())
 				{
-					// Dependant test has failed error
-
-					DependencyError = true;
+					failedDependencies.push_back(suite->GetDependency(i));
 				}
 			}
 		}
 
-		auto it = m_names.find(sorted_suites[i]->GetName());
+		auto jj = m_names.find(suite->GetName());
 
-		if (it != m_names.end())
+		if (jj != m_names.end())
 		{
-			size_t idx = it->second;
+			size_t idx = jj->second;
 
-			if (DependencyError)
+			if (!failedDependencies.empty())
 			{
-				m_suiteResults[idx].SetTotalResult(false);
+				for (auto kk = failedDependencies.begin(); kk != failedDependencies.end(); ++kk)
+				{
+					TestDependency dependency = *kk;
+
+					AssertResult assertResult(dependency.m_info, "Dependency " + dependency.m_name + " has failed to complete successfully.", false);
+				
+					TestResult testResult("dependency_failed");
+					testResult.AddResult(assertResult);
+
+					m_suiteResults[idx].AddResult(testResult);
+				}
 			}
 			else
 			{
-				sorted_suites[i]->Run(m_suiteResults[idx]);
+				suite->Run(m_suiteResults[idx]);
 			}
 
 			if (!m_suiteResults[idx].GetTotalResult())
@@ -275,24 +283,29 @@ void TestEnvironment::RegisterTestSuite(std::string _name, TestSuite* _suite)
 
 bool TestEnvironment::SolveDependencies(std::vector<TestSuite*>& _sorted)
 {
-	std::vector<std::vector<size_t>> dependencies;
+	std::vector<std::vector<std::pair<size_t, size_t>>> dependencies;
 
 	for (size_t i = 0; i < m_suites.size(); ++i)
 	{
-		std::vector<size_t> dependencyMapping;
+		std::vector<std::pair<size_t, size_t>> dependencyMapping;
 
 		for (size_t j = 0; j < m_suites[i]->GetDependencyCount(); ++j)
 		{
-			auto it = m_names.find(m_suites[i]->GetDependency(j));
+			auto ii = m_names.find(m_suites[i]->GetDependency(j).m_name);
 
-			if (it != m_names.end())
+			if (ii != m_names.end())
 			{
-				size_t idx = it->second;
-				dependencyMapping.push_back(idx);
+				size_t idx = ii->second;
+				dependencyMapping.push_back(std::make_pair(j, idx));
 			}
 			else
 			{
-				// Dependency unknown error
+				AssertResult assertResult(m_suites[i]->GetDependency(j).m_info, "Dependency " + m_suites[i]->GetDependency(j).m_name + " unknown.", true);
+				
+				TestResult testResult("dependency_unknown");
+				testResult.AddResult(assertResult);
+
+				m_suiteResults[i].AddResult(testResult);
 			}
 		}
 
@@ -303,7 +316,7 @@ bool TestEnvironment::SolveDependencies(std::vector<TestSuite*>& _sorted)
 }
 
 bool TestEnvironment::TopologicalSortDependencies(
-	std::vector<TestSuite*>& _sorted, std::vector<std::vector<size_t>> const& _dependencies)
+	std::vector<TestSuite*>& _sorted, std::vector<std::vector<std::pair<size_t, size_t>>> const& _dependencies)
 {
 	_sorted.clear();
 
@@ -333,7 +346,7 @@ bool TestEnvironment::TopologicalSortDependencies(
 }
 
 bool TestEnvironment::TopologicalVisit(
-	std::vector<TestSuite*>& _sorted, std::vector<std::vector<size_t>> const& _dependencies, 
+	std::vector<TestSuite*>& _sorted, std::vector<std::vector<std::pair<size_t, size_t>>> const& _dependencies, 
 	size_t _idx, std::vector<bool>& _tempmarked, std::vector<bool>& _marked)
 {
 	if (_tempmarked[_idx])
@@ -347,7 +360,24 @@ bool TestEnvironment::TopologicalVisit(
 
 		for (size_t i = 0; i < _dependencies[_idx].size(); ++i)
 		{
-			TopologicalVisit(_sorted, _dependencies, _dependencies[_idx][i], _tempmarked, _marked);
+			size_t suiteIdx = _dependencies[_idx][i].second;
+
+			bool succeeded = TopologicalVisit(_sorted, _dependencies, suiteIdx, _tempmarked, _marked);
+
+			if (!succeeded)
+			{
+				size_t dependencyIdx = _dependencies[_idx][i].first;
+				TestDependency dependency = m_suites[_idx]->GetDependency(dependencyIdx);
+
+				AssertResult assertResult(dependency.m_info, "Dependency " + dependency.m_name + " is unresolvable.", false);
+				
+				TestResult testResult("dependency_unresolvable");
+				testResult.AddResult(assertResult);
+
+				m_suiteResults[_idx].AddResult(testResult);
+
+				return false;
+			}
 		}
 
 		_marked[_idx] = true;

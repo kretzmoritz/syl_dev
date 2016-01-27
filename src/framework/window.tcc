@@ -74,16 +74,16 @@ bool Window<T>::CreateClass(WindowClassDesc _classDesc)
 
 	std::string className;
 
-	for (auto it = WndClasses.begin(); it != WndClasses.end(); ++it)
+	for (auto ii = WndClasses.begin(); ii != WndClasses.end(); ++ii)
 	{
-		WindowClassDesc classDesc = it->second.second;
+		WindowClassDesc classDesc = ii->second.second;
 
 		if (_classDesc == classDesc)
 		{
-			unsigned int& count = it->second.first;
+			unsigned int& count = ii->second.first;
 			++count;
 
-			className = it->first;
+			className = ii->first;
 
 			break;
 		}
@@ -127,22 +127,22 @@ void Window<T>::ReleaseClass()
 {
 	std::lock_guard<std::mutex> lock(Mutex);
 
-	auto it = WndClasses.find(m_className);
+	auto ii = WndClasses.find(m_className);
 
-	if (it == WndClasses.end())
+	if (ii == WndClasses.end())
 	{
 		return;
 	}
 
-	unsigned int& count = it->second.first;
+	unsigned int& count = ii->second.first;
 	--count;
 
 	if (count == 0)
 	{
-		HINSTANCE hInstance = it->second.second.hInstance;
+		HINSTANCE hInstance = ii->second.second.hInstance;
 
 		UnregisterClass(m_className.c_str(), hInstance);
-		WndClasses.erase(it);
+		WndClasses.erase(ii);
 	}
 
 	m_className.clear();

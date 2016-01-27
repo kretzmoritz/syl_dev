@@ -72,8 +72,6 @@ private:
 
 class SuiteResult
 {
-	friend class TestEnvironment;
-
 public:
 	SuiteResult(std::string _name);
 
@@ -81,8 +79,6 @@ public:
 	bool GetTotalResult() const;
 
 private:
-	void SetTotalResult(bool _totalResult);
-
 	std::string m_name;
 	std::vector<TestResult> m_testResults;
 	bool m_totalResult;
@@ -106,12 +102,21 @@ private:
 	std::function<void(TestContext&)> m_func;
 };
 
+class TestDependency
+{
+public:
+	TestDependency(TestInfo const& _info, std::string _name);
+
+	TestInfo m_info;
+	std::string m_name;
+};
+
 class TestSuite
 {
 public:
 	TestSuite(TestEnvironment& _environment, std::string _name);
 
-	void RegisterDependency(std::string _dependency);
+	void RegisterDependency(TestInfo const& _info, std::string _dependency);
 	void RegisterUnitTest(UnitTest* _test);
 
 	void AssignInit(std::function<void()> _func);
@@ -121,14 +126,14 @@ public:
 
 	std::string GetName() const;
 
-	std::string GetDependency(size_t _idx) const;
+	TestDependency GetDependency(size_t _idx) const;
 	size_t GetDependencyCount() const;
 
 	void Run(SuiteResult& _suiteResult);
 
 private:
 	std::string m_name;
-	std::vector<std::string> m_dependencies;
+	std::vector<TestDependency> m_dependencies;
 	std::vector<UnitTest*> m_tests;
 
 	std::function<void()> m_init;
@@ -140,7 +145,7 @@ private:
 class RegisterDependency
 {
 public:
-	RegisterDependency(TestSuite& _suite, std::string _dependency);
+	RegisterDependency(TestSuite& _suite, TestInfo const& _info, std::string _dependency);
 };
 
 class AssignSuiteInit
@@ -183,9 +188,9 @@ private:
 
 	bool SolveDependencies(std::vector<Impl::TestSuite*>& _sorted);
 	bool TopologicalSortDependencies(
-		std::vector<Impl::TestSuite*>& _sorted, std::vector<std::vector<size_t>> const& _dependencies);
+		std::vector<Impl::TestSuite*>& _sorted, std::vector<std::vector<std::pair<size_t, size_t>>> const& _dependencies);
 	bool TopologicalVisit(
-		std::vector<Impl::TestSuite*>& _sorted, std::vector<std::vector<size_t>> const& _dependencies, 
+		std::vector<Impl::TestSuite*>& _sorted, std::vector<std::vector<std::pair<size_t, size_t>>> const& _dependencies, 
 		size_t _idx, std::vector<bool>& _tempmarked, std::vector<bool>& _marked);
 
 	static TestEnvironment* Instance;
@@ -204,7 +209,7 @@ END_NAMESPACE \
 namespace name \
 
 #define SYLDEV_TESTSUITE_DEPEND(name) \
-static SylDev::Common::Impl::RegisterDependency Dependency_##name(Suite, #name); \
+static SylDev::Common::Impl::RegisterDependency Dependency_##name(Suite, SylDev::Common::TestInfo(__FILE__, __LINE__), #name); \
 
 #define SYLDEV_UNITTEST(name) \
 void Func_##name(SylDev::Common::TestContext& _ctx); \

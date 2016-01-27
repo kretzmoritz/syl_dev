@@ -27,10 +27,12 @@ public:
 
 SYLDEV_TESTSUITE(mysuite2)
 {
+	SYLDEV_TESTSUITE_DEPEND(mysuite3)
+
 	SYLDEV_UNITTEST(myfirsttest)
 	{
 		int a = 0;
-		//_result = SylDev::Common::TestResult::Unknown;
+		SYLDEV_UNITTEST_ASSERT(1 + 2 != 3);
 	}
 
 	SYLDEV_UNITTEST(mysecondtest)
@@ -41,6 +43,7 @@ SYLDEV_TESTSUITE(mysuite2)
 SYLDEV_TESTSUITE(mysuite)
 {
 	SYLDEV_TESTSUITE_DEPEND(mysuite2)
+	SYLDEV_TESTSUITE_DEPEND(mysuite2222222)
 
 	SYLDEV_TESTSUITE_INIT
 	{
@@ -70,6 +73,51 @@ SYLDEV_TESTSUITE(mysuite)
 	SYLDEV_TESTSUITE_CLOSE
 	{
 		int a = 0;
+	}
+}
+
+SYLDEV_TESTSUITE(mysuite3)
+{
+	SYLDEV_TESTSUITE_DEPEND(mysuite)
+
+	SYLDEV_UNITTEST(myfirsttest)
+	{
+		int a = 0;
+		SYLDEV_UNITTEST_ASSERT(1 + 2 != 3);
+	}
+
+	SYLDEV_UNITTEST(mysecondtest)
+	{
+	}
+}
+
+SYLDEV_TESTSUITE(mysuite4)
+{
+	SYLDEV_TESTSUITE_DEPEND(mysuite5)
+
+	SYLDEV_UNITTEST(myfirsttest)
+	{
+		int a = 0;
+		SYLDEV_UNITTEST_ASSERT(1 + 2 != 3);
+	}
+
+	SYLDEV_UNITTEST(mysecondtest)
+	{
+	}
+}
+
+SYLDEV_TESTSUITE(mysuite5)
+{
+	SYLDEV_TESTSUITE_DEPEND(mysuite4)
+
+	SYLDEV_UNITTEST(myfirsttest)
+	{
+		int a = 0;
+		SYLDEV_UNITTEST_ASSERT(1 + 2 != 3);
+	}
+
+	SYLDEV_UNITTEST(mysecondtest)
+	{
 	}
 }
 
