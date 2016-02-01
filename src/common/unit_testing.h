@@ -38,11 +38,12 @@ public:
 class AssertResult
 {
 public:
-	AssertResult(TestInfo const& _info, std::string _message, bool _result);
+	AssertResult(TestInfo const& _info, std::string _message, bool _result, bool _internal = false);
 
 	TestInfo m_info;
 	std::string m_message;
 	bool m_result;
+	bool m_internal;
 };
 
 class TestResult
@@ -51,6 +52,9 @@ public:
 	TestResult(std::string _name);
 
 	void AddResult(AssertResult const& _assertResult);
+
+	std::string GetName() const;
+	std::vector<AssertResult> const& GetResults() const;
 	bool GetTotalResult() const;
 
 private:
@@ -75,7 +79,11 @@ class SuiteResult
 public:
 	SuiteResult(std::string _name);
 
+	void Clear();
 	void AddResult(TestResult const& _testResult);
+
+	std::string GetName() const;
+	std::vector<TestResult> const& GetResults() const;
 	bool GetTotalResult() const;
 
 private:
@@ -174,6 +182,23 @@ public:
 
 END_NAMESPACE
 
+class TestPrinter
+{
+public:
+	virtual ~TestPrinter() = default;
+
+	virtual void OnEnd(std::vector<SuiteResult> const& _suiteResults) = 0;
+};
+
+class ConsolePrinter
+	: public TestPrinter
+{
+public:
+	virtual ~ConsolePrinter() = default;
+
+	void OnEnd(std::vector<SuiteResult> const& _suiteResults);
+};
+
 class TestEnvironment
 {
 	friend class Impl::TestSuite;
@@ -181,6 +206,9 @@ class TestEnvironment
 public:
 	static TestEnvironment& GetInstance();
 
+	TestEnvironment();
+
+	void AssignPrinter(TestPrinter* _printer);
 	bool Run();
 
 private:
@@ -194,6 +222,8 @@ private:
 		size_t _idx, std::vector<bool>& _tempmarked, std::vector<bool>& _marked);
 
 	static TestEnvironment* Instance;
+
+	TestPrinter* m_printer;
 
 	std::unordered_map<std::string, size_t> m_names;
 	std::vector<Impl::TestSuite*> m_suites;

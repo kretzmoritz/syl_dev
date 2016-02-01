@@ -1,5 +1,7 @@
 #include "unit_testing.h"
 
+#include <iostream>
+
 using namespace SylDev::Common;
 using namespace Impl;
 
@@ -10,8 +12,8 @@ TestInfo::TestInfo(std::string _file, int _line)
 {
 }
 
-AssertResult::AssertResult(TestInfo const& _info, std::string _message, bool _result)
-	: m_info(_info), m_message(_message), m_result(_result)
+AssertResult::AssertResult(TestInfo const& _info, std::string _message, bool _result, bool _internal)
+	: m_info(_info), m_message(_message), m_result(_result), m_internal(_internal)
 {
 }
 
@@ -28,6 +30,16 @@ void TestResult::AddResult(AssertResult const& _assertResult)
 	{
 		m_totalResult = false;
 	}
+}
+
+std::string TestResult::GetName() const
+{
+	return m_name;
+}
+
+std::vector<AssertResult> const& TestResult::GetResults() const
+{
+	return m_assertResults;
 }
 
 bool TestResult::GetTotalResult() const
@@ -50,6 +62,12 @@ SuiteResult::SuiteResult(std::string _name)
 {
 }
 
+void SuiteResult::Clear()
+{
+	m_testResults.clear();
+	m_totalResult = true;
+}
+
 void SuiteResult::AddResult(TestResult const& _testResult)
 {
 	m_testResults.push_back(_testResult);
@@ -58,6 +76,16 @@ void SuiteResult::AddResult(TestResult const& _testResult)
 	{
 		m_totalResult = false;
 	}
+}
+
+std::string SuiteResult::GetName() const
+{
+	return m_name;
+}
+
+std::vector<TestResult> const& SuiteResult::GetResults() const
+{
+	return m_testResults;
 }
 
 bool SuiteResult::GetTotalResult() const
@@ -196,6 +224,60 @@ AssignSuiteFixtureLeave::AssignSuiteFixtureLeave(TestSuite& _suite, std::functio
 	_suite.AssignFixtureLeave(_func);
 }
 
+void ConsolePrinter::OnEnd(std::vector<SuiteResult> const& _suiteResults)
+{
+	for (auto ii = _suiteResults.begin(); ii != _suiteResults.end(); ++ii)
+	{
+		SuiteResult const& suiteResult = *ii;
+		std::string suiteName = suiteResult.GetName();
+
+		std::vector<TestResult> const& testResults = suiteResult.GetResults();
+
+		if (!testResults.empty())
+		{
+			std::string output = "Suite: " + suiteName;
+
+			std::cout << output << std::endl;
+
+			for (size_t i = 0; i < output.length(); ++i)
+			{
+				std::cout << '-';
+			}
+			std::cout << std::endl;
+
+			std::cout << std::endl;
+		}
+
+		for (auto jj = testResults.begin(); jj != testResults.end(); ++jj)
+		{
+			TestResult const& testResult = *jj;
+			std::string testName = testResult.GetName();
+
+			std::vector<AssertResult> const& assertResults = testResult.GetResults();
+
+			for (auto kk = assertResults.begin(); kk != assertResults.end(); ++kk)
+			{
+				AssertResult const& assertResult = *kk;
+
+				if (assertResult.m_internal)
+				{
+					std::cout << "Internal error " + testName + "." << std::endl;
+					std::cout << "File: " + assertResult.m_info.m_file + " Line: " + std::to_string(assertResult.m_info.m_line) << std::endl;
+					std::cout << assertResult.m_message << std::endl;
+					std::cout << std::endl;
+				}
+				else
+				{
+					std::cout << "Test " + testName + "." << std::endl;
+					std::cout << "File: " + assertResult.m_info.m_file + " Line: " + std::to_string(assertResult.m_info.m_line) << std::endl;
+					std::cout << "Assert " << assertResult.m_message << " has " << (assertResult.m_result ? "succeeded" : "failed") << '.' << std::endl;
+					std::cout << std::endl;
+				}
+			}
+		}
+	}
+}
+
 TestEnvironment& TestEnvironment::GetInstance()
 {
 	if (!Instance)
@@ -206,72 +288,89 @@ TestEnvironment& TestEnvironment::GetInstance()
 	return *Instance;
 }
 
+TestEnvironment::TestEnvironment()
+	: m_printer(nullptr)
+{
+}
+
+void TestEnvironment::AssignPrinter(TestPrinter* _printer)
+{
+	m_printer = _printer;
+}
+
 bool TestEnvironment::Run()
 {
-	bool totalResult = true;
+	for (auto ii = m_suiteResults.begin(); ii != m_suiteResults.end(); ++ii)
+	{
+		SuiteResult& suiteResult = *ii;
+		suiteResult.Clear();
+	}
 
 	std::vector<TestSuite*> sorted_suites;
 	bool succeeded = SolveDependencies(sorted_suites);
 
-	if (!succeeded)
+	if (succeeded)
 	{
-		return false;
-	}
-
-	for (auto ii = sorted_suites.begin(); ii != sorted_suites.end(); ++ii)
-	{
-		TestSuite* suite = *ii;
-
-		std::vector<TestDependency> failedDependencies;
-
-		for (size_t i = 0; i < suite->GetDependencyCount(); ++i)
+		for (auto ii = sorted_suites.begin(); ii != sorted_suites.end(); ++ii)
 		{
-			auto jj = m_names.find(suite->GetDependency(i).m_name);
+			TestSuite* suite = *ii;
+
+			std::vector<TestDependency> failedDependencies;
+
+			for (size_t i = 0; i < suite->GetDependencyCount(); ++i)
+			{
+				auto jj = m_names.find(suite->GetDependency(i).m_name);
+
+				if (jj != m_names.end())
+				{
+					size_t idx = jj->second;
+
+					if (!m_suiteResults[idx].GetTotalResult())
+					{
+						failedDependencies.push_back(suite->GetDependency(i));
+					}
+				}
+			}
+
+			auto jj = m_names.find(suite->GetName());
 
 			if (jj != m_names.end())
 			{
 				size_t idx = jj->second;
 
+				if (!failedDependencies.empty())
+				{
+					for (auto kk = failedDependencies.begin(); kk != failedDependencies.end(); ++kk)
+					{
+						TestDependency dependency = *kk;
+
+						AssertResult assertResult(dependency.m_info, "Dependency " + dependency.m_name + " has failed to complete successfully.", false, true);
+				
+						TestResult testResult("dependency_failed");
+						testResult.AddResult(assertResult);
+
+						m_suiteResults[idx].AddResult(testResult);
+					}
+				}
+				else
+				{
+					suite->Run(m_suiteResults[idx]);
+				}
+
 				if (!m_suiteResults[idx].GetTotalResult())
 				{
-					failedDependencies.push_back(suite->GetDependency(i));
+					succeeded = false;
 				}
-			}
-		}
-
-		auto jj = m_names.find(suite->GetName());
-
-		if (jj != m_names.end())
-		{
-			size_t idx = jj->second;
-
-			if (!failedDependencies.empty())
-			{
-				for (auto kk = failedDependencies.begin(); kk != failedDependencies.end(); ++kk)
-				{
-					TestDependency dependency = *kk;
-
-					AssertResult assertResult(dependency.m_info, "Dependency " + dependency.m_name + " has failed to complete successfully.", false);
-				
-					TestResult testResult("dependency_failed");
-					testResult.AddResult(assertResult);
-
-					m_suiteResults[idx].AddResult(testResult);
-				}
-			}
-			else
-			{
-				suite->Run(m_suiteResults[idx]);
-			}
-
-			if (!m_suiteResults[idx].GetTotalResult())
-			{
-				totalResult = false;
 			}
 		}
 	}
 
-	return totalResult;
+	if (m_printer)
+	{
+		m_printer->OnEnd(m_suiteResults);
+	}
+
+	return succeeded;
 }
 
 void TestEnvironment::RegisterTestSuite(std::string _name, TestSuite* _suite)
@@ -300,7 +399,7 @@ bool TestEnvironment::SolveDependencies(std::vector<TestSuite*>& _sorted)
 			}
 			else
 			{
-				AssertResult assertResult(m_suites[i]->GetDependency(j).m_info, "Dependency " + m_suites[i]->GetDependency(j).m_name + " unknown.", true);
+				AssertResult assertResult(m_suites[i]->GetDependency(j).m_info, "Dependency " + m_suites[i]->GetDependency(j).m_name + " unknown.", true, true);
 				
 				TestResult testResult("dependency_unknown");
 				testResult.AddResult(assertResult);
@@ -369,7 +468,7 @@ bool TestEnvironment::TopologicalVisit(
 				size_t dependencyIdx = _dependencies[_idx][i].first;
 				TestDependency dependency = m_suites[_idx]->GetDependency(dependencyIdx);
 
-				AssertResult assertResult(dependency.m_info, "Dependency " + dependency.m_name + " is unresolvable.", false);
+				AssertResult assertResult(dependency.m_info, "Dependency " + dependency.m_name + " is unresolvable.", false, true);
 				
 				TestResult testResult("dependency_unresolvable");
 				testResult.AddResult(assertResult);

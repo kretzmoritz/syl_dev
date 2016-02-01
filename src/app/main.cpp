@@ -27,7 +27,7 @@ public:
 
 SYLDEV_TESTSUITE(mysuite2)
 {
-	SYLDEV_TESTSUITE_DEPEND(mysuite3)
+	//SYLDEV_TESTSUITE_DEPEND(mysuite3)
 
 	SYLDEV_UNITTEST(myfirsttest)
 	{
@@ -42,7 +42,7 @@ SYLDEV_TESTSUITE(mysuite2)
 
 SYLDEV_TESTSUITE(mysuite)
 {
-	SYLDEV_TESTSUITE_DEPEND(mysuite2)
+	//SYLDEV_TESTSUITE_DEPEND(mysuite2)
 	SYLDEV_TESTSUITE_DEPEND(mysuite2222222)
 
 	SYLDEV_TESTSUITE_INIT
@@ -78,7 +78,7 @@ SYLDEV_TESTSUITE(mysuite)
 
 SYLDEV_TESTSUITE(mysuite3)
 {
-	SYLDEV_TESTSUITE_DEPEND(mysuite)
+	//SYLDEV_TESTSUITE_DEPEND(mysuite)
 
 	SYLDEV_UNITTEST(myfirsttest)
 	{
@@ -93,7 +93,7 @@ SYLDEV_TESTSUITE(mysuite3)
 
 SYLDEV_TESTSUITE(mysuite4)
 {
-	SYLDEV_TESTSUITE_DEPEND(mysuite5)
+	//SYLDEV_TESTSUITE_DEPEND(mysuite5)
 
 	SYLDEV_UNITTEST(myfirsttest)
 	{
@@ -108,7 +108,7 @@ SYLDEV_TESTSUITE(mysuite4)
 
 SYLDEV_TESTSUITE(mysuite5)
 {
-	SYLDEV_TESTSUITE_DEPEND(mysuite4)
+	//SYLDEV_TESTSUITE_DEPEND(mysuite4)
 
 	SYLDEV_UNITTEST(myfirsttest)
 	{
@@ -123,6 +123,9 @@ SYLDEV_TESTSUITE(mysuite5)
 
 int main()
 {
+	SylDev::Common::ConsolePrinter consolePrinter;
+	SylDev::Common::TestEnvironment::GetInstance().AssignPrinter(&consolePrinter);
+
 	auto testresult = SylDev::Common::TestEnvironment::GetInstance().Run();
 
 	SylDev::Framework::WindowCreationResult result;
