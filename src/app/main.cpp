@@ -8,11 +8,12 @@
 #include "../math/vector.h"
 
 // In progress:
-// - Unit testing
+// - Input system
 
 // To do:
-// - Input system
 // - Quaternions
+// - File loading (texture, meshes)
+// - Basic renderer
 
 class Foo
 {
