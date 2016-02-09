@@ -3,6 +3,7 @@
 #include <iostream>
 
 using namespace SylDev::Common;
+using namespace TestData;
 using namespace Impl;
 
 TestEnvironment* TestEnvironment::Instance = nullptr;
@@ -47,16 +48,6 @@ bool TestResult::GetTotalResult() const
 	return m_totalResult;
 }
 
-TestContext::TestContext(TestResult& _testResult)
-	: m_testResult(_testResult)
-{
-}
-
-void TestContext::AddResult(TestInfo const& _info, std::string _message, bool _succeeded)
-{
-	m_testResult.AddResult(AssertResult(_info, _message, _succeeded));
-}
-
 SuiteResult::SuiteResult(std::string _name)
 	: m_name(_name), m_totalResult(true)
 {
@@ -91,6 +82,16 @@ std::vector<TestResult> const& SuiteResult::GetResults() const
 bool SuiteResult::GetTotalResult() const
 {
 	return m_totalResult;
+}
+
+TestContext::TestContext(TestResult& _testResult)
+	: m_testResult(_testResult)
+{
+}
+
+void TestContext::AddResult(TestInfo const& _info, std::string _message, bool _succeeded)
+{
+	m_testResult.AddResult(AssertResult(_info, _message, _succeeded));
 }
 
 UnitTest::UnitTest(TestSuite& _suite, std::string _name, std::function<void(TestContext&)> _func)
@@ -224,7 +225,7 @@ AssignSuiteFixtureLeave::AssignSuiteFixtureLeave(TestSuite& _suite, std::functio
 	_suite.AssignFixtureLeave(_func);
 }
 
-void ConsolePrinter::OnEnd(std::vector<SuiteResult> const& _suiteResults)
+void TestPrinterConsole::OnEnd(std::vector<SuiteResult> const& _suiteResults)
 {
 	for (auto ii = _suiteResults.begin(); ii != _suiteResults.end(); ++ii)
 	{
@@ -261,7 +262,16 @@ void ConsolePrinter::OnEnd(std::vector<SuiteResult> const& _suiteResults)
 
 				if (assertResult.m_internal)
 				{
-					std::cout << "Internal error " + testName + "." << std::endl;
+					if (assertResult.m_result)
+					{
+						std::cout << "Internal ";
+					}
+					else
+					{
+						std::cout << "Critical internal ";
+					}
+
+					std::cout << "error " + testName + "." << std::endl;
 					std::cout << "File: " + assertResult.m_info.m_file + " Line: " + std::to_string(assertResult.m_info.m_line) << std::endl;
 					std::cout << assertResult.m_message << std::endl;
 					std::cout << std::endl;

@@ -123,7 +123,7 @@ SYLDEV_TESTSUITE(mysuite5)
 
 int main()
 {
-	SylDev::Common::ConsolePrinter consolePrinter;
+	SylDev::Common::TestPrinterConsole consolePrinter;
 	SylDev::Common::TestEnvironment::GetInstance().AssignPrinter(&consolePrinter);
 
 	auto testresult = SylDev::Common::TestEnvironment::GetInstance().Run();

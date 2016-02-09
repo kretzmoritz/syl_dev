@@ -26,6 +26,8 @@ BEGIN_2_NAMESPACES(SylDev, Common)
 
 class TestEnvironment;
 
+BEGIN_NAMESPACE(TestData)
+
 class TestInfo
 {
 public:
@@ -63,17 +65,6 @@ private:
 	bool m_totalResult;
 };
 
-class TestContext
-{
-public:
-	TestContext(TestResult& _testResult);
-
-	void AddResult(TestInfo const& _info, std::string _message, bool _succeeded);
-
-private:
-	TestResult& m_testResult;
-};
-
 class SuiteResult
 {
 public:
@@ -92,6 +83,19 @@ private:
 	bool m_totalResult;
 };
 
+END_NAMESPACE
+
+class TestContext
+{
+public:
+	TestContext(TestData::TestResult& _testResult);
+
+	void AddResult(TestData::TestInfo const& _info, std::string _message, bool _succeeded);
+
+private:
+	TestData::TestResult& m_testResult;
+};
+
 BEGIN_NAMESPACE(Impl)
 
 class TestSuite;
@@ -103,7 +107,7 @@ public:
 
 	std::string GetName() const;
 
-	void Run(TestResult& _testResult);
+	void Run(TestData::TestResult& _testResult);
 
 private:
 	std::string m_name;
@@ -113,9 +117,9 @@ private:
 class TestDependency
 {
 public:
-	TestDependency(TestInfo const& _info, std::string _name);
+	TestDependency(TestData::TestInfo const& _info, std::string _name);
 
-	TestInfo m_info;
+	TestData::TestInfo m_info;
 	std::string m_name;
 };
 
@@ -124,7 +128,7 @@ class TestSuite
 public:
 	TestSuite(TestEnvironment& _environment, std::string _name);
 
-	void RegisterDependency(TestInfo const& _info, std::string _dependency);
+	void RegisterDependency(TestData::TestInfo const& _info, std::string _dependency);
 	void RegisterUnitTest(UnitTest* _test);
 
 	void AssignInit(std::function<void()> _func);
@@ -137,7 +141,7 @@ public:
 	TestDependency GetDependency(size_t _idx) const;
 	size_t GetDependencyCount() const;
 
-	void Run(SuiteResult& _suiteResult);
+	void Run(TestData::SuiteResult& _suiteResult);
 
 private:
 	std::string m_name;
@@ -153,7 +157,7 @@ private:
 class RegisterDependency
 {
 public:
-	RegisterDependency(TestSuite& _suite, TestInfo const& _info, std::string _dependency);
+	RegisterDependency(TestSuite& _suite, TestData::TestInfo const& _info, std::string _dependency);
 };
 
 class AssignSuiteInit
@@ -187,16 +191,16 @@ class TestPrinter
 public:
 	virtual ~TestPrinter() = default;
 
-	virtual void OnEnd(std::vector<SuiteResult> const& _suiteResults) = 0;
+	virtual void OnEnd(std::vector<TestData::SuiteResult> const& _suiteResults) = 0;
 };
 
-class ConsolePrinter
+class TestPrinterConsole
 	: public TestPrinter
 {
 public:
-	virtual ~ConsolePrinter() = default;
+	virtual ~TestPrinterConsole() = default;
 
-	void OnEnd(std::vector<SuiteResult> const& _suiteResults);
+	void OnEnd(std::vector<TestData::SuiteResult> const& _suiteResults);
 };
 
 class TestEnvironment
@@ -227,7 +231,7 @@ private:
 
 	std::unordered_map<std::string, size_t> m_names;
 	std::vector<Impl::TestSuite*> m_suites;
-	std::vector<SuiteResult> m_suiteResults;
+	std::vector<TestData::SuiteResult> m_suiteResults;
 };
 
 END_2_NAMESPACES
@@ -239,7 +243,7 @@ END_NAMESPACE \
 namespace name \
 
 #define SYLDEV_TESTSUITE_DEPEND(name) \
-static SylDev::Common::Impl::RegisterDependency Dependency_##name(Suite, SylDev::Common::TestInfo(__FILE__, __LINE__), #name); \
+static SylDev::Common::Impl::RegisterDependency Dependency_##name(Suite, SylDev::Common::TestData::TestInfo(__FILE__, __LINE__), #name); \
 
 #define SYLDEV_UNITTEST(name) \
 void Func_##name(SylDev::Common::TestContext& _ctx); \
@@ -269,13 +273,13 @@ void Func_FixtureLeave() \
 #define SYLDEV_UNITTEST_ASSERT(cond) \
 do \
 { \
-	_ctx.AddResult(SylDev::Common::TestInfo(__FILE__, __LINE__), #cond, (cond)); \
+	_ctx.AddResult(SylDev::Common::TestData::TestInfo(__FILE__, __LINE__), #cond, (cond)); \
 } while (false) \
 
 #define SYLDEV_UNITTEST_ASSERT_EX(cond, msg) \
 do \
 { \
-	_ctx.AddResult(SylDev::Common::TestInfo(__FILE__, __LINE__), msg, (cond)); \
+	_ctx.AddResult(SylDev::Common::TestData::TestInfo(__FILE__, __LINE__), msg, (cond)); \
 } while (false) \
 
 #endif
