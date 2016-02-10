@@ -123,6 +123,9 @@ T dot(Vector<T, n> const& _v1, Vector<T, n> const& _v2);
 template<class T>
 Vector<T, 3> cross(Vector<T, 3> const& _v1, Vector<T, 3> const& _v2);
 
+template<class T, size_t n>
+Vector<T, n> project(Vector<T, n> const& _v, Vector<T, n> const& _onto);
+
 END_NAMESPACE
 
 END_2_NAMESPACES

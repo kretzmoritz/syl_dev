@@ -104,6 +104,17 @@ SYLDEV_TESTSUITE(mysuite4)
 
 	SYLDEV_UNITTEST(mysecondtest)
 	{
+		SylDev::Math::Vec3f a(6.0f, 7.0f, 4.0f);
+		SylDev::Math::Vec3f b(1.0f, 2.0f, 3.0f);
+
+		auto result = SylDev::Math::VecHelper::project(a, b);
+		auto result_length = result.length();
+		
+		SylDev::Math::Mat3x3f c;
+		SylDev::Math::Mat3x3f c_inv;
+		auto result2 = SylDev::Math::MatHelper::inverse(c, c_inv);
+		
+		int debug = 0;
 	}
 }
 

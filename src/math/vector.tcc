@@ -161,12 +161,10 @@ Vector<T, n>& normalize(Vector<T, n>& _v)
 {
 	T length = _v.length();
 	
-	if (length == T(0))
+	if (length != T(0))
 	{
-		return;
+		_v = _v / length;
 	}
-
-	_v = _v / length;
 
 	return _v;
 }
@@ -185,6 +183,19 @@ Vector<T, 3> cross(Vector<T, 3> const& _v1, Vector<T, 3> const& _v2)
 	return Vector<T, 3>(_v1.y * _v2.z - _v1.z * _v2.y, 
 	                    _v1.z * _v2.x - _v1.x * _v2.z, 
 	                    _v1.x * _v2.y - _v1.y * _v2.x);
+}
+
+template<class T, size_t n>
+Vector<T, n> project(Vector<T, n> const& _v, Vector<T, n> const& _onto)
+{
+	T length_sqr = _onto.length_sqr();
+
+	if (length_sqr == T(0))
+	{
+		length_sqr = T(1);
+	}
+
+	return _onto * dot(_onto, _v) / length_sqr;
 }
 
 END_NAMESPACE
