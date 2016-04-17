@@ -112,6 +112,10 @@ typedef Vector<float, 2> Vec2f;
 typedef Vector<float, 3> Vec3f;
 typedef Vector<float, 4> Vec4f;
 
+typedef Vector<int, 2> Vec2i;
+typedef Vector<int, 3> Vec3i;
+typedef Vector<int, 4> Vec4i;
+
 BEGIN_NAMESPACE(VecHelper)
 
 template<class T, size_t n>

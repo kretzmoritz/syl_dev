@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\framework\raw_input_handler.h" />
     <ClInclude Include="..\..\src\framework\window.h" />
     <ClInclude Include="..\..\src\framework\window_desc.h" />
     <ClInclude Include="..\..\src\framework\window_procedure.h" />
@@ -141,6 +142,7 @@
     <None Include="..\..\src\framework\window.tcc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\framework\raw_input_handler.cpp" />
     <ClCompile Include="..\..\src\framework\window_desc.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

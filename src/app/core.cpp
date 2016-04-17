@@ -6,9 +6,6 @@ void Core::Init(HWND _hWnd, LPSTR _lpCmdLine)
 {
 	m_hWnd = _hWnd;
 
-	m_LButtonPressed = false;
-	m_RButtonPressed = false;
-
 	HMENU hMenu = CreateMenu();
 
 	HMENU hSubMenu = CreatePopupMenu();
@@ -20,17 +17,9 @@ void Core::Init(HWND _hWnd, LPSTR _lpCmdLine)
 
 void Core::Update()
 {
-	HWND hWnd = GetForegroundWindow();
+	m_rawInputHandler.Refresh();
 
-	if (hWnd != m_hWnd)
-	{
-		return;
-	}
-
-	m_LButtonPressed = (GetKeyState(VK_LBUTTON) & 0x8000) != 0;
-	m_RButtonPressed = (GetKeyState(VK_RBUTTON) & 0x8000) != 0;
-
-	if (m_LButtonPressed || m_RButtonPressed)
+	if (m_rawInputHandler.HasFocus() && (m_rawInputHandler.IsDown(VK_LBUTTON) || m_rawInputHandler.IsPressed(VK_RBUTTON)))
 	{
 		RedrawWindow(m_hWnd, nullptr, nullptr, RDW_INVALIDATE);
 	}
@@ -38,7 +27,7 @@ void Core::Update()
 
 void Core::Paint(HDC _hdc)
 {
-	if (m_RButtonPressed)
+	if (m_rawInputHandler.IsPressed(VK_RBUTTON))
 	{
 		RECT rect;
 		GetClientRect(m_hWnd, &rect);
@@ -49,16 +38,14 @@ void Core::Paint(HDC _hdc)
 		return;
 	}
 
-	if (m_LButtonPressed)
+	if (m_rawInputHandler.IsDown(VK_LBUTTON))
 	{
-		POINT point;
-		GetCursorPos(&point);
-		ScreenToClient(m_hWnd, &point);
+		SylDev::Math::Vec2i MousePos = m_rawInputHandler.GetMousePosLocal();
 
 		HBRUSH brush = CreateSolidBrush(RGB(255, 0, 0));
 		SelectObject(_hdc, brush);
 		SelectObject(_hdc, GetStockObject(NULL_PEN));
-		Ellipse(_hdc, point.x - 25, point.y - 25, point.x + 25, point.y + 25);
+		Ellipse(_hdc, MousePos.x - 25, MousePos.y - 25, MousePos.x + 25, MousePos.y + 25);
 
 		DeleteObject(brush);
 	}
