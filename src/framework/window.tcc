@@ -196,6 +196,7 @@ template<class T>
 void Window<T>::SignalCreationFinished(WindowCreationResult& _result, WindowCreationResult _value)
 {
 	std::unique_lock<std::mutex> lock(m_conditionMutex);
+
 	_result = _value;
 	m_creationFinished.notify_all();
 }
