@@ -1,6 +1,7 @@
 #include "unit_testing.h"
 
 #include <iostream>
+#include <fstream>
 
 using namespace SylDev::Common;
 using namespace TestData;
@@ -225,8 +226,10 @@ AssignSuiteFixtureLeave::AssignSuiteFixtureLeave(TestSuite& _suite, std::functio
 	_suite.AssignFixtureLeave(_func);
 }
 
-void TestPrinterConsole::OnEnd(std::vector<SuiteResult> const& _suiteResults)
+void TestPrinterStream::OnEnd(std::vector<SuiteResult> const& _suiteResults)
 {
+	m_stream.clear();
+
 	for (auto ii = _suiteResults.begin(); ii != _suiteResults.end(); ++ii)
 	{
 		SuiteResult const& suiteResult = *ii;
@@ -238,15 +241,15 @@ void TestPrinterConsole::OnEnd(std::vector<SuiteResult> const& _suiteResults)
 		{
 			std::string output = "Suite: " + suiteName;
 
-			std::cout << output << std::endl;
+			m_stream << output << std::endl;
 
 			for (size_t i = 0; i < output.length(); ++i)
 			{
-				std::cout << '-';
+				m_stream << '-';
 			}
-			std::cout << std::endl;
+			m_stream << std::endl;
 
-			std::cout << std::endl;
+			m_stream << std::endl;
 		}
 
 		for (auto jj = testResults.begin(); jj != testResults.end(); ++jj)
@@ -264,28 +267,46 @@ void TestPrinterConsole::OnEnd(std::vector<SuiteResult> const& _suiteResults)
 				{
 					if (assertResult.m_result)
 					{
-						std::cout << "Internal ";
+						m_stream << "Internal ";
 					}
 					else
 					{
-						std::cout << "Critical internal ";
+						m_stream << "Critical internal ";
 					}
 
-					std::cout << "error " + testName + "." << std::endl;
-					std::cout << "File: " + assertResult.m_info.m_file + " Line: " + std::to_string(assertResult.m_info.m_line) << std::endl;
-					std::cout << assertResult.m_message << std::endl;
-					std::cout << std::endl;
+					m_stream << "error " + testName + "." << std::endl;
+					m_stream << "File: " + assertResult.m_info.m_file + " Line: " + std::to_string(assertResult.m_info.m_line) << std::endl;
+					m_stream << assertResult.m_message << std::endl;
+					m_stream << std::endl;
 				}
 				else
 				{
-					std::cout << "Test " + testName + "." << std::endl;
-					std::cout << "File: " + assertResult.m_info.m_file + " Line: " + std::to_string(assertResult.m_info.m_line) << std::endl;
-					std::cout << "Assert " << assertResult.m_message << " has " << (assertResult.m_result ? "succeeded" : "failed") << '.' << std::endl;
-					std::cout << std::endl;
+					m_stream << "Test " + testName + "." << std::endl;
+					m_stream << "File: " + assertResult.m_info.m_file + " Line: " + std::to_string(assertResult.m_info.m_line) << std::endl;
+					m_stream << "Assert " << assertResult.m_message << " has " << (assertResult.m_result ? "succeeded" : "failed") << '.' << std::endl;
+					m_stream << std::endl;
 				}
 			}
 		}
 	}
+}
+
+void TestPrinterStream::OutputToConsole()
+{
+	std::cout << m_stream.str();
+}
+
+void TestPrinterStream::OutputToFile(std::string _file)
+{
+	std::fstream fstream;
+	fstream.open(_file, std::ios::out);
+
+	if (!fstream.is_open())
+		return;
+
+	fstream << m_stream.str();
+
+	fstream.close();
 }
 
 TestEnvironment& TestEnvironment::GetInstance()

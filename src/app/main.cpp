@@ -13,10 +13,13 @@
 
 int main()
 {
-	SylDev::Common::TestPrinterConsole consolePrinter;
-	SylDev::Common::TestEnvironment::GetInstance().AssignPrinter(&consolePrinter);
+	SylDev::Common::TestPrinterStream streamPrinter;
+	SylDev::Common::TestEnvironment::GetInstance().AssignPrinter(&streamPrinter);
 
 	bool testResult = SylDev::Common::TestEnvironment::GetInstance().Run();
+
+	streamPrinter.OutputToConsole();
+	streamPrinter.OutputToFile("unit_tests.log");
 
 	SylDev::Framework::WindowCreationResult result;
 	SylDev::Framework::WindowClassDesc classDesc;

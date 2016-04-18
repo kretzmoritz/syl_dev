@@ -109,7 +109,7 @@ bool RawInputHandler::IsMouseInWindow() const
 
 	SylDev::Math::Vec2i MousePos = GetMousePosScreen();
 
-	return MousePos.x >= rect.left && MousePos.x  <= rect.right && MousePos.y >= rect.top && MousePos.y <= rect.bottom;
+	return MousePos.x >= rect.left && MousePos.x  < rect.right && MousePos.y >= rect.top && MousePos.y < rect.bottom;
 }
 
 bool RawInputHandler::HasFocus() const

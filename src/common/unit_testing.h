@@ -17,6 +17,7 @@
 
 #include <functional>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <unordered_map>
 
@@ -194,13 +195,19 @@ public:
 	virtual void OnEnd(std::vector<TestData::SuiteResult> const& _suiteResults) = 0;
 };
 
-class TestPrinterConsole
+class TestPrinterStream
 	: public TestPrinter
 {
 public:
-	virtual ~TestPrinterConsole() = default;
+	virtual ~TestPrinterStream() = default;
 
 	void OnEnd(std::vector<TestData::SuiteResult> const& _suiteResults);
+
+	void OutputToConsole();
+	void OutputToFile(std::string _file);
+
+private:
+	std::stringstream m_stream;
 };
 
 class TestEnvironment
