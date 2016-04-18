@@ -11,7 +11,7 @@
 // - File loading (texture, meshes)
 // - Basic renderer
 
-int main()
+void run_tests()
 {
 	SylDev::Common::TestPrinterStream streamPrinter;
 	SylDev::Common::TestEnvironment::GetInstance().AssignPrinter(&streamPrinter);
@@ -21,11 +21,18 @@ int main()
 	streamPrinter.OutputToConsole();
 	streamPrinter.OutputToFile("unit_tests.log");
 
+	SylDev::Common::TestEnvironment::GetInstance().AssignPrinter(nullptr);
+}
+
+int main(int _argc, char* _argv[])
+{
+	run_tests();
+
 	SylDev::Framework::WindowCreationResult result;
 	SylDev::Framework::WindowClassDesc classDesc;
 	SylDev::Framework::WindowDesc wndDesc;
 
-	SylDev::Framework::Window<SylDev::App::WindowProcedure> Window(result, classDesc, wndDesc);
+	SylDev::Framework::Window<SylDev::App::WindowProcedure> Window(result, classDesc, wndDesc, GetCommandLine());
 
 	return 0;
 }
