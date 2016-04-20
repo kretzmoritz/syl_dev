@@ -15,7 +15,7 @@
 #ifndef SYLDEV_FRAMEWORK_RAWINPUTHANDLER
 #define SYLDEV_FRAMEWORK_RAWINPUTHANDLER
 
-#include <map>
+#include <unordered_map>
 
 #include "../common/namespace.h"
 #include "raw_input_constants.h"
@@ -26,7 +26,7 @@ BEGIN_2_NAMESPACES(SylDev, Framework)
 class RawInputHandler
 {
 	static const unsigned int KeyCount = 256;
-	static const std::map<RawInputButton::Type, unsigned int> Mapping;
+	static const std::unordered_map<RawInputButton::Type, unsigned int> Mapping;
 
 public:
 	RawInputHandler();

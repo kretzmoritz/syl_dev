@@ -4,7 +4,7 @@
 
 using namespace SylDev::Framework;
 
-const std::map<RawInputButton::Type, unsigned int> RawInputHandler::Mapping =
+const std::unordered_map<RawInputButton::Type, unsigned int> RawInputHandler::Mapping =
 {
 	{ RawInputButton::LMouse, VK_LBUTTON },
 	{ RawInputButton::RMouse, VK_RBUTTON },
