@@ -8,7 +8,7 @@ BEGIN_NAMESPACE(Impl)
 
 std::mutex WindowBase::Mutex;
 unsigned int WindowBase::Id = 0;
-std::map<std::string, std::pair<unsigned int, WindowClassDesc>> WindowBase::WndClasses;
+std::unordered_map<std::string, std::pair<unsigned int, WindowClassDesc>> WindowBase::WndClasses;
 
 END_NAMESPACE
 

@@ -19,7 +19,7 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
-#include <map>
+#include <unordered_map>
 #include <string>
 
 #include "../common/namespace.h"
@@ -36,7 +36,7 @@ class WindowBase
 protected:
 	static std::mutex Mutex;
 	static unsigned int Id;
-	static std::map<std::string, std::pair<unsigned int, WindowClassDesc>> WndClasses;
+	static std::unordered_map<std::string, std::pair<unsigned int, WindowClassDesc>> WndClasses;
 };
 
 END_NAMESPACE
