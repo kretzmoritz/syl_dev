@@ -26,17 +26,17 @@ BEGIN_2_NAMESPACES(SylDev, Framework)
 class RawInputHandler
 {
 	static const unsigned int KeyCount = 256;
-	static const std::map<RawInputButton, unsigned int> Mapping;
+	static const std::map<RawInputButton::Type, unsigned int> Mapping;
 
 public:
 	RawInputHandler();
 
 	void Refresh();
 
-	bool IsPressed(RawInputButton _button);
-	bool IsDown(RawInputButton _button);
-	bool IsToggled(RawInputButton _button);
-	bool IsReleased(RawInputButton _button);
+	bool IsPressed(RawInputButton::Type _button);
+	bool IsDown(RawInputButton::Type _button);
+	bool IsToggled(RawInputButton::Type _button);
+	bool IsReleased(RawInputButton::Type _button);
 
 	SylDev::Math::Vec2i GetMousePosLocal() const;
 	SylDev::Math::Vec2i GetMousePosScreen() const;
@@ -45,7 +45,7 @@ public:
 	bool HasFocus() const;
 
 private:
-	bool GetId(RawInputButton _button, unsigned int& _id) const;
+	bool GetId(RawInputButton::Type _button, unsigned int& _id) const;
 
 	bool m_pressed[KeyCount];
 	bool m_down[KeyCount];

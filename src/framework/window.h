@@ -41,12 +41,17 @@ protected:
 
 END_NAMESPACE
 
-enum class WindowCreationResult
+struct WindowCreationResult
 {
-	Unknown = 0,
-	Failed_CreateWindowClass = -2,
-	Failed_CreateWindow = -1,
-	Succeeded = 1,
+	enum Type
+	{
+		Unknown,
+		Failed_CreateWindowClass,
+		Failed_CreateWindow,
+		Succeeded,
+
+		Count
+	};
 };
 
 template<class T>
@@ -54,7 +59,7 @@ class Window
 	: public Impl::WindowBase
 {
 public:
-	Window(WindowCreationResult& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine = "");
+	Window(WindowCreationResult::Type& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine = "");
 	~Window();
 
 private:
@@ -64,9 +69,9 @@ private:
 	bool CreateClass(WindowClassDesc _classDesc);
 	void ReleaseClass();
 
-	void Create(WindowCreationResult& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine);
+	void Create(WindowCreationResult::Type& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine);
 	void Release();
-	void SignalCreationFinished(WindowCreationResult& _result, WindowCreationResult _value);
+	void SignalCreationFinished(WindowCreationResult::Type& _result, WindowCreationResult::Type _value);
 
 	void MessageLoop();
 

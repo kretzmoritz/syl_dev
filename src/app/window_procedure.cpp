@@ -18,9 +18,9 @@ LRESULT CALLBACK WindowProcedure::operator()(HWND _hWnd, UINT _msg, WPARAM _wPar
 		break;
 	case WM_COMMAND:
 		{
-			switch (static_cast<MenuIds>(LOWORD(_wParam)))
+			switch (LOWORD(_wParam))
 			{
-			case MenuIds::File_Exit:
+			case MenuId::File_Exit:
 				DestroyWindow(_hWnd);
 				break;
 			}

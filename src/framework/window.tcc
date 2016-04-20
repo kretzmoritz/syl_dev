@@ -13,12 +13,12 @@ std::map<std::string, std::pair<unsigned int, WindowClassDesc>> WindowBase::WndC
 END_NAMESPACE
 
 template<class T>
-Window<T>::Window(WindowCreationResult& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine)
+Window<T>::Window(WindowCreationResult::Type& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine)
 	: WndProc(new T())
 {
 	std::unique_lock<std::mutex> lock(m_conditionMutex);
 
-	WindowCreationResult result = WindowCreationResult::Unknown;
+	WindowCreationResult::Type result = WindowCreationResult::Unknown;
 	m_thread = std::move(std::thread(&Window::Create, this, std::ref(result), _classDesc, _wndDesc, _lpCmdLine));
 
 	do
@@ -149,7 +149,7 @@ void Window<T>::ReleaseClass()
 }
 
 template<class T>
-void Window<T>::Create(WindowCreationResult& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine)
+void Window<T>::Create(WindowCreationResult::Type& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine)
 {
 	if (!CreateClass(_classDesc))
 	{
@@ -193,7 +193,7 @@ void Window<T>::Release()
 }
 
 template<class T>
-void Window<T>::SignalCreationFinished(WindowCreationResult& _result, WindowCreationResult _value)
+void Window<T>::SignalCreationFinished(WindowCreationResult::Type& _result, WindowCreationResult::Type _value)
 {
 	std::unique_lock<std::mutex> lock(m_conditionMutex);
 

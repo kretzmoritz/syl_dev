@@ -28,7 +28,7 @@ int main(int _argc, char* _argv[])
 {
 	run_tests();
 
-	SylDev::Framework::WindowCreationResult result;
+	SylDev::Framework::WindowCreationResult::Type result;
 	SylDev::Framework::WindowClassDesc classDesc;
 	SylDev::Framework::WindowDesc wndDesc;
 

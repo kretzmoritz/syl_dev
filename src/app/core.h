@@ -22,9 +22,14 @@
 
 BEGIN_2_NAMESPACES(SylDev, App)
 
-enum class MenuIds
+struct MenuId
 {
-	File_Exit = 0,
+	enum Type
+	{
+		File_Exit,
+
+		Count
+	};
 };
 
 class Core

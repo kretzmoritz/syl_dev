@@ -11,7 +11,7 @@ void Core::Init(HWND _hWnd, LPSTR _lpCmdLine)
 
 	HMENU hSubMenu = CreatePopupMenu();
 	AppendMenu(hMenu, MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(hSubMenu), "&File");
-	AppendMenu(hSubMenu, MF_STRING, static_cast<UINT_PTR>(MenuIds::File_Exit), "&Exit");
+	AppendMenu(hSubMenu, MF_STRING, MenuId::File_Exit, "&Exit");
 
 	SetMenu(m_hWnd, hMenu);
 }
@@ -20,7 +20,7 @@ void Core::Update()
 {
 	m_rawInputHandler.Refresh();
 
-	if (m_rawInputHandler.HasFocus() && (m_rawInputHandler.IsDown(RawInputButton::LMOUSE) || m_rawInputHandler.IsPressed(RawInputButton::RMOUSE)))
+	if (m_rawInputHandler.HasFocus() && (m_rawInputHandler.IsDown(RawInputButton::LMouse) || m_rawInputHandler.IsPressed(RawInputButton::RMouse)))
 	{
 		RedrawWindow(m_hWnd, nullptr, nullptr, RDW_INVALIDATE);
 	}
@@ -28,7 +28,7 @@ void Core::Update()
 
 void Core::Paint(HDC _hdc)
 {
-	if (m_rawInputHandler.IsPressed(RawInputButton::RMOUSE))
+	if (m_rawInputHandler.IsPressed(RawInputButton::RMouse))
 	{
 		RECT rect;
 		GetClientRect(m_hWnd, &rect);
@@ -39,7 +39,7 @@ void Core::Paint(HDC _hdc)
 		return;
 	}
 
-	if (m_rawInputHandler.IsDown(RawInputButton::LMOUSE))
+	if (m_rawInputHandler.IsDown(RawInputButton::LMouse))
 	{
 		SylDev::Math::Vec2i MousePos = m_rawInputHandler.GetMousePosLocal();
 
