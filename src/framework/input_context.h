@@ -19,6 +19,7 @@
 
 #include "../common/namespace.h"
 #include "raw_input_constants.h"
+#include "input_types.h"
 
 BEGIN_2_NAMESPACES(SylDev, Framework)
 
@@ -28,9 +29,9 @@ public:
 	void ReadFromFile(std::string _file);
 	void WriteToFile(std::string _file);
 
-	unsigned int MapButtonToAction(RawInputButton::Type _button, unsigned int _action);
-	unsigned int MapButtonToState(RawInputButton::Type _button, unsigned int _state);
-	unsigned int MapAxisToRange(RawInputAxis::Type _axis, unsigned int _range);
+	unsigned int MapButtonToAction(RawInputButton::Type _button, InputAction _action);
+	unsigned int MapButtonToState(RawInputButton::Type _button, InputState _state);
+	unsigned int MapAxisToRange(RawInputAxis::Type _axis, InputRange _range);
 };
 
 END_2_NAMESPACES

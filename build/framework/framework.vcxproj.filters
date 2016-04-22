@@ -39,6 +39,9 @@
     <ClInclude Include="..\..\src\framework\input_system.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\framework\input_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\framework\window.tcc">
@@ -59,6 +62,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\framework\input_system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\framework\input_types.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
