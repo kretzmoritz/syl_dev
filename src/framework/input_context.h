@@ -29,9 +29,9 @@ public:
 	void ReadFromFile(std::string _file);
 	void WriteToFile(std::string _file);
 
-	unsigned int MapButtonToAction(RawInputButton::Type _button, InputAction _action);
-	unsigned int MapButtonToState(RawInputButton::Type _button, InputState _state);
-	unsigned int MapAxisToRange(RawInputAxis::Type _axis, InputRange _range);
+	InputAction MapButtonToAction(RawInputButton::Type _button, InputAction _action);
+	InputState MapButtonToState(RawInputButton::Type _button, InputState _state);
+	InputRange MapAxisToRange(RawInputAxis::Type _axis, InputRange _range);
 };
 
 END_2_NAMESPACES
