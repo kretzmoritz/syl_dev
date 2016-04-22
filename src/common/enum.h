@@ -22,7 +22,11 @@
 #define ENUM_WITH_STRING(name, ...) \
 	struct name \
 	{ \
-		enum Type { __VA_ARGS__, Count }; \
+		enum Type \
+		{ \
+			__VA_ARGS__, \
+			Count \
+		}; \
 		class Converter \
 		{ \
 		public: \
@@ -47,6 +51,11 @@
 							stream.str(""); \
 							stream.clear(); \
 						} \
+					} \
+					else if (params[i] == '=') \
+					{ \
+						m_strings.clear(); \
+						return; \
 					} \
 					else \
 					{ \
