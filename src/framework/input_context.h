@@ -15,6 +15,7 @@
 #ifndef SYLDEV_FRAMEWORK_INPUTCONTEXT
 #define SYLDEV_FRAMEWORK_INPUTCONTEXT
 
+#include <unordered_map>
 #include <string>
 
 #include "../common/namespace.h"
@@ -32,6 +33,11 @@ public:
 	InputAction MapButtonToAction(RawInputButton::Type _button, InputAction _action);
 	InputState MapButtonToState(RawInputButton::Type _button, InputState _state);
 	InputRange MapAxisToRange(RawInputAxis::Type _axis, InputRange _range);
+
+private:
+	std::unordered_map<RawInputButton::Type, InputAction> m_Actions;
+	std::unordered_map<RawInputButton::Type, InputState> m_States;
+	std::unordered_map<RawInputAxis::Type, InputRange> m_Ranges;
 };
 
 END_2_NAMESPACES
