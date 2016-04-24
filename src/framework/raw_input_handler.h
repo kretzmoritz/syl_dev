@@ -25,8 +25,8 @@ BEGIN_2_NAMESPACES(SylDev, Framework)
 
 class RawInputHandler
 {
-	static const unsigned int KeyCount = 256;
-	static const std::unordered_map<RawInputButton::Type, unsigned int> Mapping;
+	static const uint32_t KeyCount = 256;
+	static const std::unordered_map<RawInputButton::Type, uint32_t> Mapping;
 
 public:
 	RawInputHandler();
@@ -45,7 +45,7 @@ public:
 	bool HasFocus() const;
 
 private:
-	bool GetId(RawInputButton::Type _button, unsigned int& _id) const;
+	bool GetId(RawInputButton::Type _button, uint32_t& _id) const;
 
 	bool m_pressed[KeyCount];
 	bool m_down[KeyCount];

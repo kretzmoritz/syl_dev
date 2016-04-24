@@ -9,7 +9,7 @@ SYLDEV_TESTSUITE(Matrix)
 		SylDev::Math::Matrix<float, 2, 2, true> MatrixA;
 		SylDev::Math::MatHelper::make_identity(MatrixA);
 
-		SylDev::Math::Matrix<int, 2, 2, false> MatrixB;
+		SylDev::Math::Matrix<int32_t, 2, 2, false> MatrixB;
 		SylDev::Math::MatHelper::make_identity(MatrixB);
 
 		SylDev::Math::Matrix<float, 2, 2, true> MatrixC;
@@ -26,7 +26,7 @@ SYLDEV_TESTSUITE(Matrix)
 		SylDev::Math::Matrix<float, 2, 2, true> MatrixA;
 		SylDev::Math::MatHelper::make_identity(MatrixA);
 
-		SylDev::Math::Matrix<int, 2, 2, false> MatrixB;
+		SylDev::Math::Matrix<int32_t, 2, 2, false> MatrixB;
 		SylDev::Math::MatHelper::make_identity(MatrixB);
 
 		SylDev::Math::Matrix<float, 2, 2, true> MatrixC;

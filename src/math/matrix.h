@@ -109,9 +109,9 @@ typedef Matrix<float, 2, 2> Mat2x2f;
 typedef Matrix<float, 3, 3> Mat3x3f;
 typedef Matrix<float, 4, 4> Mat4x4f;
 
-typedef Matrix<int, 2, 2> Mat2x2i;
-typedef Matrix<int, 3, 3> Mat3x3i;
-typedef Matrix<int, 4, 4> Mat4x4i;
+typedef Matrix<int32_t, 2, 2> Mat2x2i;
+typedef Matrix<int32_t, 3, 3> Mat3x3i;
+typedef Matrix<int32_t, 4, 4> Mat4x4i;
 
 BEGIN_NAMESPACE(Impl)
 

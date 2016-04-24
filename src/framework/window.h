@@ -35,8 +35,8 @@ class WindowBase
 {
 protected:
 	static std::mutex Mutex;
-	static unsigned int Id;
-	static std::unordered_map<std::string, std::pair<unsigned int, WindowClassDesc>> WndClasses;
+	static uint32_t Id;
+	static std::unordered_map<std::string, std::pair<uint32_t, WindowClassDesc>> WndClasses;
 };
 
 END_NAMESPACE

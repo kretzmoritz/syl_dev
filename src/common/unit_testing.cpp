@@ -9,7 +9,7 @@ using namespace Impl;
 
 TestEnvironment* TestEnvironment::Instance = nullptr;
 
-TestInfo::TestInfo(std::string _file, int _line)
+TestInfo::TestInfo(std::string _file, int32_t _line)
 	: m_file(_file), m_line(_line)
 {
 }

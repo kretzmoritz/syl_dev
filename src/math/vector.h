@@ -112,9 +112,9 @@ typedef Vector<float, 2> Vec2f;
 typedef Vector<float, 3> Vec3f;
 typedef Vector<float, 4> Vec4f;
 
-typedef Vector<int, 2> Vec2i;
-typedef Vector<int, 3> Vec3i;
-typedef Vector<int, 4> Vec4i;
+typedef Vector<int32_t, 2> Vec2i;
+typedef Vector<int32_t, 3> Vec3i;
+typedef Vector<int32_t, 4> Vec4i;
 
 BEGIN_NAMESPACE(VecHelper)
 

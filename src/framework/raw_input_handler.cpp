@@ -4,7 +4,7 @@
 
 using namespace SylDev::Framework;
 
-const std::unordered_map<RawInputButton::Type, unsigned int> RawInputHandler::Mapping =
+const std::unordered_map<RawInputButton::Type, uint32_t> RawInputHandler::Mapping =
 {
 	{ RawInputButton::LMouse, VK_LBUTTON },
 	{ RawInputButton::RMouse, VK_RBUTTON },
@@ -76,7 +76,7 @@ const std::unordered_map<RawInputButton::Type, unsigned int> RawInputHandler::Ma
 
 RawInputHandler::RawInputHandler()
 {
-	for (unsigned int i = 0; i < KeyCount; ++i)
+	for (uint32_t i = 0; i < KeyCount; ++i)
 	{
 		m_pressed[i] = false;
 		m_down[i] = false;
@@ -88,14 +88,14 @@ RawInputHandler::RawInputHandler()
 void RawInputHandler::Refresh()
 {
 	// Reset pressed and released states; these should only last one frame.
-	for (unsigned int i = 0; i < KeyCount; ++i)
+	for (uint32_t i = 0; i < KeyCount; ++i)
 	{
 		m_pressed[i] = false;
 		m_released[i] = false;
 	}
 
 	// Figure out key states.
-	for (unsigned int i = 0; i < KeyCount; ++i)
+	for (uint32_t i = 0; i < KeyCount; ++i)
 	{
 		SHORT KeyState = GetKeyState(i);
 
@@ -124,7 +124,7 @@ void RawInputHandler::Refresh()
 
 bool RawInputHandler::IsPressed(RawInputButton::Type _button)
 {
-	unsigned int id;
+	uint32_t id;
 
 	if(!GetId(_button, id))
 		return false;
@@ -137,7 +137,7 @@ bool RawInputHandler::IsPressed(RawInputButton::Type _button)
 
 bool RawInputHandler::IsDown(RawInputButton::Type _button)
 {
-	unsigned int id;
+	uint32_t id;
 
 	if(!GetId(_button, id))
 		return false;
@@ -150,7 +150,7 @@ bool RawInputHandler::IsDown(RawInputButton::Type _button)
 
 bool RawInputHandler::IsToggled(RawInputButton::Type _button)
 {
-	unsigned int id;
+	uint32_t id;
 
 	if(!GetId(_button, id))
 		return false;
@@ -163,7 +163,7 @@ bool RawInputHandler::IsToggled(RawInputButton::Type _button)
 
 bool RawInputHandler::IsReleased(RawInputButton::Type _button)
 {
-	unsigned int id;
+	uint32_t id;
 
 	if(!GetId(_button, id))
 		return false;
@@ -207,7 +207,7 @@ bool RawInputHandler::HasFocus() const
 	return GetFocus() != NULL;
 }
 
-bool RawInputHandler::GetId(RawInputButton::Type _button, unsigned int& _id) const
+bool RawInputHandler::GetId(RawInputButton::Type _button, uint32_t& _id) const
 {
 	auto ii = Mapping.find(_button);
 

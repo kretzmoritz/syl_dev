@@ -24,50 +24,50 @@ BEGIN_2_NAMESPACES(SylDev, Framework)
 
 class InputAction
 {
-public:
-	std::string GetIdentifier() const;
+	static std::unordered_map<size_t, std::string> Actions;
 
-	static bool CheckAction(std::string _identifier);
-	static InputAction GetAction(std::string _identifier);
+public:
+	static bool CheckAction(std::string _name);
+	static InputAction GetAction(std::string _name);
+
+	std::string ToString() const;
 
 private:
-	InputAction(std::string _identifier);
+	InputAction(std::string _name);
 
-	std::string m_identifier;
-
-	static std::unordered_map<std::string, InputAction> Actions;
+	size_t m_id;
 };
 
 class InputState
 {
-public:
-	std::string GetIdentifier() const;
+	static std::unordered_map<size_t, std::string> States;
 
-	static bool CheckState(std::string _identifier);
-	static InputState GetState(std::string _identifier);
+public:
+	static bool CheckState(std::string _name);
+	static InputState GetState(std::string _name);
+
+	std::string ToString() const;
 
 private:
-	InputState(std::string _identifier);
+	InputState(std::string _name);
 
-	std::string m_identifier;
-
-	static std::unordered_map<std::string, InputState> States;
+	size_t m_id;
 };
 
 class InputRange
 {
-public:
-	std::string GetIdentifier() const;
+	static std::unordered_map<size_t, std::string> Ranges;
 
-	static bool CheckRange(std::string _identifier);
-	static InputRange GetRange(std::string _identifier);
+public:
+	static bool CheckRange(std::string _name);
+	static InputRange GetRange(std::string _name);
+
+	std::string ToString() const;
 
 private:
-	InputRange(std::string _identifier);
+	InputRange(std::string _name);
 
-	std::string m_identifier;
-
-	static std::unordered_map<std::string, InputRange> Ranges;
+	size_t m_id;
 };
 
 END_2_NAMESPACES

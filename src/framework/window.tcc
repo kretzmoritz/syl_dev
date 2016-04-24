@@ -7,8 +7,8 @@ BEGIN_2_NAMESPACES(SylDev, Framework)
 BEGIN_NAMESPACE(Impl)
 
 std::mutex WindowBase::Mutex;
-unsigned int WindowBase::Id = 0;
-std::unordered_map<std::string, std::pair<unsigned int, WindowClassDesc>> WindowBase::WndClasses;
+uint32_t WindowBase::Id = 0;
+std::unordered_map<std::string, std::pair<uint32_t, WindowClassDesc>> WindowBase::WndClasses;
 
 END_NAMESPACE
 
@@ -80,7 +80,7 @@ bool Window<T>::CreateClass(WindowClassDesc _classDesc)
 
 		if (_classDesc == classDesc)
 		{
-			unsigned int& count = ii->second.first;
+			uint32_t& count = ii->second.first;
 			++count;
 
 			className = ii->first;
@@ -134,7 +134,7 @@ void Window<T>::ReleaseClass()
 		return;
 	}
 
-	unsigned int& count = ii->second.first;
+	uint32_t& count = ii->second.first;
 	--count;
 
 	if (count == 0)

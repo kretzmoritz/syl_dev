@@ -32,10 +32,10 @@ BEGIN_NAMESPACE(TestData)
 class TestInfo
 {
 public:
-	TestInfo(std::string _file, int _line);
+	TestInfo(std::string _file, int32_t _line);
 
 	std::string m_file;
-	int m_line;
+	int32_t m_line;
 };
 
 class AssertResult
