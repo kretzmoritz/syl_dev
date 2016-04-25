@@ -18,7 +18,6 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include <assert.h>
 
 #define ENUM_WITH_STRING(name, ...) \
 	struct name \
@@ -33,6 +32,7 @@
 		public: \
 			Converter() \
 			{ \
+				int32_t const test[] = { __VA_ARGS__ }; \
 				std::string enumName = #name; \
 				std::string params = #__VA_ARGS__; \
 				size_t length = params.length(); \
@@ -52,12 +52,6 @@
 							stream.str(""); \
 							stream.clear(); \
 						} \
-					} \
-					else if (params[i] == '=') \
-					{ \
-						m_strings.clear(); \
-						assert(false && "Initializing an enum with specific values is not supported by this macro."); \
-						return; \
 					} \
 					else \
 					{ \
