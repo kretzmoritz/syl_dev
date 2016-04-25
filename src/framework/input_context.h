@@ -35,9 +35,12 @@ public:
 	InputRange MapAxisToRange(RawInputAxis::Type _axis, InputRange _range);
 
 private:
-	std::unordered_map<RawInputButton::Type, InputAction> m_Actions;
-	std::unordered_map<RawInputButton::Type, InputState> m_States;
-	std::unordered_map<RawInputAxis::Type, InputRange> m_Ranges;
+	static RawInputButton::Converter ButtonConverter;
+	static RawInputAxis::Converter AxisConverter;
+
+	std::unordered_map<RawInputButton::Type, InputAction> m_actions;
+	std::unordered_map<RawInputButton::Type, InputState> m_states;
+	std::unordered_map<RawInputAxis::Type, InputRange> m_ranges;
 };
 
 END_2_NAMESPACES

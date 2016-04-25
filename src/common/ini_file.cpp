@@ -1,12 +1,23 @@
 #include "ini_file.h"
 
 #include <Windows.h>
+#include "Shlwapi.h"
 
 using namespace SylDev::Common;
 
 IniFile::IniFile(std::string _file)
 	: m_file(_file)
 {
+	bool isFile = PathIsFileSpec(_file.c_str()) != 0;
+
+	if (isFile)
+	{
+		char buffer[MAX_PATH];
+		GetCurrentDirectory(MAX_PATH, buffer);
+
+		std::string path = buffer;
+		m_file = path + '/' + m_file;
+	}
 }
 
 int32_t IniFile::ReadInt(std::string _section, std::string _key)
@@ -16,25 +27,25 @@ int32_t IniFile::ReadInt(std::string _section, std::string _key)
 
 void IniFile::WriteInt(std::string _section, std::string _key, int32_t _value)
 {
-	char Buffer[256];
-	_itoa_s(_value, Buffer, 256, 10);
+	char buffer[256];
+	_itoa_s(_value, buffer, 256, 10);
 
-	WriteString(_section, _key, Buffer);
+	WriteString(_section, _key, buffer);
 }
 
 float IniFile::ReadFloat(std::string _section, std::string _key)
 {
-	std::string String = ReadString(_section, _key);
+	std::string string = ReadString(_section, _key);
 
-	return static_cast<float>(atof(String.c_str()));
+	return static_cast<float>(atof(string.c_str()));
 }
 
 void IniFile::WriteFloat(std::string _section, std::string _key, float _value)
 {
-	char Buffer[256];
-	sprintf_s(Buffer, 256, "%f", _value);
+	char buffer[256];
+	sprintf_s(buffer, 256, "%f", _value);
 
-	WriteString(_section, _key, Buffer);
+	WriteString(_section, _key, buffer);
 }
 
 bool IniFile::ReadBool(std::string _section, std::string _key)
