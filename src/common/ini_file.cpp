@@ -8,7 +8,7 @@ using namespace SylDev::Common;
 IniFile::IniFile(std::string _file)
 	: m_file(_file)
 {
-	bool isFile = PathIsFileSpec(_file.c_str()) != 0;
+	bool isFile = PathIsRelative(_file.c_str()) != 0;
 
 	if (isFile)
 	{
@@ -18,6 +18,11 @@ IniFile::IniFile(std::string _file)
 		std::string path = buffer;
 		m_file = path + '/' + m_file;
 	}
+
+	size_t found = m_file.find_last_of("/\\");
+	std::string directory = m_file.substr(0, found);
+
+	CreateDirectory(directory.c_str(), NULL);
 }
 
 int32_t IniFile::ReadInt(std::string _section, std::string _key)
