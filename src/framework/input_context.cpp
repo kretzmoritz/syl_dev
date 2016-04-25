@@ -10,14 +10,16 @@ RawInputAxis::Converter InputContext::AxisConverter;
 
 void InputContext::ReadFromFile(std::string _file)
 {
+	m_actions.clear();
+	m_states.clear();
+	m_ranges.clear();
+
 	IniFile iniReader(_file);
 
 	for (uint32_t i = 0; i < RawInputButton::Count; ++i)
 	{
 		RawInputButton::Type button = static_cast<RawInputButton::Type>(i);
-		std::string buttonString = ButtonConverter.ToString(button);
-		
-		std::string actionString = iniReader.ReadString("Actions", buttonString);
+		std::string actionString = iniReader.ReadString("Actions", ButtonConverter.ToString(button));
 
 		if (InputAction::CheckAction(actionString))
 		{
@@ -30,9 +32,7 @@ void InputContext::ReadFromFile(std::string _file)
 	for (uint32_t i = 0; i < RawInputButton::Count; ++i)
 	{
 		RawInputButton::Type button = static_cast<RawInputButton::Type>(i);
-		std::string buttonString = ButtonConverter.ToString(button);
-		
-		std::string stateString = iniReader.ReadString("States", buttonString);
+		std::string stateString = iniReader.ReadString("States", ButtonConverter.ToString(button));
 
 		if (InputState::CheckState(stateString))
 		{
@@ -45,9 +45,7 @@ void InputContext::ReadFromFile(std::string _file)
 	for (uint32_t i = 0; i < RawInputAxis::Count; ++i)
 	{
 		RawInputAxis::Type axis = static_cast<RawInputAxis::Type>(i);
-		std::string axisString = AxisConverter.ToString(axis);
-		
-		std::string rangeString = iniReader.ReadString("Ranges", axisString);
+		std::string rangeString = iniReader.ReadString("Ranges", AxisConverter.ToString(axis));
 
 		if (InputRange::CheckRange(rangeString))
 		{
@@ -62,33 +60,57 @@ void InputContext::WriteToFile(std::string _file)
 {
 	IniFile iniWriter(_file);
 
-	for (auto ii = m_actions.begin(); ii != m_actions.end(); ++ii)
+	for (uint32_t i = 0; i < RawInputButton::Count; ++i)
 	{
-		RawInputButton::Type button = ii->first;
-		InputAction action = ii->second;
+		RawInputButton::Type button = static_cast<RawInputButton::Type>(i);
+		std::string actionString = "";
 
-		iniWriter.WriteString("Actions", ButtonConverter.ToString(button), action.ToString());
+		auto ii = m_actions.find(button);
+
+		if (ii != m_actions.end())
+		{
+			actionString = ii->second.ToString();
+		}
+
+		iniWriter.WriteString("Actions", ButtonConverter.ToString(button), actionString);
 	}
 
-	for (auto ii = m_states.begin(); ii != m_states.end(); ++ii)
+	for (uint32_t i = 0; i < RawInputButton::Count; ++i)
 	{
-		RawInputButton::Type button = ii->first;
-		InputState state = ii->second;
+		RawInputButton::Type button = static_cast<RawInputButton::Type>(i);
+		std::string stateString = "";
 
-		iniWriter.WriteString("States", ButtonConverter.ToString(button), state.ToString());
+		auto ii = m_states.find(button);
+
+		if (ii != m_states.end())
+		{
+			stateString = ii->second.ToString();
+		}
+
+		iniWriter.WriteString("States", ButtonConverter.ToString(button), stateString);
 	}
 
-	for (auto ii = m_ranges.begin(); ii != m_ranges.end(); ++ii)
+	for (uint32_t i = 0; i < RawInputAxis::Count; ++i)
 	{
-		RawInputAxis::Type axis = ii->first;
-		InputRange range = ii->second;
+		RawInputAxis::Type axis = static_cast<RawInputAxis::Type>(i);
+		std::string rangeString = "";
 
-		iniWriter.WriteString("Ranges", AxisConverter.ToString(axis), range.ToString());
+		auto ii = m_ranges.find(axis);
+
+		if (ii != m_ranges.end())
+		{
+			rangeString = ii->second.ToString();
+		}
+
+		iniWriter.WriteString("Ranges", AxisConverter.ToString(axis), rangeString);
 	}
 }
 
 InputAction InputContext::MapButtonToAction(RawInputButton::Type _button, InputAction _action)
 {
+	if (_action.ToString().empty())
+		return _action;
+
 	auto ii = m_actions.emplace(_button, _action);
 
 	if (!ii.second) // There was already an action associated with this button.
@@ -104,6 +126,9 @@ InputAction InputContext::MapButtonToAction(RawInputButton::Type _button, InputA
 
 InputState InputContext::MapButtonToState(RawInputButton::Type _button, InputState _state)
 {
+	if (_state.ToString().empty())
+		return _state;
+
 	auto ii = m_states.emplace(_button, _state);
 
 	if (!ii.second) // There was already a state associated with this button.
@@ -119,6 +144,9 @@ InputState InputContext::MapButtonToState(RawInputButton::Type _button, InputSta
 
 InputRange InputContext::MapAxisToRange(RawInputAxis::Type _axis, InputRange _range)
 {
+	if (_range.ToString().empty())
+		return _range;
+
 	auto ii = m_ranges.emplace(_axis, _range);
 
 	if (!ii.second) // There was already a range associated with this axis.

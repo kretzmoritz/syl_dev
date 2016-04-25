@@ -18,6 +18,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <assert.h>
 
 #define ENUM_WITH_STRING(name, ...) \
 	struct name \
@@ -55,6 +56,7 @@
 					else if (params[i] == '=') \
 					{ \
 						m_strings.clear(); \
+						assert(false && "Initializing an enum with specific values is not supported by this macro."); \
 						return; \
 					} \
 					else \
