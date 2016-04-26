@@ -22,7 +22,7 @@
 
 BEGIN_2_NAMESPACES(SylDev, App)
 
-namespace MenuId
+struct MenuId
 {
 	enum Type
 	{

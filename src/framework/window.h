@@ -41,7 +41,7 @@ protected:
 
 END_NAMESPACE
 
-namespace WindowCreationResult
+struct WindowCreationResult
 {
 	enum Type
 	{
