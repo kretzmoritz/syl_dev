@@ -5,9 +5,6 @@
 using namespace SylDev::Framework;
 using namespace SylDev::Common;
 
-RawInputButton::Converter InputContext::ButtonConverter;
-RawInputAxis::Converter InputContext::AxisConverter;
-
 void InputContext::ReadFromFile(std::string _file)
 {
 	m_actions.clear();
@@ -16,10 +13,10 @@ void InputContext::ReadFromFile(std::string _file)
 
 	IniFile iniReader(_file);
 
-	for (uint32_t i = 0; i < RawInputButton::Count; ++i)
+	for (size_t i = 0; i < RawInputButton::_size(); ++i)
 	{
-		RawInputButton::Type button = static_cast<RawInputButton::Type>(i);
-		std::string actionString = iniReader.ReadString("Actions", ButtonConverter.ToString(button));
+		RawInputButton button = RawInputButton::_from_integral(i);
+		std::string actionString = iniReader.ReadString("Actions", button._to_string());
 
 		if (InputAction::CheckAction(actionString))
 		{
@@ -29,10 +26,10 @@ void InputContext::ReadFromFile(std::string _file)
 		}
 	}
 
-	for (uint32_t i = 0; i < RawInputButton::Count; ++i)
+	for (size_t i = 0; i < RawInputButton::_size(); ++i)
 	{
-		RawInputButton::Type button = static_cast<RawInputButton::Type>(i);
-		std::string stateString = iniReader.ReadString("States", ButtonConverter.ToString(button));
+		RawInputButton button = RawInputButton::_from_integral(i);
+		std::string stateString = iniReader.ReadString("States", button._to_string());
 
 		if (InputState::CheckState(stateString))
 		{
@@ -42,10 +39,10 @@ void InputContext::ReadFromFile(std::string _file)
 		}
 	}
 
-	for (uint32_t i = 0; i < RawInputAxis::Count; ++i)
+	for (size_t i = 0; i < RawInputAxis::_size(); ++i)
 	{
-		RawInputAxis::Type axis = static_cast<RawInputAxis::Type>(i);
-		std::string rangeString = iniReader.ReadString("Ranges", AxisConverter.ToString(axis));
+		RawInputAxis axis = RawInputAxis::_from_integral(i);
+		std::string rangeString = iniReader.ReadString("Ranges", axis._to_string());
 
 		if (InputRange::CheckRange(rangeString))
 		{
@@ -60,9 +57,9 @@ void InputContext::WriteToFile(std::string _file)
 {
 	IniFile iniWriter(_file);
 
-	for (uint32_t i = 0; i < RawInputButton::Count; ++i)
+	for (size_t i = 0; i < RawInputButton::_size(); ++i)
 	{
-		RawInputButton::Type button = static_cast<RawInputButton::Type>(i);
+		RawInputButton button = RawInputButton::_from_integral(i);
 		std::string actionString = "";
 
 		auto ii = m_actions.find(button);
@@ -72,12 +69,12 @@ void InputContext::WriteToFile(std::string _file)
 			actionString = ii->second.ToString();
 		}
 
-		iniWriter.WriteString("Actions", ButtonConverter.ToString(button), actionString);
+		iniWriter.WriteString("Actions", button._to_string(), actionString);
 	}
 
-	for (uint32_t i = 0; i < RawInputButton::Count; ++i)
+	for (size_t i = 0; i < RawInputButton::_size(); ++i)
 	{
-		RawInputButton::Type button = static_cast<RawInputButton::Type>(i);
+		RawInputButton button = RawInputButton::_from_integral(i);
 		std::string stateString = "";
 
 		auto ii = m_states.find(button);
@@ -87,12 +84,12 @@ void InputContext::WriteToFile(std::string _file)
 			stateString = ii->second.ToString();
 		}
 
-		iniWriter.WriteString("States", ButtonConverter.ToString(button), stateString);
+		iniWriter.WriteString("States", button._to_string(), stateString);
 	}
 
-	for (uint32_t i = 0; i < RawInputAxis::Count; ++i)
+	for (size_t i = 0; i < RawInputAxis::_size(); ++i)
 	{
-		RawInputAxis::Type axis = static_cast<RawInputAxis::Type>(i);
+		RawInputAxis axis = RawInputAxis::_from_integral(i);
 		std::string rangeString = "";
 
 		auto ii = m_ranges.find(axis);
@@ -102,11 +99,11 @@ void InputContext::WriteToFile(std::string _file)
 			rangeString = ii->second.ToString();
 		}
 
-		iniWriter.WriteString("Ranges", AxisConverter.ToString(axis), rangeString);
+		iniWriter.WriteString("Ranges", axis._to_string(), rangeString);
 	}
 }
 
-InputAction InputContext::MapButtonToAction(RawInputButton::Type _button, InputAction _action)
+InputAction InputContext::MapButtonToAction(RawInputButton _button, InputAction _action)
 {
 	if (_action.ToString().empty())
 		return _action;
@@ -124,7 +121,7 @@ InputAction InputContext::MapButtonToAction(RawInputButton::Type _button, InputA
 	return ii.first->second;
 }
 
-InputState InputContext::MapButtonToState(RawInputButton::Type _button, InputState _state)
+InputState InputContext::MapButtonToState(RawInputButton _button, InputState _state)
 {
 	if (_state.ToString().empty())
 		return _state;
@@ -142,7 +139,7 @@ InputState InputContext::MapButtonToState(RawInputButton::Type _button, InputSta
 	return ii.first->second;
 }
 
-InputRange InputContext::MapAxisToRange(RawInputAxis::Type _axis, InputRange _range)
+InputRange InputContext::MapAxisToRange(RawInputAxis _axis, InputRange _range)
 {
 	if (_range.ToString().empty())
 		return _range;

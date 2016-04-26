@@ -4,7 +4,7 @@
 
 using namespace SylDev::Framework;
 
-const std::unordered_map<RawInputButton::Type, uint32_t> RawInputHandler::Mapping =
+const std::unordered_map<RawInputButton::_enumerated, uint32_t> RawInputHandler::Mapping =
 {
 	{ RawInputButton::LMouse, VK_LBUTTON },
 	{ RawInputButton::RMouse, VK_RBUTTON },
@@ -122,7 +122,7 @@ void RawInputHandler::Refresh()
 	}
 }
 
-bool RawInputHandler::IsPressed(RawInputButton::Type _button)
+bool RawInputHandler::IsPressed(RawInputButton _button)
 {
 	uint32_t id;
 
@@ -135,7 +135,7 @@ bool RawInputHandler::IsPressed(RawInputButton::Type _button)
 	return m_pressed[id];
 }
 
-bool RawInputHandler::IsDown(RawInputButton::Type _button)
+bool RawInputHandler::IsDown(RawInputButton _button)
 {
 	uint32_t id;
 
@@ -148,7 +148,7 @@ bool RawInputHandler::IsDown(RawInputButton::Type _button)
 	return m_down[id];
 }
 
-bool RawInputHandler::IsToggled(RawInputButton::Type _button)
+bool RawInputHandler::IsToggled(RawInputButton _button)
 {
 	uint32_t id;
 
@@ -161,7 +161,7 @@ bool RawInputHandler::IsToggled(RawInputButton::Type _button)
 	return m_toggled[id];
 }
 
-bool RawInputHandler::IsReleased(RawInputButton::Type _button)
+bool RawInputHandler::IsReleased(RawInputButton _button)
 {
 	uint32_t id;
 
@@ -207,7 +207,7 @@ bool RawInputHandler::HasFocus() const
 	return GetFocus() != NULL;
 }
 
-bool RawInputHandler::GetId(RawInputButton::Type _button, uint32_t& _id) const
+bool RawInputHandler::GetId(RawInputButton _button, uint32_t& _id) const
 {
 	auto ii = Mapping.find(_button);
 

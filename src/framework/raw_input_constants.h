@@ -20,7 +20,7 @@
 
 BEGIN_2_NAMESPACES(SylDev, Framework)
 
-ENUM_WITH_STRING(RawInputButton,
+BETTER_ENUM(RawInputButton, int,
 	LMouse,
 	RMouse,
 	MiddleMouse,
@@ -88,7 +88,7 @@ ENUM_WITH_STRING(RawInputButton,
 	RAlt,
 	Tilde)
 
-ENUM_WITH_STRING(RawInputAxis,
+BETTER_ENUM(RawInputAxis, int,
 	MouseX,
 	MouseY,
 	MouseScroll)

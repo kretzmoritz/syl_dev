@@ -30,17 +30,14 @@ public:
 	void ReadFromFile(std::string _file);
 	void WriteToFile(std::string _file);
 
-	InputAction MapButtonToAction(RawInputButton::Type _button, InputAction _action);
-	InputState MapButtonToState(RawInputButton::Type _button, InputState _state);
-	InputRange MapAxisToRange(RawInputAxis::Type _axis, InputRange _range);
+	InputAction MapButtonToAction(RawInputButton _button, InputAction _action);
+	InputState MapButtonToState(RawInputButton _button, InputState _state);
+	InputRange MapAxisToRange(RawInputAxis _axis, InputRange _range);
 
 private:
-	static RawInputButton::Converter ButtonConverter;
-	static RawInputAxis::Converter AxisConverter;
-
-	std::unordered_map<RawInputButton::Type, InputAction> m_actions;
-	std::unordered_map<RawInputButton::Type, InputState> m_states;
-	std::unordered_map<RawInputAxis::Type, InputRange> m_ranges;
+	std::unordered_map<RawInputButton::_enumerated, InputAction> m_actions;
+	std::unordered_map<RawInputButton::_enumerated, InputState> m_states;
+	std::unordered_map<RawInputAxis::_enumerated, InputRange> m_ranges;
 };
 
 END_2_NAMESPACES
