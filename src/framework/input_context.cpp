@@ -15,7 +15,7 @@ void InputContext::ReadFromFile(std::string _file)
 
 	for (size_t i = 0; i < RawInputButton::_size(); ++i)
 	{
-		RawInputButton button = RawInputButton::_from_integral(i);
+		RawInputButton button = RawInputButton::_values()[i];
 		std::string actionString = iniReader.ReadString("Actions", button._to_string());
 
 		if (InputAction::CheckAction(actionString))
@@ -28,7 +28,7 @@ void InputContext::ReadFromFile(std::string _file)
 
 	for (size_t i = 0; i < RawInputButton::_size(); ++i)
 	{
-		RawInputButton button = RawInputButton::_from_integral(i);
+		RawInputButton button = RawInputButton::_values()[i];
 		std::string stateString = iniReader.ReadString("States", button._to_string());
 
 		if (InputState::CheckState(stateString))
@@ -41,7 +41,7 @@ void InputContext::ReadFromFile(std::string _file)
 
 	for (size_t i = 0; i < RawInputAxis::_size(); ++i)
 	{
-		RawInputAxis axis = RawInputAxis::_from_integral(i);
+		RawInputAxis axis = RawInputAxis::_values()[i];
 		std::string rangeString = iniReader.ReadString("Ranges", axis._to_string());
 
 		if (InputRange::CheckRange(rangeString))
@@ -59,7 +59,7 @@ void InputContext::WriteToFile(std::string _file)
 
 	for (size_t i = 0; i < RawInputButton::_size(); ++i)
 	{
-		RawInputButton button = RawInputButton::_from_integral(i);
+		RawInputButton button = RawInputButton::_values()[i];
 		std::string actionString = "";
 
 		auto ii = m_actions.find(button);
@@ -74,7 +74,7 @@ void InputContext::WriteToFile(std::string _file)
 
 	for (size_t i = 0; i < RawInputButton::_size(); ++i)
 	{
-		RawInputButton button = RawInputButton::_from_integral(i);
+		RawInputButton button = RawInputButton::_values()[i];
 		std::string stateString = "";
 
 		auto ii = m_states.find(button);
@@ -89,7 +89,7 @@ void InputContext::WriteToFile(std::string _file)
 
 	for (size_t i = 0; i < RawInputAxis::_size(); ++i)
 	{
-		RawInputAxis axis = RawInputAxis::_from_integral(i);
+		RawInputAxis axis = RawInputAxis::_values()[i];
 		std::string rangeString = "";
 
 		auto ii = m_ranges.find(axis);
