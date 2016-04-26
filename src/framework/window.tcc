@@ -2,15 +2,15 @@
 
 #include "window_procedure.h"
 
-BEGIN_2_NAMESPACES(SylDev, Framework)
+namespace SylDev { namespace Framework {
 
-BEGIN_NAMESPACE(Impl)
+namespace Impl {
 
 std::mutex WindowBase::Mutex;
 uint32_t WindowBase::Id = 0;
 std::unordered_map<std::string, std::pair<uint32_t, WindowClassDesc>> WindowBase::WndClasses;
 
-END_NAMESPACE
+} // Impl
 
 template<class T>
 Window<T>::Window(WindowCreationResult::Type& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine)
@@ -229,4 +229,4 @@ void Window<T>::MessageLoop()
 	}
 }
 
-END_2_NAMESPACES
+} } // SylDev, Framework

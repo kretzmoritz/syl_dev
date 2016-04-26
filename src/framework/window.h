@@ -22,14 +22,13 @@
 #include <unordered_map>
 #include <string>
 
-#include "../common/namespace.h"
 #include "window_desc.h"
 
-BEGIN_2_NAMESPACES(SylDev, Framework)
+namespace SylDev { namespace Framework {
 
 class WindowProcedure;
 
-BEGIN_NAMESPACE(Impl)
+namespace Impl {
 
 class WindowBase
 {
@@ -39,7 +38,7 @@ protected:
 	static std::unordered_map<std::string, std::pair<uint32_t, WindowClassDesc>> WndClasses;
 };
 
-END_NAMESPACE
+} // Impl
 
 struct WindowCreationResult
 {
@@ -82,7 +81,7 @@ private:
 	std::condition_variable m_creationFinished;
 };
 
-END_2_NAMESPACES
+} } // SylDev, Framework
 
 #include "window.tcc"
 

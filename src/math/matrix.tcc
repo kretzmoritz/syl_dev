@@ -2,9 +2,9 @@
 
 #include <assert.h>
 
-BEGIN_2_NAMESPACES(SylDev, Math)
+namespace SylDev { namespace Math {
 
-BEGIN_NAMESPACE(Impl)
+namespace Impl {
 
 template<class T, size_t rows, size_t columns>
 MatrixBase<T, rows, columns>::MatrixBase()
@@ -44,7 +44,7 @@ T const& MatrixSpecialized<T, rows, columns, false>::get(size_t _row, size_t _co
 	return data[_column * rows + _row];
 }
 
-END_NAMESPACE
+} // Impl
 
 template<class T, size_t rows, size_t columns, bool row_major>
 Matrix<T, rows, columns, row_major>::Matrix(Matrix<T, rows, columns, true> const& _m)
@@ -372,9 +372,9 @@ Impl::SquareMatrixReturnType<T, U, Impl::CheckElemOpReturnT<std::multiplies<>, T
 	return _lhs;
 }
 
-BEGIN_NAMESPACE(MatHelper)
+namespace MatHelper {
 
-BEGIN_NAMESPACE(Impl)
+namespace Impl {
 
 template<class T, size_t n, bool row_major>
 Matrix<T, n, 1, row_major> solve_for_x(Matrix<T, n, n, row_major> const& _l, Matrix<T, n, n, row_major> const& _u, Matrix<T, n, 1, row_major> const& _b)
@@ -414,7 +414,7 @@ Matrix<T, n, 1, row_major> solve_for_x(Matrix<T, n, n, row_major> const& _l, Mat
 	return x;
 }
 
-END_NAMESPACE
+} // Impl
 
 template<class T, size_t rows, size_t columns, bool row_major>
 Matrix<T, rows, columns, row_major>& make_zero(Matrix<T, rows, columns, row_major>& _m)
@@ -546,6 +546,6 @@ bool inverse(Matrix<T, n, n, row_major> const& _m, Matrix<T, n, n, row_major>& _
 	return true;
 }
 
-END_NAMESPACE
+} // MatHelper
 
-END_2_NAMESPACES
+} } // SylDev, Math

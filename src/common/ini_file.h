@@ -17,9 +17,7 @@
 
 #include <string>
 
-#include "../common/namespace.h"
-
-BEGIN_2_NAMESPACES(SylDev, Common)
+namespace SylDev { namespace Common {
 
 class IniFile
 {
@@ -42,6 +40,6 @@ private:
 	std::string m_file;
 };
 
-END_2_NAMESPACES
+} } // SylDev, Common
 
 #endif

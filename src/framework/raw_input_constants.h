@@ -15,10 +15,9 @@
 #ifndef SYLDEV_FRAMEWORK_RAWINPUTCONSTANTS
 #define SYLDEV_FRAMEWORK_RAWINPUTCONSTANTS
 
-#include "../common/namespace.h"
 #include "../common/enum.h"
 
-BEGIN_2_NAMESPACES(SylDev, Framework)
+namespace SylDev { namespace Framework {
 
 BETTER_ENUM(RawInputButton, int,
 	LMouse,
@@ -93,6 +92,6 @@ BETTER_ENUM(RawInputAxis, int,
 	MouseY,
 	MouseScroll)
 
-END_2_NAMESPACES
+} } // SylDev, Framework
 
 #endif

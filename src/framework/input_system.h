@@ -15,15 +15,13 @@
 #ifndef SYLDEV_FRAMEWORK_INPUTSYSTEM
 #define SYLDEV_FRAMEWORK_INPUTSYSTEM
 
-#include "../common/namespace.h"
-
-BEGIN_2_NAMESPACES(SylDev, Framework)
+namespace SylDev { namespace Framework {
 
 class InputSystem
 {
 
 };
 
-END_2_NAMESPACES
+} } // SylDev, Framework
 
 #endif

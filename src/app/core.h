@@ -17,10 +17,9 @@
 
 #include <Windows.h>
 
-#include "../common/namespace.h"
 #include "../framework/raw_input_handler.h"
 
-BEGIN_2_NAMESPACES(SylDev, App)
+namespace SylDev { namespace App {
 
 struct MenuId
 {
@@ -46,6 +45,6 @@ private:
 	SylDev::Framework::RawInputHandler m_rawInputHandler;
 };
 
-END_2_NAMESPACES
+} } // SylDev, App
 
 #endif

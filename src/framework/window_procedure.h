@@ -17,9 +17,7 @@
 
 #include <Windows.h>
 
-#include "../common/namespace.h"
-
-BEGIN_2_NAMESPACES(SylDev, Framework)
+namespace SylDev { namespace Framework {
 
 class WindowProcedure
 {
@@ -29,7 +27,7 @@ public:
 	virtual LRESULT CALLBACK operator()(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam) = 0;
 };
 
-END_2_NAMESPACES
+} } // SylDev, Framework
 
 #define SYLDEV_WM_INIT (WM_USER + 0)
 #define SYLDEV_WM_UPDATE (WM_USER + 1)

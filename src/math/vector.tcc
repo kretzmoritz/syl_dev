@@ -1,8 +1,8 @@
 #include "vector.h"
 
-BEGIN_2_NAMESPACES(SylDev, Math)
+namespace SylDev { namespace Math {
 
-BEGIN_NAMESPACE(Impl)
+namespace Impl {
 
 template<class T, size_t n>
 T& VectorBase<T, n>::operator()(size_t _n)
@@ -35,7 +35,7 @@ T VectorBase<T, n>::length_sqr() const
 	return result;
 }
 
-END_NAMESPACE
+} // Impl
 
 template<class T, size_t n>
 template<class... Ts> Vector<T, n>::Vector(T _value, Ts... _rest)
@@ -154,7 +154,7 @@ Vector<T, 4>& Vector<T, 4>::operator=(Vector<T, 4> const& _v)
 	return *this;
 }
 
-BEGIN_NAMESPACE(VecHelper)
+namespace VecHelper {
 
 template<class T, size_t n>
 Vector<T, n>& normalize(Vector<T, n>& _v)
@@ -198,6 +198,6 @@ Vector<T, n> project(Vector<T, n> const& _v, Vector<T, n> const& _onto)
 	return _onto * dot(_onto, _v) / length_sqr;
 }
 
-END_NAMESPACE
+} // VecHelper
 
-END_2_NAMESPACES
+} } // SylDev, Math

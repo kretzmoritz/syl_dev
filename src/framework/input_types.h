@@ -18,9 +18,7 @@
 #include <unordered_map>
 #include <string>
 
-#include "../common/namespace.h"
-
-BEGIN_2_NAMESPACES(SylDev, Framework)
+namespace SylDev { namespace Framework {
 
 class InputAction
 {
@@ -70,6 +68,6 @@ private:
 	size_t m_id;
 };
 
-END_2_NAMESPACES
+} } // SylDev, Framework
 
 #endif

@@ -15,15 +15,14 @@
 #ifndef SYLDEV_MATH_VECTOR
 #define SYLDEV_MATH_VECTOR
 
-#include "../common/namespace.h"
 #include "matrix.h"
 
-BEGIN_2_NAMESPACES(SylDev, Math)
+namespace SylDev { namespace Math {
 
 template<class T, size_t n>
 class Vector;
 
-BEGIN_NAMESPACE(Impl)
+namespace Impl {
 
 template<class T, size_t n>
 class VectorBase
@@ -41,7 +40,7 @@ public:
 	template<class U, size_t other_n = n> using MyType = Vector<U, other_n>;
 };
 
-END_NAMESPACE
+} // Impl
 
 template<class T, size_t n>
 class Vector
@@ -116,7 +115,7 @@ typedef Vector<int32_t, 2> Vec2i;
 typedef Vector<int32_t, 3> Vec3i;
 typedef Vector<int32_t, 4> Vec4i;
 
-BEGIN_NAMESPACE(VecHelper)
+namespace VecHelper {
 
 template<class T, size_t n>
 Vector<T, n>& normalize(Vector<T, n>& _v);
@@ -130,9 +129,9 @@ Vector<T, 3> cross(Vector<T, 3> const& _v1, Vector<T, 3> const& _v2);
 template<class T, size_t n>
 Vector<T, n> project(Vector<T, n> const& _v, Vector<T, n> const& _onto);
 
-END_NAMESPACE
+} // VecHelper
 
-END_2_NAMESPACES
+} } // SylDev, Math
 
 #include "vector.tcc"
 

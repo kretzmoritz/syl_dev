@@ -17,11 +17,9 @@
 
 #include <type_traits>
 
-#include "../common/namespace.h"
+namespace SylDev { namespace Math {
 
-BEGIN_2_NAMESPACES(SylDev, Math)
-
-BEGIN_NAMESPACE(Impl)
+namespace Impl {
 
 template<class T, size_t rows, size_t columns>
 class MatrixBase
@@ -73,7 +71,7 @@ protected:
 
 ///////////////////////////////////
 
-END_NAMESPACE
+} // Impl
 
 template<class T, size_t rows, size_t columns, bool row_major = true>
 class Matrix
@@ -113,7 +111,7 @@ typedef Matrix<int32_t, 2, 2> Mat2x2i;
 typedef Matrix<int32_t, 3, 3> Mat3x3i;
 typedef Matrix<int32_t, 4, 4> Mat4x4i;
 
-BEGIN_NAMESPACE(Impl)
+namespace Impl {
 
 template<class Op, class T, class U>
 using ElemOpReturnType = decltype(Op()(std::declval<typename T::ElemType>(), std::declval<typename U::ElemType>()));
@@ -145,7 +143,7 @@ using MultiplyWithMatrixReturnType
 	= typename std::enable_if<std::is_base_of<Matrix<typename T::ElemType, T::Rows, T::Columns, T::RowMajor>, T>::value 
 		&& std::is_base_of<Matrix<typename U::ElemType, T::Columns, U::Columns, U::RowMajor>, U>::value, V>::type;
 
-END_NAMESPACE
+} // Impl
 
 template<class T, size_t rows, size_t columns, bool lhs_row_major, bool rhs_row_major>
 bool operator==(
@@ -193,14 +191,14 @@ Impl::MultiplyWithMatrixReturnType<T, U, typename T::template MyType<Impl::ElemO
 template<class T, class U>
 Impl::SquareMatrixReturnType<T, U, Impl::CheckElemOpReturnT<std::multiplies<>, T, U>>& operator*=(T& _lhs, U const& _rhs);
 
-BEGIN_NAMESPACE(MatHelper)
+namespace MatHelper {
 
-BEGIN_NAMESPACE(Impl)
+namespace Impl {
 
 template<class T, size_t n, bool row_major>
 Matrix<T, n, 1, row_major> solve_for_x(Matrix<T, n, n, row_major> const& _l, Matrix<T, n, n, row_major> const& _u, Matrix<T, n, 1, row_major> const& _b);
 
-END_NAMESPACE
+} // Impl
 
 template<class T, size_t rows, size_t columns, bool row_major>
 Matrix<T, rows, columns, row_major>& make_zero(Matrix<T, rows, columns, row_major>& _m);
@@ -217,9 +215,9 @@ T determinant(Matrix<T, n, n, row_major> const& _m);
 template<class T, size_t n, bool row_major>
 bool inverse(Matrix<T, n, n, row_major> const& _m, Matrix<T, n, n, row_major>& _inv);
 
-END_NAMESPACE
+} // MathHelper
 
-END_2_NAMESPACES
+} } // SylDev, Math
 
 #include "matrix.tcc"
 

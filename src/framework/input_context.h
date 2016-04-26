@@ -15,14 +15,13 @@
 #ifndef SYLDEV_FRAMEWORK_INPUTCONTEXT
 #define SYLDEV_FRAMEWORK_INPUTCONTEXT
 
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
 
-#include "../common/namespace.h"
 #include "raw_input_constants.h"
 #include "input_types.h"
 
-BEGIN_2_NAMESPACES(SylDev, Framework)
+namespace SylDev { namespace Framework {
 
 class InputContext
 {
@@ -40,6 +39,6 @@ private:
 	std::unordered_map<RawInputAxis::_enumerated, InputRange> m_ranges;
 };
 
-END_2_NAMESPACES
+} } // SylDev, Framework
 
 #endif

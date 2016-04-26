@@ -15,11 +15,10 @@
 #ifndef SYLDEV_APP_WINDOWPROCEDURE
 #define SYLDEV_APP_WINDOWPROCEDURE
 
-#include "../common/namespace.h"
 #include "../framework/window_procedure.h"
 #include "core.h"
 
-BEGIN_2_NAMESPACES(SylDev, App)
+namespace SylDev { namespace App {
 
 class WindowProcedure
 	: public SylDev::Framework::WindowProcedure
@@ -33,6 +32,6 @@ private:
 	Core m_Core;
 };
 
-END_2_NAMESPACES
+} } // SylDev, App
 
 #endif

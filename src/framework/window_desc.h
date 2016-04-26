@@ -17,9 +17,7 @@
 
 #include <Windows.h>
 
-#include "../common/namespace.h"
-
-BEGIN_2_NAMESPACES(SylDev, Framework)
+namespace SylDev { namespace Framework {
 
 class WindowClassDesc
 {
@@ -52,6 +50,6 @@ public:
 	int nCmdShow;
 };
 
-END_2_NAMESPACES
+} } // SylDev, Framework
 
 #endif

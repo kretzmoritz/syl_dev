@@ -21,13 +21,11 @@
 #include <vector>
 #include <unordered_map>
 
-#include "namespace.h"
-
-BEGIN_2_NAMESPACES(SylDev, Common)
+namespace SylDev { namespace Common {
 
 class TestEnvironment;
 
-BEGIN_NAMESPACE(TestData)
+namespace TestData {
 
 class TestInfo
 {
@@ -84,7 +82,7 @@ private:
 	bool m_totalResult;
 };
 
-END_NAMESPACE
+} // TestData
 
 class TestContext
 {
@@ -97,7 +95,7 @@ private:
 	TestData::TestResult& m_testResult;
 };
 
-BEGIN_NAMESPACE(Impl)
+namespace Impl {
 
 class TestSuite;
 
@@ -185,7 +183,7 @@ public:
 	AssignSuiteFixtureLeave(TestSuite& _suite, std::function<void()> _func);
 };
 
-END_NAMESPACE
+} // Impl
 
 class TestPrinter
 {
@@ -241,12 +239,12 @@ private:
 	std::vector<TestData::SuiteResult> m_suiteResults;
 };
 
-END_2_NAMESPACES
+} } // SylDev, Common
 
 #define SYLDEV_TESTSUITE(name) \
-BEGIN_NAMESPACE(name) \
+namespace name { \
 static SylDev::Common::Impl::TestSuite Suite(SylDev::Common::TestEnvironment::GetInstance(), #name); \
-END_NAMESPACE \
+} \
 namespace name \
 
 #define SYLDEV_TESTSUITE_DEPEND(name) \

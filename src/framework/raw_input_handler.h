@@ -17,11 +17,10 @@
 
 #include <unordered_map>
 
-#include "../common/namespace.h"
 #include "raw_input_constants.h"
 #include "../math/vector.h"
 
-BEGIN_2_NAMESPACES(SylDev, Framework)
+namespace SylDev { namespace Framework {
 
 class RawInputHandler
 {
@@ -53,6 +52,6 @@ private:
 	bool m_released[KeyCount];
 };
 
-END_2_NAMESPACES
+} } // SylDev, Framework
 
 #endif
