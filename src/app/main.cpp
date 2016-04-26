@@ -2,6 +2,10 @@
 #include "../framework/window_desc.h"
 #include "../framework/window.h"
 #include "window_procedure.h"
+#include "../framework/input_context.h"
+
+using namespace SylDev::Common;
+using namespace SylDev::Framework;
 
 // In progress:
 // - Input system
@@ -11,28 +15,35 @@
 // - File loading (texture, meshes)
 // - Basic renderer
 
-void run_tests()
+void RunTests()
 {
-	SylDev::Common::TestPrinterStream streamPrinter;
-	SylDev::Common::TestEnvironment::GetInstance().AssignPrinter(&streamPrinter);
+	TestPrinterStream streamPrinter;
+	TestEnvironment::GetInstance().AssignPrinter(&streamPrinter);
 
-	bool testResult = SylDev::Common::TestEnvironment::GetInstance().Run();
+	bool testResult = TestEnvironment::GetInstance().Run();
 
 	streamPrinter.OutputToConsole();
 	streamPrinter.OutputToFile("unit_tests.log");
 
-	SylDev::Common::TestEnvironment::GetInstance().AssignPrinter(nullptr);
+	TestEnvironment::GetInstance().AssignPrinter(nullptr);
 }
 
 int main(int _argc, char* _argv[])
 {
-	run_tests();
+	RunTests();
 
-	SylDev::Framework::WindowCreationResult::Type result;
-	SylDev::Framework::WindowClassDesc classDesc;
-	SylDev::Framework::WindowDesc wndDesc;
+	WindowCreationResult::Type result;
+	WindowClassDesc classDesc;
+	WindowDesc wndDesc;
 
-	SylDev::Framework::Window<SylDev::App::WindowProcedure> Window(result, classDesc, wndDesc, GetCommandLine());
+	Window<SylDev::App::WindowProcedure> Window(result, classDesc, wndDesc, GetCommandLine());
+
+	InputAction ACTION_CONFIRM = InputAction::GetAction("ACTION_CONFIRM");
+
+	InputContext inputContext;
+	inputContext.MapButtonToAction(RawInputButton::Enter, ACTION_CONFIRM);
+
+	inputContext.WriteToFile("input/default.ini");
 
 	return 0;
 }
