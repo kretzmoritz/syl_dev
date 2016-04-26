@@ -8,9 +8,9 @@ using namespace SylDev::Common;
 IniFile::IniFile(std::string _file)
 	: m_file(_file)
 {
-	bool isFile = PathIsRelative(_file.c_str()) != 0;
+	bool isRelative = PathIsRelative(_file.c_str()) != 0;
 
-	if (isFile)
+	if (isRelative)
 	{
 		char buffer[MAX_PATH];
 		GetCurrentDirectory(MAX_PATH, buffer);
