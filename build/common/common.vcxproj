@@ -151,10 +151,12 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\common\enum.h" />
     <ClInclude Include="..\..\src\common\ini_file.h" />
+    <ClInclude Include="..\..\src\common\test_printer_stream.h" />
     <ClInclude Include="..\..\src\common\unit_testing.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\common\ini_file.cpp" />
+    <ClCompile Include="..\..\src\common\test_printer_stream.cpp" />
     <ClCompile Include="..\..\src\common\unit_testing.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

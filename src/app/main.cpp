@@ -1,4 +1,5 @@
 #include "../common/unit_testing.h"
+#include "../common/test_printer_stream.h"
 #include "../framework/window_desc.h"
 #include "../framework/window.h"
 #include "window_procedure.h"
