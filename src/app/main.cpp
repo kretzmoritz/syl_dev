@@ -37,7 +37,7 @@ int main(int _argc, char* _argv[])
 	WindowClassDesc classDesc;
 	WindowDesc wndDesc;
 
-	Window<SylDev::App::WindowProcedure> Window(result, classDesc, wndDesc, GetCommandLine());
+	Window<SylDev::App::WindowProcedure> window(result, classDesc, wndDesc, GetCommandLine());
 
 	InputAction ACTION_CONFIRM = InputAction::GetAction("ACTION_CONFIRM");
 
