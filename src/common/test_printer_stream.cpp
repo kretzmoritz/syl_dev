@@ -3,19 +3,18 @@
 #include <iostream>
 #include <fstream>
 
-using namespace SylDev::Common;
-using namespace TestData;
+namespace SylDev { namespace Common {
 
-void TestPrinterStream::OnEnd(std::vector<SuiteResult> const& _suiteResults)
+void TestPrinterStream::OnEnd(std::vector<TestData::SuiteResult> const& _suiteResults)
 {
 	m_stream.clear();
 
 	for (auto ii = _suiteResults.begin(); ii != _suiteResults.end(); ++ii)
 	{
-		SuiteResult const& suiteResult = *ii;
+		TestData::SuiteResult const& suiteResult = *ii;
 		std::string suiteName = suiteResult.GetName();
 
-		std::vector<TestResult> const& testResults = suiteResult.GetResults();
+		std::vector<TestData::TestResult> const& testResults = suiteResult.GetResults();
 
 		if (!testResults.empty())
 		{
@@ -34,14 +33,14 @@ void TestPrinterStream::OnEnd(std::vector<SuiteResult> const& _suiteResults)
 
 		for (auto jj = testResults.begin(); jj != testResults.end(); ++jj)
 		{
-			TestResult const& testResult = *jj;
+			TestData::TestResult const& testResult = *jj;
 			std::string testName = testResult.GetName();
 
-			std::vector<AssertResult> const& assertResults = testResult.GetResults();
+			std::vector<TestData::AssertResult> const& assertResults = testResult.GetResults();
 
 			for (auto kk = assertResults.begin(); kk != assertResults.end(); ++kk)
 			{
-				AssertResult const& assertResult = *kk;
+				TestData::AssertResult const& assertResult = *kk;
 
 				if (assertResult.m_internal)
 				{
@@ -82,9 +81,13 @@ void TestPrinterStream::OutputToFile(std::string _file)
 	fstream.open(_file, std::ios::out);
 
 	if (!fstream.is_open())
+	{
 		return;
+	}
 
 	fstream << m_stream.str();
 
 	fstream.close();
 }
+
+} } // SylDev, Common

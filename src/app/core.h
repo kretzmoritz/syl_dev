@@ -42,7 +42,7 @@ public:
 private:
 	HWND m_hWnd;
 
-	SylDev::Framework::RawInputHandler m_rawInputHandler;
+	Framework::RawInputHandler m_rawInputHandler;
 };
 
 } } // SylDev, App

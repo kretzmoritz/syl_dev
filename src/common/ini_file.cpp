@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include "Shlwapi.h"
 
-using namespace SylDev::Common;
+namespace SylDev { namespace Common {
 
 IniFile::IniFile(std::string _file)
 	: m_file(_file)
@@ -75,3 +75,5 @@ void IniFile::WriteString(std::string _section, std::string _key, std::string _v
 {
 	WritePrivateProfileString(_section.c_str(), _key.c_str(), _value.c_str(), m_file.c_str());
 }
+
+} } // SylDev, Common

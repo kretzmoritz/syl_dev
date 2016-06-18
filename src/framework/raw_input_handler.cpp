@@ -2,9 +2,9 @@
 
 #include <Windows.h>
 
-using namespace SylDev::Framework;
+namespace SylDev { namespace Framework {
 
-const std::unordered_map<RawInputButton::_enumerated, uint32_t> RawInputHandler::Mapping =
+const std::map<RawInputButton, uint32_t> RawInputHandler::Mapping =
 {
 	{ RawInputButton::LMouse, VK_LBUTTON },
 	{ RawInputButton::RMouse, VK_RBUTTON },
@@ -174,22 +174,22 @@ bool RawInputHandler::IsReleased(RawInputButton _button)
 	return m_released[id];
 }
 
-SylDev::Math::Vec2i RawInputHandler::GetMousePosLocal() const
+Math::Vec2i RawInputHandler::GetMousePosLocal() const
 {
 	POINT point;
 	GetCursorPos(&point);
 
 	ScreenToClient(GetActiveWindow(), &point);
 
-	return SylDev::Math::Vec2i(point.x, point.y);
+	return Math::Vec2i(point.x, point.y);
 }
 
-SylDev::Math::Vec2i RawInputHandler::GetMousePosScreen() const
+Math::Vec2i RawInputHandler::GetMousePosScreen() const
 {
 	POINT point;
 	GetCursorPos(&point);
 
-	return SylDev::Math::Vec2i(point.x, point.y);
+	return Math::Vec2i(point.x, point.y);
 }
 
 bool RawInputHandler::IsMouseInWindow() const
@@ -197,7 +197,7 @@ bool RawInputHandler::IsMouseInWindow() const
 	RECT rect;
 	GetClientRect(GetActiveWindow(), &rect);
 
-	SylDev::Math::Vec2i MousePos = GetMousePosScreen();
+	Math::Vec2i MousePos = GetMousePosScreen();
 
 	return MousePos.x >= rect.left && MousePos.x  < rect.right && MousePos.y >= rect.top && MousePos.y < rect.bottom;
 }
@@ -218,3 +218,5 @@ bool RawInputHandler::GetId(RawInputButton _button, uint32_t& _id) const
 
 	return true;
 }
+
+} } // SylDev, Framework

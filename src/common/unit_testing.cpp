@@ -1,10 +1,10 @@
 #include "unit_testing.h"
 
-using namespace SylDev::Common;
-using namespace TestData;
-using namespace Impl;
+namespace SylDev { namespace Common {
 
 TestEnvironment* TestEnvironment::Instance = nullptr;
+
+namespace TestData {
 
 TestInfo::TestInfo(std::string _file, int32_t _line)
 	: m_file(_file), m_line(_line)
@@ -82,15 +82,19 @@ bool SuiteResult::GetTotalResult() const
 	return m_totalResult;
 }
 
-TestContext::TestContext(TestResult& _testResult)
+} // TestData
+
+TestContext::TestContext(TestData::TestResult& _testResult)
 	: m_testResult(_testResult)
 {
 }
 
-void TestContext::AddResult(TestInfo const& _info, std::string _message, bool _succeeded)
+void TestContext::AddResult(TestData::TestInfo const& _info, std::string _message, bool _succeeded)
 {
-	m_testResult.AddResult(AssertResult(_info, _message, _succeeded));
+	m_testResult.AddResult(TestData::AssertResult(_info, _message, _succeeded));
 }
+
+namespace Impl {
 
 UnitTest::UnitTest(TestSuite& _suite, std::string _name, std::function<void(TestContext&)> _func)
 	: m_name(_name), m_func(std::move(_func))
@@ -103,13 +107,13 @@ std::string UnitTest::GetName() const
 	return m_name;
 }
 
-void UnitTest::Run(TestResult& _testResult)
+void UnitTest::Run(TestData::TestResult& _testResult)
 {
 	TestContext ctx(_testResult);
 	m_func(ctx);
 }
 
-TestDependency::TestDependency(TestInfo const& _info, std::string _name)
+TestDependency::TestDependency(TestData::TestInfo const& _info, std::string _name)
 	: m_info(_info), m_name(_name)
 {
 }
@@ -120,7 +124,7 @@ TestSuite::TestSuite(TestEnvironment& _environment, std::string _name)
 	_environment.RegisterTestSuite(_name, this);
 }
 
-void TestSuite::RegisterDependency(TestInfo const& _info, std::string _dependency)
+void TestSuite::RegisterDependency(TestData::TestInfo const& _info, std::string _dependency)
 {
 	m_dependencies.push_back(TestDependency(_info, _dependency));
 }
@@ -165,7 +169,7 @@ size_t TestSuite::GetDependencyCount() const
 	return m_dependencies.size();
 }
 
-void TestSuite::Run(SuiteResult& _suiteResult)
+void TestSuite::Run(TestData::SuiteResult& _suiteResult)
 {
 	if (m_init)
 	{
@@ -181,7 +185,7 @@ void TestSuite::Run(SuiteResult& _suiteResult)
 			m_fixtureEnter();
 		}
 
-		TestResult testResult(test->GetName());
+		TestData::TestResult testResult(test->GetName());
 		test->Run(testResult);
 
 		_suiteResult.AddResult(testResult);
@@ -198,7 +202,7 @@ void TestSuite::Run(SuiteResult& _suiteResult)
 	}
 }
 
-RegisterDependency::RegisterDependency(TestSuite& _suite, TestInfo const& _info, std::string _dependency)
+RegisterDependency::RegisterDependency(TestSuite& _suite, TestData::TestInfo const& _info, std::string _dependency)
 {
 	_suite.RegisterDependency(_info, _dependency);
 }
@@ -222,6 +226,8 @@ AssignSuiteFixtureLeave::AssignSuiteFixtureLeave(TestSuite& _suite, std::functio
 {
 	_suite.AssignFixtureLeave(_func);
 }
+
+} // Impl
 
 TestEnvironment& TestEnvironment::GetInstance()
 {
@@ -247,20 +253,20 @@ bool TestEnvironment::Run()
 {
 	for (auto ii = m_suiteResults.begin(); ii != m_suiteResults.end(); ++ii)
 	{
-		SuiteResult& suiteResult = *ii;
+		TestData::SuiteResult& suiteResult = *ii;
 		suiteResult.Clear();
 	}
 
-	std::vector<TestSuite*> sorted_suites;
+	std::vector<Impl::TestSuite*> sorted_suites;
 	bool succeeded = SolveDependencies(sorted_suites);
 
 	if (succeeded)
 	{
 		for (auto ii = sorted_suites.begin(); ii != sorted_suites.end(); ++ii)
 		{
-			TestSuite* suite = *ii;
+			Impl::TestSuite* suite = *ii;
 
-			std::vector<TestDependency> failedDependencies;
+			std::vector<Impl::TestDependency> failedDependencies;
 
 			for (size_t i = 0; i < suite->GetDependencyCount(); ++i)
 			{
@@ -287,11 +293,11 @@ bool TestEnvironment::Run()
 				{
 					for (auto kk = failedDependencies.begin(); kk != failedDependencies.end(); ++kk)
 					{
-						TestDependency dependency = *kk;
+						Impl::TestDependency dependency = *kk;
 
-						AssertResult assertResult(dependency.m_info, "Dependency " + dependency.m_name + " has failed to complete successfully.", false, true);
+						TestData::AssertResult assertResult(dependency.m_info, "Dependency " + dependency.m_name + " has failed to complete successfully.", false, true);
 				
-						TestResult testResult("dependency_failed");
+						TestData::TestResult testResult("dependency_failed");
 						testResult.AddResult(assertResult);
 
 						m_suiteResults[idx].AddResult(testResult);
@@ -318,14 +324,14 @@ bool TestEnvironment::Run()
 	return succeeded;
 }
 
-void TestEnvironment::RegisterTestSuite(std::string _name, TestSuite* _suite)
+void TestEnvironment::RegisterTestSuite(std::string _name, Impl::TestSuite* _suite)
 {
 	m_names.emplace(_name, m_suites.size());
 	m_suites.push_back(_suite);
-	m_suiteResults.push_back(SuiteResult(_name));
+	m_suiteResults.push_back(TestData::SuiteResult(_name));
 }
 
-bool TestEnvironment::SolveDependencies(std::vector<TestSuite*>& _sorted)
+bool TestEnvironment::SolveDependencies(std::vector<Impl::TestSuite*>& _sorted)
 {
 	std::vector<std::vector<std::pair<size_t, size_t>>> dependencies;
 
@@ -344,9 +350,9 @@ bool TestEnvironment::SolveDependencies(std::vector<TestSuite*>& _sorted)
 			}
 			else
 			{
-				AssertResult assertResult(m_suites[i]->GetDependency(j).m_info, "Dependency " + m_suites[i]->GetDependency(j).m_name + " unknown.", true, true);
+				TestData::AssertResult assertResult(m_suites[i]->GetDependency(j).m_info, "Dependency " + m_suites[i]->GetDependency(j).m_name + " unknown.", true, true);
 				
-				TestResult testResult("dependency_unknown");
+				TestData::TestResult testResult("dependency_unknown");
 				testResult.AddResult(assertResult);
 
 				m_suiteResults[i].AddResult(testResult);
@@ -360,7 +366,7 @@ bool TestEnvironment::SolveDependencies(std::vector<TestSuite*>& _sorted)
 }
 
 bool TestEnvironment::TopologicalSortDependencies(
-	std::vector<TestSuite*>& _sorted, std::vector<std::vector<std::pair<size_t, size_t>>> const& _dependencies)
+	std::vector<Impl::TestSuite*>& _sorted, std::vector<std::vector<std::pair<size_t, size_t>>> const& _dependencies)
 {
 	_sorted.clear();
 
@@ -390,7 +396,7 @@ bool TestEnvironment::TopologicalSortDependencies(
 }
 
 bool TestEnvironment::TopologicalVisit(
-	std::vector<TestSuite*>& _sorted, std::vector<std::vector<std::pair<size_t, size_t>>> const& _dependencies, 
+	std::vector<Impl::TestSuite*>& _sorted, std::vector<std::vector<std::pair<size_t, size_t>>> const& _dependencies, 
 	size_t _idx, std::vector<bool>& _tempmarked, std::vector<bool>& _marked)
 {
 	if (_tempmarked[_idx])
@@ -411,11 +417,11 @@ bool TestEnvironment::TopologicalVisit(
 			if (!succeeded)
 			{
 				size_t dependencyIdx = _dependencies[_idx][i].first;
-				TestDependency dependency = m_suites[_idx]->GetDependency(dependencyIdx);
+				Impl::TestDependency dependency = m_suites[_idx]->GetDependency(dependencyIdx);
 
-				AssertResult assertResult(dependency.m_info, "Dependency " + dependency.m_name + " is unresolvable.", false, true);
+				TestData::AssertResult assertResult(dependency.m_info, "Dependency " + dependency.m_name + " is unresolvable.", false, true);
 				
-				TestResult testResult("dependency_unresolvable");
+				TestData::TestResult testResult("dependency_unresolvable");
 				testResult.AddResult(assertResult);
 
 				m_suiteResults[_idx].AddResult(testResult);
@@ -432,3 +438,5 @@ bool TestEnvironment::TopologicalVisit(
 
 	return true;
 }
+
+} } // SylDev, Common

@@ -16,13 +16,13 @@
 #define SYLDEV_FRAMEWORK_INPUTCONTEXT
 
 #include <string>
-#include <unordered_map>
+#include <map>
 
 #include "raw_input_constants.h"
-#include "input_types.h"
 
 namespace SylDev { namespace Framework {
 
+template<class InputAction, class InputState, class InputRange>
 class InputContext
 {
 public:
@@ -34,11 +34,13 @@ public:
 	InputRange MapAxisToRange(RawInputAxis _axis, InputRange _range);
 
 private:
-	std::unordered_map<RawInputButton::_enumerated, InputAction> m_actions;
-	std::unordered_map<RawInputButton::_enumerated, InputState> m_states;
-	std::unordered_map<RawInputAxis::_enumerated, InputRange> m_ranges;
+	std::map<RawInputButton, InputAction> m_actions;
+	std::map<RawInputButton, InputState> m_states;
+	std::map<RawInputAxis, InputRange> m_ranges;
 };
 
 } } // SylDev, Framework
+
+#include "input_context.tcc"
 
 #endif

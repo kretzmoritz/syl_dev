@@ -2,27 +2,27 @@
 
 #include "../common/ini_file.h"
 
-using namespace SylDev::Framework;
-using namespace SylDev::Common;
+namespace SylDev { namespace Framework {
 
-void InputContext::ReadFromFile(std::string _file)
+template<class InputAction, class InputState, class InputRange>
+void InputContext<InputAction, InputState, InputRange>::ReadFromFile(std::string _file)
 {
 	m_actions.clear();
 	m_states.clear();
 	m_ranges.clear();
 
-	IniFile iniReader(_file);
+	Common::IniFile iniReader(_file);
 
 	for (size_t i = 0; i < RawInputButton::_size(); ++i)
 	{
 		RawInputButton button = RawInputButton::_values()[i];
 		std::string actionString = iniReader.ReadString("Actions", button._to_string());
 
-		if (InputAction::CheckAction(actionString))
-		{
-			InputAction action = InputAction::GetAction(actionString);
+		auto action = InputAction::_from_string_nothrow(actionString.c_str());
 
-			MapButtonToAction(button, action);
+		if (action)
+		{
+			MapButtonToAction(button, *action);
 		}
 	}
 
@@ -31,11 +31,11 @@ void InputContext::ReadFromFile(std::string _file)
 		RawInputButton button = RawInputButton::_values()[i];
 		std::string stateString = iniReader.ReadString("States", button._to_string());
 
-		if (InputState::CheckState(stateString))
-		{
-			InputState state = InputState::GetState(stateString);
+		auto state = InputState::_from_string_nothrow(stateString.c_str());
 
-			MapButtonToState(button, state);
+		if (state)
+		{
+			MapButtonToState(button, *state);
 		}
 	}
 
@@ -44,18 +44,19 @@ void InputContext::ReadFromFile(std::string _file)
 		RawInputAxis axis = RawInputAxis::_values()[i];
 		std::string rangeString = iniReader.ReadString("Ranges", axis._to_string());
 
-		if (InputRange::CheckRange(rangeString))
-		{
-			InputRange range = InputRange::GetRange(rangeString);
+		auto range = InputRange::_from_string_nothrow(rangeString.c_str());
 
-			MapAxisToRange(axis, range);
+		if (range)
+		{
+			MapAxisToRange(axis, *range);
 		}
 	}
 }
 
-void InputContext::WriteToFile(std::string _file)
+template<class InputAction, class InputState, class InputRange>
+void InputContext<InputAction, InputState, InputRange>::WriteToFile(std::string _file)
 {
-	IniFile iniWriter(_file);
+	Common::IniFile iniWriter(_file);
 
 	for (size_t i = 0; i < RawInputButton::_size(); ++i)
 	{
@@ -66,7 +67,7 @@ void InputContext::WriteToFile(std::string _file)
 
 		if (ii != m_actions.end())
 		{
-			actionString = ii->second.ToString();
+			actionString = ii->second._to_string();
 		}
 
 		iniWriter.WriteString("Actions", button._to_string(), actionString);
@@ -81,7 +82,7 @@ void InputContext::WriteToFile(std::string _file)
 
 		if (ii != m_states.end())
 		{
-			stateString = ii->second.ToString();
+			stateString = ii->second._to_string();
 		}
 
 		iniWriter.WriteString("States", button._to_string(), stateString);
@@ -96,18 +97,16 @@ void InputContext::WriteToFile(std::string _file)
 
 		if (ii != m_ranges.end())
 		{
-			rangeString = ii->second.ToString();
+			rangeString = ii->second._to_string();
 		}
 
 		iniWriter.WriteString("Ranges", axis._to_string(), rangeString);
 	}
 }
 
-InputAction InputContext::MapButtonToAction(RawInputButton _button, InputAction _action)
+template<class InputAction, class InputState, class InputRange>
+InputAction InputContext<InputAction, InputState, InputRange>::MapButtonToAction(RawInputButton _button, InputAction _action)
 {
-	if (_action.ToString().empty())
-		return _action;
-
 	auto ii = m_actions.emplace(_button, _action);
 
 	if (!ii.second) // There was already an action associated with this button.
@@ -121,11 +120,9 @@ InputAction InputContext::MapButtonToAction(RawInputButton _button, InputAction 
 	return ii.first->second;
 }
 
-InputState InputContext::MapButtonToState(RawInputButton _button, InputState _state)
+template<class InputAction, class InputState, class InputRange>
+InputState InputContext<InputAction, InputState, InputRange>::MapButtonToState(RawInputButton _button, InputState _state)
 {
-	if (_state.ToString().empty())
-		return _state;
-
 	auto ii = m_states.emplace(_button, _state);
 
 	if (!ii.second) // There was already a state associated with this button.
@@ -139,11 +136,9 @@ InputState InputContext::MapButtonToState(RawInputButton _button, InputState _st
 	return ii.first->second;
 }
 
-InputRange InputContext::MapAxisToRange(RawInputAxis _axis, InputRange _range)
+template<class InputAction, class InputState, class InputRange>
+InputRange InputContext<InputAction, InputState, InputRange>::MapAxisToRange(RawInputAxis _axis, InputRange _range)
 {
-	if (_range.ToString().empty())
-		return _range;
-
 	auto ii = m_ranges.emplace(_axis, _range);
 
 	if (!ii.second) // There was already a range associated with this axis.
@@ -156,3 +151,5 @@ InputRange InputContext::MapAxisToRange(RawInputAxis _axis, InputRange _range)
 
 	return ii.first->second;
 }
+
+} } // SylDev, Framework

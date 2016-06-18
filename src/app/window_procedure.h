@@ -21,7 +21,7 @@
 namespace SylDev { namespace App {
 
 class WindowProcedure
-	: public SylDev::Framework::WindowProcedure
+	: public Framework::WindowProcedure
 {
 public:
 	virtual ~WindowProcedure() = default;

@@ -15,7 +15,7 @@
 #ifndef SYLDEV_FRAMEWORK_RAWINPUTHANDLER
 #define SYLDEV_FRAMEWORK_RAWINPUTHANDLER
 
-#include <unordered_map>
+#include <map>
 
 #include "raw_input_constants.h"
 #include "../math/vector.h"
@@ -25,7 +25,7 @@ namespace SylDev { namespace Framework {
 class RawInputHandler
 {
 	static const uint32_t KeyCount = 256;
-	static const std::unordered_map<RawInputButton::_enumerated, uint32_t> Mapping;
+	static const std::map<RawInputButton, uint32_t> Mapping;
 
 public:
 	RawInputHandler();
@@ -37,8 +37,8 @@ public:
 	bool IsToggled(RawInputButton _button);
 	bool IsReleased(RawInputButton _button);
 
-	SylDev::Math::Vec2i GetMousePosLocal() const;
-	SylDev::Math::Vec2i GetMousePosScreen() const;
+	Math::Vec2i GetMousePosLocal() const;
+	Math::Vec2i GetMousePosScreen() const;
 	bool IsMouseInWindow() const;
 
 	bool HasFocus() const;

@@ -1,6 +1,6 @@
 #include "window_procedure.h"
 
-using namespace SylDev::App;
+namespace SylDev { namespace App {
 
 LRESULT CALLBACK WindowProcedure::operator()(HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)
 {
@@ -40,3 +40,5 @@ LRESULT CALLBACK WindowProcedure::operator()(HWND _hWnd, UINT _msg, WPARAM _wPar
 
 	return 0;
 }
+
+} } // SylDev, App

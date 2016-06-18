@@ -3,7 +3,7 @@
 EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 #define HINST_THISCOMPONENT ((HINSTANCE)&__ImageBase)
 
-using namespace SylDev::Framework;
+namespace SylDev { namespace Framework {
 
 WindowClassDesc::WindowClassDesc()
 	: style(CS_HREDRAW | CS_VREDRAW), hInstance(HINST_THISCOMPONENT), hIcon(nullptr), 
@@ -23,3 +23,5 @@ WindowDesc::WindowDesc()
 	nWidth(640), nHeight(480), nCmdShow(SW_SHOW)
 {
 }
+
+} } // SylDev, Framework
