@@ -126,11 +126,15 @@ bool RawInputHandler::IsPressed(RawInputButton _button)
 {
 	uint32_t id;
 
-	if(!GetId(_button, id))
+	if (!GetId(_button, id))
+	{
 		return false;
+	}
 
 	if (id < 0 || id >= KeyCount)
+	{
 		return false;
+	}
 
 	return m_pressed[id];
 }
@@ -139,11 +143,15 @@ bool RawInputHandler::IsDown(RawInputButton _button)
 {
 	uint32_t id;
 
-	if(!GetId(_button, id))
+	if (!GetId(_button, id))
+	{
 		return false;
+	}
 
 	if (id < 0 || id >= KeyCount)
+	{
 		return false;
+	}
 
 	return m_down[id];
 }
@@ -152,11 +160,15 @@ bool RawInputHandler::IsToggled(RawInputButton _button)
 {
 	uint32_t id;
 
-	if(!GetId(_button, id))
+	if (!GetId(_button, id))
+	{
 		return false;
+	}
 
 	if (id < 0 || id >= KeyCount)
+	{
 		return false;
+	}
 
 	return m_toggled[id];
 }
@@ -165,11 +177,15 @@ bool RawInputHandler::IsReleased(RawInputButton _button)
 {
 	uint32_t id;
 
-	if(!GetId(_button, id))
+	if (!GetId(_button, id))
+	{
 		return false;
+	}
 
 	if (id < 0 || id >= KeyCount)
+	{
 		return false;
+	}
 
 	return m_released[id];
 }
@@ -211,8 +227,10 @@ bool RawInputHandler::GetId(RawInputButton _button, uint32_t& _id) const
 {
 	auto ii = Mapping.find(_button);
 
-	if(ii == Mapping.end())
+	if (ii == Mapping.end())
+	{
 		return false;
+	}
 
 	_id = ii->second;
 
