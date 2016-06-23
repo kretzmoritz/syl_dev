@@ -3,19 +3,9 @@
 #include "../framework/window_desc.h"
 #include "../framework/window.h"
 #include "window_procedure.h"
-#include "../common/enum.h"
-#include "../framework/input_context.h"
-
-BETTER_ENUM(InputAction, int,
-	Confirm)
-
-BETTER_ENUM(InputState, int,
-	Placeholder)
-
-BETTER_ENUM(InputRange, int,
-	Placeholder)
 
 // In progress:
+// - Fix template typenames
 // - Input system
 
 // To do:
@@ -47,12 +37,6 @@ int main(int _argc, char* _argv[])
 	SylDev::Framework::WindowDesc wndDesc;
 
 	SylDev::Framework::Window<SylDev::App::WindowProcedure> window(result, classDesc, wndDesc, GetCommandLine());
-
-	SylDev::Framework::InputContext<InputAction, InputState, InputRange> inputContext;
-	inputContext.MapButtonToAction(SylDev::Framework::RawInputButton::Enter, InputAction::Confirm);
-
-	inputContext.WriteToFile("input/default.ini");
-	inputContext.ReadFromFile("input/default.ini");
 
 	return 0;
 }

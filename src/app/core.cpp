@@ -13,13 +13,17 @@ void Core::Init(HWND _hWnd, LPSTR _lpCmdLine)
 	AppendMenu(hSubMenu, MF_STRING, MenuId::File_Exit, "&Exit");
 
 	SetMenu(m_hWnd, hMenu);
+
+	m_inputContext.ReadFromFile("input/default.ini");
+	m_inputSystem.AddContext("default", m_inputContext);
+	m_inputSystem.ActivateContext("default");
 }
 
 void Core::Update()
 {
-	m_rawInputHandler.Refresh();
+	m_inputSystem.Update();
 
-	if (m_rawInputHandler.HasFocus() && (m_rawInputHandler.IsDown(Framework::RawInputButton::LMouse) || m_rawInputHandler.IsPressed(Framework::RawInputButton::RMouse)))
+	if (m_inputSystem.Check(InputState::Draw) || m_inputSystem.Check(InputAction::ClearScreen))
 	{
 		RedrawWindow(m_hWnd, nullptr, nullptr, RDW_INVALIDATE);
 	}
@@ -27,7 +31,7 @@ void Core::Update()
 
 void Core::Paint(HDC _hdc)
 {
-	if (m_rawInputHandler.IsPressed(Framework::RawInputButton::RMouse))
+	if (m_inputSystem.Check(InputAction::ClearScreen))
 	{
 		RECT rect;
 		GetClientRect(m_hWnd, &rect);
@@ -38,9 +42,9 @@ void Core::Paint(HDC _hdc)
 		return;
 	}
 
-	if (m_rawInputHandler.IsDown(Framework::RawInputButton::LMouse))
+	if (m_inputSystem.Check(InputState::Draw))
 	{
-		Math::Vec2i MousePos = m_rawInputHandler.GetMousePosLocal();
+		Math::Vec2i MousePos = m_inputSystem.GetRawInputHandler().GetMousePosLocal();
 
 		HBRUSH brush = CreateSolidBrush(RGB(255, 0, 0));
 		SelectObject(_hdc, brush);

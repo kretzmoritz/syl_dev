@@ -138,6 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\framework\input_context.h" />
+    <ClInclude Include="..\..\src\framework\input_system.h" />
     <ClInclude Include="..\..\src\framework\raw_input_constants.h" />
     <ClInclude Include="..\..\src\framework\raw_input_handler.h" />
     <ClInclude Include="..\..\src\framework\window.h" />
@@ -146,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\framework\input_context.tcc" />
+    <None Include="..\..\src\framework\input_system.tcc" />
     <None Include="..\..\src\framework\window.tcc" />
   </ItemGroup>
   <ItemGroup>

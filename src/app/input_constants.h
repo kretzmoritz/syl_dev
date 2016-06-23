@@ -12,40 +12,24 @@
 // 2016 Moritz Kretz
 ///////////////////////////////////////
 
-#ifndef SYLDEV_APP_CORE
-#define SYLDEV_APP_CORE
+#ifndef SYLDEV_APP_INPUTCONSTANTS
+#define SYLDEV_APP_INPUTCONSTANTS
 
-#include <Windows.h>
-
-#include "../app/input_constants.h"
-#include "../framework/input_system.h"
+#include "../common/enum.h"
+#include "../framework/input_context.h"
 
 namespace SylDev { namespace App {
 
-struct MenuId
-{
-	enum Type
-	{
-		File_Exit,
+BETTER_ENUM(InputAction, int,
+	ClearScreen)
 
-		Count
-	};
-};
+BETTER_ENUM(InputState, int,
+	Draw)
 
-class Core
-{
-public:
-	void Init(HWND _hWnd, LPSTR _lpCmdLine);
-	void Update();
-	void Paint(HDC _hdc);
-	void Release();
+BETTER_ENUM(InputRange, int,
+	Placeholder)
 
-private:
-	HWND m_hWnd;
-
-	InputContext m_inputContext;
-	Framework::InputSystem<InputContext> m_inputSystem;
-};
+typedef Framework::InputContext<InputAction, InputState, InputRange> InputContext;
 
 } } // SylDev, App
 

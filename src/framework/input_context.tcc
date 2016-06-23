@@ -105,6 +105,24 @@ void InputContext<InputAction, InputState, InputRange>::WriteToFile(std::string 
 }
 
 template<class InputAction, class InputState, class InputRange>
+std::map<RawInputButton, InputAction> const& InputContext<InputAction, InputState, InputRange>::GetActionMapping() const
+{
+	return m_actions;
+}
+
+template<class InputAction, class InputState, class InputRange>
+std::map<RawInputButton, InputState> const& InputContext<InputAction, InputState, InputRange>::GetStateMapping() const
+{
+	return m_states;
+}
+
+template<class InputAction, class InputState, class InputRange>
+std::map<RawInputAxis, InputRange> const& InputContext<InputAction, InputState, InputRange>::GetRangeMapping() const
+{
+	return m_ranges;
+}
+
+template<class InputAction, class InputState, class InputRange>
 InputAction InputContext<InputAction, InputState, InputRange>::MapButtonToAction(RawInputButton _button, InputAction _action)
 {
 	auto ii = m_actions.emplace(_button, _action);

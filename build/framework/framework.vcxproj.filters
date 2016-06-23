@@ -33,12 +33,18 @@
     <ClInclude Include="..\..\src\framework\raw_input_constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\framework\input_system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\framework\window.tcc">
       <Filter>Source Files</Filter>
     </None>
     <None Include="..\..\src\framework\input_context.tcc">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="..\..\src\framework\input_system.tcc">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

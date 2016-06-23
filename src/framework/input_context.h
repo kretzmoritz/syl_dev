@@ -29,9 +29,17 @@ public:
 	void ReadFromFile(std::string _file);
 	void WriteToFile(std::string _file);
 
+	std::map<RawInputButton, InputAction> const& GetActionMapping() const;
+	std::map<RawInputButton, InputState> const& GetStateMapping() const;
+	std::map<RawInputAxis, InputRange> const& GetRangeMapping() const;
+
 	InputAction MapButtonToAction(RawInputButton _button, InputAction _action);
 	InputState MapButtonToState(RawInputButton _button, InputState _state);
 	InputRange MapAxisToRange(RawInputAxis _axis, InputRange _range);
+
+	typedef InputAction ActionType;
+	typedef InputState StateType;
+	typedef InputRange RangeType;
 
 private:
 	std::map<RawInputButton, InputAction> m_actions;

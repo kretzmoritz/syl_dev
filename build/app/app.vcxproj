@@ -155,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\app\core.h" />
+    <ClInclude Include="..\..\src\app\input_constants.h" />
     <ClInclude Include="..\..\src\app\window_procedure.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
