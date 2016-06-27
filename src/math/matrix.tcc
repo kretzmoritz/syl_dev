@@ -1,7 +1,5 @@
 #include "matrix.h"
 
-#include <assert.h>
-
 namespace SylDev { namespace Math {
 
 namespace Impl {
@@ -15,33 +13,45 @@ MatrixBase<T, rows, columns>::MatrixBase()
 template<class T, size_t rows, size_t columns>
 T& MatrixSpecialized<T, rows, columns, true>::get(size_t _row, size_t _column)
 {
-	assert(_row >= 0 && _row < rows && _column >= 0 && _column < columns);
+	if (_row >= 0 && _row < rows && _column >= 0 && _column < columns)
+	{
+		return data[_row * columns + _column];
+	}
 
-	return data[_row * columns + _column];
+	return T(0);
 }
 
 template<class T, size_t rows, size_t columns>
 T const& MatrixSpecialized<T, rows, columns, true>::get(size_t _row, size_t _column) const
 {
-	assert(_row >= 0 && _row < rows && _column >= 0 && _column < columns);
+	if (_row >= 0 && _row < rows && _column >= 0 && _column < columns)
+	{
+		return data[_row * columns + _column];
+	}
 
-	return data[_row * columns + _column];
+	return T(0);
 }
 
 template<class T, size_t rows, size_t columns>
 T& MatrixSpecialized<T, rows, columns, false>::get(size_t _row, size_t _column)
 {
-	assert(_row >= 0 && _row < rows && _column >= 0 && _column < columns);
+	if (_row >= 0 && _row < rows && _column >= 0 && _column < columns)
+	{
+		return data[_column * rows + _row];
+	}
 
-	return data[_column * rows + _row];
+	return T(0);
 }
 
 template<class T, size_t rows, size_t columns>
 T const& MatrixSpecialized<T, rows, columns, false>::get(size_t _row, size_t _column) const
 {
-	assert(_row >= 0 && _row < rows && _column >= 0 && _column < columns);
+	if (_row >= 0 && _row < rows && _column >= 0 && _column < columns)
+	{
+		return data[_column * rows + _row];
+	}
 
-	return data[_column * rows + _row];
+	return T(0);
 }
 
 } // Impl
