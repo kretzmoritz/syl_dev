@@ -211,7 +211,7 @@ Math::Vec2i RawInputHandler::GetMousePosScreen() const
 bool RawInputHandler::IsMouseInWindow() const
 {
 	RECT rect;
-	GetClientRect(GetActiveWindow(), &rect);
+	GetWindowRect(GetActiveWindow(), &rect);
 
 	Math::Vec2i MousePos = GetMousePosScreen();
 

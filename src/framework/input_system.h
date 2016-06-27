@@ -63,6 +63,8 @@ public:
 private:
 	RawInputHandler const& m_rawInputHandler;
 
+	Math::Vec2i m_lastMousePos;
+
 	std::stack<std::map<std::string, Context>> m_contexts;
 
 	std::set<typename InputContext::ActionType> m_activeActions;

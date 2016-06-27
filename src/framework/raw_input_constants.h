@@ -19,7 +19,7 @@
 
 namespace SylDev { namespace Framework {
 
-BETTER_ENUM(RawInputButton, int,
+BETTER_ENUM(RawInputButton, int32_t,
 	LMouse,
 	RMouse,
 	MiddleMouse,
@@ -87,7 +87,7 @@ BETTER_ENUM(RawInputButton, int,
 	RAlt,
 	Tilde)
 
-BETTER_ENUM(RawInputAxis, int,
+BETTER_ENUM(RawInputAxis, int32_t,
 	MouseX,
 	MouseY,
 	MouseScroll)

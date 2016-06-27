@@ -20,13 +20,13 @@
 
 namespace SylDev { namespace App {
 
-BETTER_ENUM(InputAction, int,
+BETTER_ENUM(InputAction, int32_t,
 	ClearScreen)
 
-BETTER_ENUM(InputState, int,
+BETTER_ENUM(InputState, int32_t,
 	Draw)
 
-BETTER_ENUM(InputRange, int,
+BETTER_ENUM(InputRange, int32_t,
 	Placeholder)
 
 typedef Framework::InputContext<InputAction, InputState, InputRange> InputContext;
