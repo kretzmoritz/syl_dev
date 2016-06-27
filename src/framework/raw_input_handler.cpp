@@ -75,8 +75,8 @@ const std::map<RawInputButton, uint32_t> RawInputHandler::Mapping =
 };
 
 RawInputHandler::RawInputHandler()
-	: m_currentMouseWheelDelta(0.0f),
-	m_lastMouseWheelDelta(0.0f)
+	: m_currentMouseWheelDelta(0),
+	m_lastMouseWheelDelta(0)
 {
 	for (uint32_t i = 0; i < KeyCount; ++i)
 	{
@@ -125,7 +125,7 @@ void RawInputHandler::Update()
 
 	// Reset mouse wheel delta.
 	m_lastMouseWheelDelta = m_currentMouseWheelDelta;
-	m_currentMouseWheelDelta = 0.0f;
+	m_currentMouseWheelDelta = 0;
 }
 
 bool RawInputHandler::IsPressed(RawInputButton _button) const
@@ -214,12 +214,12 @@ Math::Vec2i RawInputHandler::GetMousePosScreen() const
 	return Math::Vec2i(point.x, point.y);
 }
 
-void RawInputHandler::AddMouseWheelDelta(float _delta)
+void RawInputHandler::AddMouseWheelDelta(int32_t _delta)
 {
 	m_currentMouseWheelDelta += _delta;
 }
 
-float RawInputHandler::GetMouseWheelDelta() const
+int32_t RawInputHandler::GetMouseWheelDelta() const
 {
 	return m_lastMouseWheelDelta;
 }

@@ -23,7 +23,7 @@ LRESULT CALLBACK WindowProcedure::operator()(HWND _hWnd, UINT _msg, WPARAM _wPar
 		PostQuitMessage(0);
 		break;
 	case WM_MOUSEWHEEL:
-		m_rawInputHandler.AddMouseWheelDelta(GET_WHEEL_DELTA_WPARAM(_wParam) / static_cast<float>(WHEEL_DELTA));
+		m_rawInputHandler.AddMouseWheelDelta(GET_WHEEL_DELTA_WPARAM(_wParam));
 		break;
 	case WM_COMMAND:
 		{
