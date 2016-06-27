@@ -18,6 +18,7 @@
 #include <Windows.h>
 
 #include "../app/input_constants.h"
+#include "../framework/raw_input_handler.h"
 #include "../framework/input_system.h"
 
 namespace SylDev { namespace App {
@@ -35,6 +36,8 @@ struct MenuId
 class Core
 {
 public:
+	Core();
+
 	void Init(HWND _hWnd, LPSTR _lpCmdLine);
 	void Update();
 	void Paint(HDC _hdc);
@@ -44,6 +47,7 @@ private:
 	HWND m_hWnd;
 
 	InputContext m_inputContext;
+	Framework::RawInputHandler m_rawInputHandler;
 	Framework::InputSystem<InputContext> m_inputSystem;
 };
 

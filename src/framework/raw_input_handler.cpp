@@ -85,7 +85,7 @@ RawInputHandler::RawInputHandler()
 	}
 }
 
-void RawInputHandler::Refresh()
+void RawInputHandler::Update()
 {
 	// Reset pressed and released states; these should only last one frame.
 	for (uint32_t i = 0; i < KeyCount; ++i)
@@ -122,7 +122,7 @@ void RawInputHandler::Refresh()
 	}
 }
 
-bool RawInputHandler::IsPressed(RawInputButton _button)
+bool RawInputHandler::IsPressed(RawInputButton _button) const
 {
 	uint32_t id;
 
@@ -139,7 +139,7 @@ bool RawInputHandler::IsPressed(RawInputButton _button)
 	return m_pressed[id];
 }
 
-bool RawInputHandler::IsDown(RawInputButton _button)
+bool RawInputHandler::IsDown(RawInputButton _button) const
 {
 	uint32_t id;
 
@@ -156,7 +156,7 @@ bool RawInputHandler::IsDown(RawInputButton _button)
 	return m_down[id];
 }
 
-bool RawInputHandler::IsToggled(RawInputButton _button)
+bool RawInputHandler::IsToggled(RawInputButton _button) const
 {
 	uint32_t id;
 
@@ -173,7 +173,7 @@ bool RawInputHandler::IsToggled(RawInputButton _button)
 	return m_toggled[id];
 }
 
-bool RawInputHandler::IsReleased(RawInputButton _button)
+bool RawInputHandler::IsReleased(RawInputButton _button) const
 {
 	uint32_t id;
 

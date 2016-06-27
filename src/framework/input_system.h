@@ -43,7 +43,7 @@ class InputSystem
 	};
 
 public:
-	InputSystem();
+	InputSystem(RawInputHandler const& _rawInputHandler);
 
 	void PushState();
 	void PopState();
@@ -60,10 +60,8 @@ public:
 	bool Check(typename InputContext::StateType _state) const;
 	bool Check(typename InputContext::RangeType _range, float& _delta) const;
 
-	RawInputHandler const& GetRawInputHandler() const;
-
 private:
-	RawInputHandler m_rawInputHandler;
+	RawInputHandler const& m_rawInputHandler;
 
 	std::stack<std::map<std::string, Context>> m_contexts;
 

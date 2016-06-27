@@ -2,6 +2,11 @@
 
 namespace SylDev { namespace App {
 
+Core::Core()
+	: m_inputSystem(m_rawInputHandler)
+{
+}
+
 void Core::Init(HWND _hWnd, LPSTR _lpCmdLine)
 {
 	m_hWnd = _hWnd;
@@ -15,12 +20,14 @@ void Core::Init(HWND _hWnd, LPSTR _lpCmdLine)
 	SetMenu(m_hWnd, hMenu);
 
 	m_inputContext.ReadFromFile("input/default.ini");
+
 	m_inputSystem.AddContext("default", m_inputContext);
 	m_inputSystem.ActivateContext("default");
 }
 
 void Core::Update()
 {
+	m_rawInputHandler.Update();
 	m_inputSystem.Update();
 
 	if (m_inputSystem.Check(InputState::Draw) || m_inputSystem.Check(InputAction::ClearScreen))
@@ -44,7 +51,7 @@ void Core::Paint(HDC _hdc)
 
 	if (m_inputSystem.Check(InputState::Draw))
 	{
-		Math::Vec2i MousePos = m_inputSystem.GetRawInputHandler().GetMousePosLocal();
+		Math::Vec2i MousePos = m_rawInputHandler.GetMousePosLocal();
 
 		HBRUSH brush = CreateSolidBrush(RGB(255, 0, 0));
 		SelectObject(_hdc, brush);

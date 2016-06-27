@@ -30,12 +30,12 @@ class RawInputHandler
 public:
 	RawInputHandler();
 
-	void Refresh();
+	void Update();
 
-	bool IsPressed(RawInputButton _button);
-	bool IsDown(RawInputButton _button);
-	bool IsToggled(RawInputButton _button);
-	bool IsReleased(RawInputButton _button);
+	bool IsPressed(RawInputButton _button) const;
+	bool IsDown(RawInputButton _button) const;
+	bool IsToggled(RawInputButton _button) const;
+	bool IsReleased(RawInputButton _button) const;
 
 	Math::Vec2i GetMousePosLocal() const;
 	Math::Vec2i GetMousePosScreen() const;

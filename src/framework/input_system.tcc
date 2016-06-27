@@ -27,7 +27,8 @@ void InputSystem<InputContext>::Context::SetActive(bool _active)
 }
 
 template<class InputContext>
-InputSystem<InputContext>::InputSystem()
+InputSystem<InputContext>::InputSystem(RawInputHandler const& _rawInputHandler)
+	: m_rawInputHandler(_rawInputHandler)
 {
 	m_contexts.push(std::map<std::string, Context>());
 }
@@ -95,8 +96,6 @@ void InputSystem<InputContext>::Update()
 	m_activeActions.clear();
 	m_activeStates.clear();
 	m_activeRanges.clear();
-
-	m_rawInputHandler.Refresh();
 
 	if (!m_rawInputHandler.HasFocus())
 	{
@@ -167,12 +166,6 @@ bool InputSystem<InputContext>::Check(typename InputContext::RangeType _range, f
 	_delta = 0.0f;
 
 	return false;
-}
-
-template<class InputContext>
-RawInputHandler const& InputSystem<InputContext>::GetRawInputHandler() const
-{
-	return m_rawInputHandler;
 }
 
 } } // SylDev, Framework
