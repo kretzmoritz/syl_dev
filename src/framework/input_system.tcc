@@ -161,6 +161,10 @@ void InputSystem<InputContext>::Update()
 				}
 				break;
 			case RawInputAxis::MouseScroll:
+				if (m_rawInputHandler.IsMouseInWindow() && m_rawInputHandler.GetMouseWheelDelta() != 0.0f)
+				{
+					m_activeRanges.emplace(range, m_rawInputHandler.GetMouseWheelDelta());
+				}
 				break;
 			}
 		}

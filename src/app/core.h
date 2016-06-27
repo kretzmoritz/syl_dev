@@ -36,7 +36,7 @@ struct MenuId
 class Core
 {
 public:
-	Core();
+	Core(Framework::RawInputHandler const& _rawInputHandler);
 
 	void Init(HWND _hWnd, LPSTR _lpCmdLine);
 	void Update();
@@ -47,7 +47,7 @@ private:
 	HWND m_hWnd;
 
 	InputContext m_inputContext;
-	Framework::RawInputHandler m_rawInputHandler;
+	Framework::RawInputHandler const& m_rawInputHandler;
 	Framework::InputSystem<InputContext> m_inputSystem;
 };
 

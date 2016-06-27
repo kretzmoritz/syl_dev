@@ -2,8 +2,9 @@
 
 namespace SylDev { namespace App {
 
-Core::Core()
-	: m_inputSystem(m_rawInputHandler)
+Core::Core(Framework::RawInputHandler const& _rawInputHandler)
+	: m_rawInputHandler(_rawInputHandler),
+	m_inputSystem(_rawInputHandler)
 {
 }
 
@@ -27,7 +28,6 @@ void Core::Init(HWND _hWnd, LPSTR _lpCmdLine)
 
 void Core::Update()
 {
-	m_rawInputHandler.Update();
 	m_inputSystem.Update();
 
 	if (m_inputSystem.Check(InputState::Draw) || m_inputSystem.Check(InputAction::ClearScreen))

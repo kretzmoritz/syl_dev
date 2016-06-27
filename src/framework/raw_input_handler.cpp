@@ -75,6 +75,8 @@ const std::map<RawInputButton, uint32_t> RawInputHandler::Mapping =
 };
 
 RawInputHandler::RawInputHandler()
+	: m_currentMouseWheelDelta(0.0f),
+	m_lastMouseWheelDelta(0.0f)
 {
 	for (uint32_t i = 0; i < KeyCount; ++i)
 	{
@@ -120,6 +122,10 @@ void RawInputHandler::Update()
 
 		m_toggled[i] = LOWORD(KeyState) != 0;
 	}
+
+	// Reset mouse wheel delta.
+	m_lastMouseWheelDelta = m_currentMouseWheelDelta;
+	m_currentMouseWheelDelta = 0.0f;
 }
 
 bool RawInputHandler::IsPressed(RawInputButton _button) const
@@ -208,6 +214,21 @@ Math::Vec2i RawInputHandler::GetMousePosScreen() const
 	return Math::Vec2i(point.x, point.y);
 }
 
+void RawInputHandler::AddMouseWheelDelta(float _delta)
+{
+	m_currentMouseWheelDelta += _delta;
+}
+
+float RawInputHandler::GetMouseWheelDelta() const
+{
+	return m_lastMouseWheelDelta;
+}
+
+bool RawInputHandler::HasFocus() const
+{
+	return GetFocus() != NULL;
+}
+
 bool RawInputHandler::IsMouseInWindow() const
 {
 	RECT rect;
@@ -216,11 +237,6 @@ bool RawInputHandler::IsMouseInWindow() const
 	Math::Vec2i MousePos = GetMousePosScreen();
 
 	return MousePos.x >= rect.left && MousePos.x  < rect.right && MousePos.y >= rect.top && MousePos.y < rect.bottom;
-}
-
-bool RawInputHandler::HasFocus() const
-{
-	return GetFocus() != NULL;
 }
 
 bool RawInputHandler::GetId(RawInputButton _button, uint32_t& _id) const

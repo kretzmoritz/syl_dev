@@ -39,9 +39,12 @@ public:
 
 	Math::Vec2i GetMousePosLocal() const;
 	Math::Vec2i GetMousePosScreen() const;
-	bool IsMouseInWindow() const;
+
+	void AddMouseWheelDelta(float _delta);
+	float GetMouseWheelDelta() const;
 
 	bool HasFocus() const;
+	bool IsMouseInWindow() const;
 
 private:
 	bool GetId(RawInputButton _button, uint32_t& _id) const;
@@ -50,6 +53,9 @@ private:
 	bool m_down[KeyCount];
 	bool m_toggled[KeyCount];
 	bool m_released[KeyCount];
+
+	float m_currentMouseWheelDelta;
+	float m_lastMouseWheelDelta;
 };
 
 } } // SylDev, Framework
