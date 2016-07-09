@@ -37,11 +37,12 @@ public:
 	bool IsToggled(RawInputButton _button) const;
 	bool IsReleased(RawInputButton _button) const;
 
+	int32_t GetAxisDelta(RawInputAxis _axis) const;
+
 	Math::Vec2i GetMousePosLocal() const;
 	Math::Vec2i GetMousePosScreen() const;
 
 	void AddMouseWheelDelta(int32_t _delta);
-	int32_t GetMouseWheelDelta() const;
 
 	bool HasFocus() const;
 	bool IsMouseInWindow() const;
@@ -54,8 +55,10 @@ private:
 	bool m_toggled[KeyCount];
 	bool m_released[KeyCount];
 
-	int32_t m_currentMouseWheelDelta;
-	int32_t m_lastMouseWheelDelta;
+	int32_t m_axes[RawInputAxis::_size_constant];
+
+	Math::Vec2i m_lastMousePos;
+	int32_t m_accumulatedMouseWheelDelta;
 };
 
 } } // SylDev, Framework

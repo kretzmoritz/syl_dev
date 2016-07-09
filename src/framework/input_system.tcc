@@ -28,8 +28,7 @@ void InputSystem<InputContext>::Context::SetActive(bool _active)
 
 template<class InputContext>
 InputSystem<InputContext>::InputSystem(RawInputHandler const& _rawInputHandler)
-	: m_rawInputHandler(_rawInputHandler),
-	m_lastMousePos(_rawInputHandler.GetMousePosLocal())
+	: m_rawInputHandler(_rawInputHandler)
 {
 	m_contexts.push(std::map<std::string, Context>());
 }
@@ -98,11 +97,6 @@ void InputSystem<InputContext>::Update()
 	m_activeStates.clear();
 	m_activeRanges.clear();
 
-	// update mouse delta
-	Math::Vec2i currentMousePos = m_rawInputHandler.GetMousePosLocal();
-	Math::Vec2i mouseDelta = currentMousePos - m_lastMousePos;
-	m_lastMousePos = currentMousePos;
-
 	if (!m_rawInputHandler.HasFocus())
 	{
 		return;
@@ -149,23 +143,20 @@ void InputSystem<InputContext>::Update()
 			switch (axis)
 			{
 			case RawInputAxis::MouseX:
-				if (m_rawInputHandler.IsMouseInWindow() && mouseDelta.x != 0)
-				{
-					m_activeRanges.emplace(range, static_cast<float>(mouseDelta.x));
-				}
-				break;
 			case RawInputAxis::MouseY:
-				if (m_rawInputHandler.IsMouseInWindow() && mouseDelta.y != 0)
-				{
-					m_activeRanges.emplace(range, static_cast<float>(mouseDelta.y));
-				}
-				break;
 			case RawInputAxis::MouseScroll:
-				if (m_rawInputHandler.IsMouseInWindow() && m_rawInputHandler.GetMouseWheelDelta() != 0)
+				if (!m_rawInputHandler.IsMouseInWindow())
 				{
-					m_activeRanges.emplace(range, static_cast<float>(m_rawInputHandler.GetMouseWheelDelta()));
+					continue;
 				}
 				break;
+			}
+
+			int32_t delta = m_rawInputHandler.GetAxisDelta(axis);
+
+			if (delta != 0)
+			{
+				m_activeRanges.emplace(range, static_cast<float>(delta));
 			}
 		}
 	}

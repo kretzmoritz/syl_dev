@@ -75,8 +75,8 @@ const std::map<RawInputButton, uint32_t> RawInputHandler::Mapping =
 };
 
 RawInputHandler::RawInputHandler()
-	: m_currentMouseWheelDelta(0),
-	m_lastMouseWheelDelta(0)
+	: m_lastMousePos(GetMousePosScreen()),
+	m_accumulatedMouseWheelDelta(0)
 {
 	for (uint32_t i = 0; i < KeyCount; ++i)
 	{
@@ -84,6 +84,11 @@ RawInputHandler::RawInputHandler()
 		m_down[i] = false;
 		m_toggled[i] = false;
 		m_released[i] = false;
+	}
+
+	for (uint32_t i = 0; i < RawInputAxis::_size_constant; ++i)
+	{
+		m_axes[i] = 0;
 	}
 }
 
@@ -123,9 +128,17 @@ void RawInputHandler::Update()
 		m_toggled[i] = LOWORD(KeyState) != 0;
 	}
 
-	// Reset mouse wheel delta.
-	m_lastMouseWheelDelta = m_currentMouseWheelDelta;
-	m_currentMouseWheelDelta = 0;
+	// Update mouse pos delta.
+	Math::Vec2i currentMousePos = GetMousePosScreen();
+	Math::Vec2i mousePosDelta = currentMousePos - m_lastMousePos;
+	m_lastMousePos = currentMousePos;
+
+	m_axes[RawInputAxis::MouseX] = mousePosDelta.x;
+	m_axes[RawInputAxis::MouseY] = mousePosDelta.y;
+
+	// Update mouse wheel delta.
+	m_axes[RawInputAxis::MouseScroll] = m_accumulatedMouseWheelDelta;
+	m_accumulatedMouseWheelDelta = 0;
 }
 
 bool RawInputHandler::IsPressed(RawInputButton _button) const
@@ -196,6 +209,11 @@ bool RawInputHandler::IsReleased(RawInputButton _button) const
 	return m_released[id];
 }
 
+int32_t RawInputHandler::GetAxisDelta(RawInputAxis _axis) const
+{
+	return m_axes[_axis];
+}
+
 Math::Vec2i RawInputHandler::GetMousePosLocal() const
 {
 	POINT point;
@@ -216,12 +234,7 @@ Math::Vec2i RawInputHandler::GetMousePosScreen() const
 
 void RawInputHandler::AddMouseWheelDelta(int32_t _delta)
 {
-	m_currentMouseWheelDelta += _delta;
-}
-
-int32_t RawInputHandler::GetMouseWheelDelta() const
-{
-	return m_lastMouseWheelDelta;
+	m_accumulatedMouseWheelDelta += _delta;
 }
 
 bool RawInputHandler::HasFocus() const
