@@ -15,8 +15,8 @@ void Core::Init(HWND _hWnd, LPSTR _lpCmdLine)
 	HMENU hMenu = CreateMenu();
 
 	HMENU hSubMenu = CreatePopupMenu();
-	AppendMenu(hMenu, MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(hSubMenu), "&File");
-	AppendMenu(hSubMenu, MF_STRING, MenuId::File_Exit, "&Exit");
+	AppendMenu(hMenu, MF_STRING | MF_POPUP, reinterpret_cast<UINT_PTR>(hSubMenu), L"&File");
+	AppendMenu(hSubMenu, MF_STRING, MenuId::File_Exit, L"&Exit");
 
 	SetMenu(m_hWnd, hMenu);
 

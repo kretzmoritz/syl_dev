@@ -8,26 +8,26 @@ namespace SylDev { namespace Common {
 IniFile::IniFile(std::string _file)
 	: m_file(_file)
 {
-	bool isRelative = PathIsRelative(_file.c_str()) != 0;
+	bool isRelative = PathIsRelative(nowide::widen(_file).c_str()) != 0;
 
 	if (isRelative)
 	{
-		char buffer[MAX_PATH];
+		wchar_t buffer[MAX_PATH];
 		GetCurrentDirectory(MAX_PATH, buffer);
 
-		std::string path = buffer;
+		std::string path = nowide::narrow(buffer);
 		m_file = path + '/' + m_file;
 	}
 
 	size_t found = m_file.find_last_of("/\\");
 	std::string directory = m_file.substr(0, found);
 
-	CreateDirectory(directory.c_str(), NULL);
+	CreateDirectory(nowide::widen(directory).c_str(), NULL);
 }
 
 int32_t IniFile::ReadInt(std::string _section, std::string _key)
 {
-	return GetPrivateProfileInt(_section.c_str(), _key.c_str(), 0, m_file.c_str());
+	return GetPrivateProfileInt(nowide::widen(_section).c_str(), nowide::widen(_key).c_str(), 0, nowide::widen(m_file).c_str());
 }
 
 void IniFile::WriteInt(std::string _section, std::string _key, int32_t _value)
@@ -65,15 +65,15 @@ void IniFile::WriteBool(std::string _section, std::string _key, bool _value)
 
 std::string IniFile::ReadString(std::string _section, std::string _key)
 {
-	char buffer[256];
-	GetPrivateProfileString(_section.c_str(), _key.c_str(), NULL, buffer, 256, m_file.c_str());
+	wchar_t buffer[256];
+	GetPrivateProfileString(nowide::widen(_section).c_str(), nowide::widen(_key).c_str(), NULL, buffer, 256, nowide::widen(m_file).c_str());
 
-	return buffer;
+	return nowide::narrow(buffer);
 }
 
 void IniFile::WriteString(std::string _section, std::string _key, std::string _value)
 {
-	WritePrivateProfileString(_section.c_str(), _key.c_str(), _value.c_str(), m_file.c_str());
+	WritePrivateProfileString(nowide::widen(_section).c_str(), nowide::widen(_key).c_str(), nowide::widen(_value).c_str(), nowide::widen(m_file).c_str());
 }
 
 } } // SylDev, Common

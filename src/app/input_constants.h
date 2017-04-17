@@ -15,7 +15,6 @@
 #ifndef SYLDEV_APP_INPUTCONSTANTS
 #define SYLDEV_APP_INPUTCONSTANTS
 
-#include "../common/enum.h"
 #include "../framework/input_context.h"
 
 namespace SylDev { namespace App {

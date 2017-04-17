@@ -21,6 +21,7 @@
     <ClInclude Include="..\..\src\math\matrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\math\matrix.tcc">
@@ -29,5 +30,8 @@
     <None Include="..\..\src\math\vector.tcc">
       <Filter>Source Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\stdafx.cpp" />
   </ItemGroup>
 </Project>

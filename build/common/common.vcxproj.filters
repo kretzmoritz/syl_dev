@@ -18,15 +18,13 @@
     <ClInclude Include="..\..\src\common\unit_testing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\common\enum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\common\ini_file.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\common\test_printer_stream.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\common\unit_testing.cpp">
@@ -38,5 +36,6 @@
     <ClCompile Include="..\..\src\common\test_printer_stream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\stdafx.cpp" />
   </ItemGroup>
 </Project>

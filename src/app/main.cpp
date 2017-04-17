@@ -1,4 +1,4 @@
-#include "../common/unit_testing.h"
+﻿#include "../common/unit_testing.h"
 #include "../common/test_printer_stream.h"
 #include "../framework/window_desc.h"
 #include "../framework/window.h"
@@ -32,11 +32,13 @@ int main(int _argc, char* _argv[])
 {
 	RunTests();
 
+	const std::string sCommandLine = nowide::narrow(GetCommandLine());
+
 	SylDev::Framework::WindowCreationResult::Type result;
 	SylDev::Framework::WindowClassDesc classDesc;
 	SylDev::Framework::WindowDesc wndDesc;
 
-	SylDev::Framework::Window<SylDev::App::WindowProcedure> window(result, classDesc, wndDesc, GetCommandLine());
+	SylDev::Framework::Window<SylDev::App::WindowProcedure> window(result, classDesc, wndDesc, sCommandLine.c_str());
 
 	return 0;
 }

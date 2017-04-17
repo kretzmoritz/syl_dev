@@ -40,7 +40,7 @@ public:
 	WindowDesc();
 
 	DWORD dwExStyle;
-	LPCTSTR lpWindowName;
+	LPCSTR lpWindowName;
 	DWORD dwStyle;
 	int x;
 	int y;

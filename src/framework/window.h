@@ -58,7 +58,7 @@ class Window
 	: public Impl::WindowBase
 {
 public:
-	Window(WindowCreationResult::Type& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine = "");
+	Window(WindowCreationResult::Type& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPCSTR _lpCmdLine = "");
 	~Window();
 
 private:
@@ -68,7 +68,7 @@ private:
 	bool CreateClass(WindowClassDesc _classDesc);
 	void ReleaseClass();
 
-	void Create(WindowCreationResult::Type& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine);
+	void Create(WindowCreationResult::Type& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPCSTR _lpCmdLine);
 	void Release();
 	void SignalCreationFinished(WindowCreationResult::Type& _result, WindowCreationResult::Type _value);
 

@@ -1,7 +1,4 @@
-#include "test_printer_stream.h"
-
-#include <iostream>
-#include <fstream>
+﻿#include "test_printer_stream.h"
 
 namespace SylDev { namespace Common {
 
@@ -72,13 +69,13 @@ void TestPrinterStream::OnEnd(std::vector<TestData::SuiteResult> const& _suiteRe
 
 void TestPrinterStream::OutputToConsole()
 {
-	std::cout << m_stream.str();
+	nowide::cout << m_stream.str() << std::flush;
 }
 
 void TestPrinterStream::OutputToFile(std::string _file)
 {
-	std::fstream fstream;
-	fstream.open(_file, std::ios::out);
+	nowide::fstream fstream;
+	fstream.open(_file.c_str(), std::ios::out);
 
 	if (!fstream.is_open())
 	{

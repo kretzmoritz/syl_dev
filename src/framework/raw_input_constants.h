@@ -15,8 +15,6 @@
 #ifndef SYLDEV_FRAMEWORK_RAWINPUTCONSTANTS
 #define SYLDEV_FRAMEWORK_RAWINPUTCONSTANTS
 
-#include "../common/enum.h"
-
 namespace SylDev { namespace Framework {
 
 BETTER_ENUM(RawInputButton, int32_t,

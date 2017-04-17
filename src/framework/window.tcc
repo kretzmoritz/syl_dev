@@ -13,7 +13,7 @@ std::unordered_map<std::string, std::pair<uint32_t, WindowClassDesc>> WindowBase
 } // Impl
 
 template<class T>
-Window<T>::Window(WindowCreationResult::Type& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine)
+Window<T>::Window(WindowCreationResult::Type& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPCSTR _lpCmdLine)
 	: WndProc(new T())
 {
 	std::unique_lock<std::mutex> lock(m_conditionMutex);
@@ -93,6 +93,8 @@ bool Window<T>::CreateClass(WindowClassDesc _classDesc)
 	{
 		className = "SylWindowClass" + std::to_string(Id);
 
+		const std::wstring wClassName = nowide::widen(className);
+
 		WNDCLASSEX wc;
 		wc.cbSize = sizeof(WNDCLASSEX);
 		wc.style = _classDesc.style;
@@ -104,7 +106,7 @@ bool Window<T>::CreateClass(WindowClassDesc _classDesc)
 		wc.hCursor = _classDesc.hCursor;
 		wc.hbrBackground = _classDesc.hbrBackground;
 		wc.lpszMenuName = nullptr;
-		wc.lpszClassName = className.c_str();
+		wc.lpszClassName = wClassName.c_str();
 		wc.hIconSm = _classDesc.hIconSm;
 
 		if (!RegisterClassEx(&wc))
@@ -141,7 +143,7 @@ void Window<T>::ReleaseClass()
 	{
 		HINSTANCE hInstance = ii->second.second.hInstance;
 
-		UnregisterClass(m_className.c_str(), hInstance);
+		UnregisterClass(nowide::widen(m_className).c_str(), hInstance);
 		WndClasses.erase(ii);
 	}
 
@@ -149,7 +151,7 @@ void Window<T>::ReleaseClass()
 }
 
 template<class T>
-void Window<T>::Create(WindowCreationResult::Type& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPSTR _lpCmdLine)
+void Window<T>::Create(WindowCreationResult::Type& _result, WindowClassDesc _classDesc, WindowDesc _wndDesc, LPCSTR _lpCmdLine)
 {
 	if (!CreateClass(_classDesc))
 	{
@@ -160,7 +162,7 @@ void Window<T>::Create(WindowCreationResult::Type& _result, WindowClassDesc _cla
 	}
 
 	m_hWnd = CreateWindowEx(
-		_wndDesc.dwExStyle, m_className.c_str(), _wndDesc.lpWindowName, 
+		_wndDesc.dwExStyle, nowide::widen(m_className).c_str(), nowide::widen(_wndDesc.lpWindowName).c_str(), 
 		_wndDesc.dwStyle, _wndDesc.x, _wndDesc.y, _wndDesc.nWidth, _wndDesc.nHeight, 
 		nullptr, nullptr, _classDesc.hInstance, this);
 
