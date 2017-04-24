@@ -20,7 +20,11 @@ void Core::Init(HWND _hWnd, LPSTR _lpCmdLine)
 
 	SetMenu(m_hWnd, hMenu);
 
-	m_inputContext.ReadFromFile("input/default.ini");
+	if (!m_inputContext.ReadFromFile("input/default.ini"))
+	{
+		m_inputContext.MapButtonToState(Framework::RawInputButton::LMouse, InputState::Draw);
+		m_inputContext.MapButtonToAction(Framework::RawInputButton::RMouse, InputAction::ClearScreen);
+	}
 
 	m_inputSystem.AddContext("default", m_inputContext);
 	m_inputSystem.ActivateContext("default");
@@ -64,6 +68,7 @@ void Core::Paint(HDC _hdc)
 
 void Core::Release()
 {
+	m_inputContext.WriteToFile("input/default.ini");
 }
 
 } } // SylDev, App

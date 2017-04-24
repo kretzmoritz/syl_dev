@@ -27,4 +27,6 @@
 #include "nowide/iostream.hpp"
 #include "nowide/fstream.hpp"
 
+#include <filesystem>
+
 #endif

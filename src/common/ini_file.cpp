@@ -1,7 +1,6 @@
 #include "ini_file.h"
 
 #include <Windows.h>
-#include <filesystem>
 
 namespace SylDev { namespace Common {
 
@@ -58,7 +57,7 @@ std::string IniFile::ReadString(std::string _section, std::string _key)
 
 void IniFile::WriteString(std::string _section, std::string _key, std::string _value)
 {
-	std::experimental::filesystem::path directory = nowide::widen(m_file);
+	std::experimental::filesystem::path directory = std::experimental::filesystem::u8path(m_file);
 	directory.remove_filename();
 
 	if (!std::experimental::filesystem::exists(directory))

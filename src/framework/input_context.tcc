@@ -5,8 +5,13 @@
 namespace SylDev { namespace Framework {
 
 template<class InputAction, class InputState, class InputRange>
-void InputContext<InputAction, InputState, InputRange>::ReadFromFile(std::string _file)
+bool InputContext<InputAction, InputState, InputRange>::ReadFromFile(std::string _file)
 {
+	std::experimental::filesystem::path file = std::experimental::filesystem::u8path(_file);
+
+	if (!std::experimental::filesystem::exists(file))
+		return false;
+
 	m_actions.clear();
 	m_states.clear();
 	m_ranges.clear();
@@ -51,6 +56,8 @@ void InputContext<InputAction, InputState, InputRange>::ReadFromFile(std::string
 			MapAxisToRange(axis, *range);
 		}
 	}
+
+	return true;
 }
 
 template<class InputAction, class InputState, class InputRange>

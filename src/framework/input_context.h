@@ -26,7 +26,7 @@ template<class InputAction, class InputState, class InputRange>
 class InputContext
 {
 public:
-	void ReadFromFile(std::string _file);
+	bool ReadFromFile(std::string _file);
 	void WriteToFile(std::string _file);
 
 	std::map<RawInputButton, InputAction> const& GetActionMapping() const;
