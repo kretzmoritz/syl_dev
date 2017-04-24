@@ -1,28 +1,13 @@
 #include "ini_file.h"
 
 #include <Windows.h>
-#include "Shlwapi.h"
+#include <filesystem>
 
 namespace SylDev { namespace Common {
 
 IniFile::IniFile(std::string _file)
 	: m_file(_file)
 {
-	bool isRelative = PathIsRelative(nowide::widen(_file).c_str()) != 0;
-
-	if (isRelative)
-	{
-		wchar_t buffer[MAX_PATH];
-		GetCurrentDirectory(MAX_PATH, buffer);
-
-		std::string path = nowide::narrow(buffer);
-		m_file = path + '/' + m_file;
-	}
-
-	size_t found = m_file.find_last_of("/\\");
-	std::string directory = m_file.substr(0, found);
-
-	CreateDirectory(nowide::widen(directory).c_str(), NULL);
 }
 
 int32_t IniFile::ReadInt(std::string _section, std::string _key)
@@ -73,6 +58,14 @@ std::string IniFile::ReadString(std::string _section, std::string _key)
 
 void IniFile::WriteString(std::string _section, std::string _key, std::string _value)
 {
+	std::experimental::filesystem::path directory = nowide::widen(m_file);
+	directory.remove_filename();
+
+	if (!std::experimental::filesystem::exists(directory))
+	{
+		std::experimental::filesystem::create_directory(directory);
+	}
+
 	WritePrivateProfileString(nowide::widen(_section).c_str(), nowide::widen(_key).c_str(), nowide::widen(_value).c_str(), nowide::widen(m_file).c_str());
 }
 
