@@ -38,7 +38,7 @@ class Core
 public:
 	Core(Framework::RawInputHandler const& _rawInputHandler);
 
-	void Init(HWND _hWnd, LPSTR _lpCmdLine);
+	void Init(HWND _hWnd, LPCSTR _lpCmdLine);
 	void Update();
 	void Paint(HDC _hdc);
 	void Release();

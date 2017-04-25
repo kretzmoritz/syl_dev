@@ -8,7 +8,7 @@ Core::Core(Framework::RawInputHandler const& _rawInputHandler)
 {
 }
 
-void Core::Init(HWND _hWnd, LPSTR _lpCmdLine)
+void Core::Init(HWND _hWnd, LPCSTR _lpCmdLine)
 {
 	m_hWnd = _hWnd;
 
